@@ -31,6 +31,7 @@ export interface UserThemeHeader {
     source?: string;
     website?: string;
     invite?: string;
+    required?: boolean;
 }
 
 function makeHeader(fileName: string, opts: Partial<UserThemeHeader> = {}): UserThemeHeader {
@@ -43,7 +44,8 @@ function makeHeader(fileName: string, opts: Partial<UserThemeHeader> = {}): User
         license: opts.license,
         source: opts.source,
         website: opts.website,
-        invite: opts.invite
+        invite: opts.invite,
+        required: opts.required
     };
 }
 

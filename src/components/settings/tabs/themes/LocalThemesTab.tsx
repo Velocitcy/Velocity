@@ -6,17 +6,18 @@
 
 import { Settings, useSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
-import { FolderIcon, PaintbrushIcon, PencilIcon, PlusIcon, RestartIcon } from "@components/Icons";
+import { DeleteIcon, FolderIcon, PaintbrushIcon, PencilIcon, PlusIcon, RestartIcon } from "@components/Icons";
 import { Link } from "@components/Link";
+import { AddonCard } from "@components/settings/AddonCard";
 import { QuickAction, QuickActionCard } from "@components/settings/QuickAction";
 import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { UserThemeHeader } from "@main/themes";
+import { Margins } from "@utils/margins";
+import { classes } from "@utils/misc";
 import { findLazy } from "@webpack";
-import { Card, Forms, useEffect, useRef, useState } from "@webpack/common";
+import { Card, Forms, showToast, Toasts, Tooltip, useEffect, useRef, useState } from "@webpack/common";
 import ClientThemePlugin from "plugins/clientTheme";
-import type { ComponentType, Ref, SyntheticEvent } from "react";
-
-import { ThemeCard } from "./ThemeCard";
+import type { ComponentType, CSSProperties, Ref, SyntheticEvent } from "react";
 
 const cl = classNameFactory("vc-settings-theme-");
 
@@ -29,7 +30,6 @@ type FileInput = ComponentType<{
 
 const FileInput: FileInput = findLazy(m => m.prototype?.activateUploadDialogue && m.prototype.setRef);
 
-// When a local theme is enabled/disabled, update the settings
 function onLocalThemeChange(fileName: string, value: boolean) {
     if (value) {
         if (Settings.enabledThemes.includes(fileName)) return;
@@ -62,13 +62,16 @@ async function onFileUpload(e: SyntheticEvent<HTMLInputElement>) {
     });
 
     await Promise.all(uploads);
+    showToast("Theme(s) uploaded successfully!", Toasts.Type.SUCCESS);
 }
+
+const linkContainerStyle: CSSProperties = { marginBottom: ".5em", display: "flex", flexDirection: "column" };
+const linkStyle: CSSProperties = { marginRight: ".5em" };
+const uploadSpanStyle: CSSProperties = { position: "relative" };
 
 export function LocalThemesTab() {
     const settings = useSettings(["enabledThemes"]);
-
     const fileInputRef = useRef<HTMLInputElement>(null);
-
     const [userThemes, setUserThemes] = useState<UserThemeHeader[] | null>(null);
 
     useEffect(() => {
@@ -80,12 +83,15 @@ export function LocalThemesTab() {
         setUserThemes(themes);
     }
 
+    const normalThemes = userThemes?.filter(t => !(t as any).required) || [];
+    const requiredThemes = userThemes?.filter(t => (t as any).required) || [];
+
     return (
         <>
             <Card className="vc-settings-card">
                 <Forms.FormTitle tag="h5">Find Themes:</Forms.FormTitle>
-                <div style={{ marginBottom: ".5em", display: "flex", flexDirection: "column" }}>
-                    <Link style={{ marginRight: ".5em" }} href="https://betterdiscord.app/themes">
+                <div style={linkContainerStyle}>
+                    <Link style={linkStyle} href="https://betterdiscord.app/themes">
                         BetterDiscord Themes
                     </Link>
                     <Link href="https://github.com/search?q=discord+theme">GitHub</Link>
@@ -107,7 +113,7 @@ export function LocalThemesTab() {
                             (
                                 <QuickAction
                                     text={
-                                        <span style={{ position: "relative" }}>
+                                        <span style={uploadSpanStyle}>
                                             Upload Theme
                                             <FileInput
                                                 ref={fileInputRef}
@@ -151,20 +157,66 @@ export function LocalThemesTab() {
                 </QuickActionCard>
 
                 <div className={cl("grid")}>
-                    {userThemes?.map(theme => (
-                        <ThemeCard
+                    {normalThemes.map(theme => (
+                        <AddonCard
                             key={theme.fileName}
+                            name={theme.name}
+                            description={theme.description}
+                            author={theme.author}
                             enabled={settings.enabledThemes.includes(theme.fileName)}
-                            onChange={enabled => onLocalThemeChange(theme.fileName, enabled)}
-                            onDelete={async () => {
-                                onLocalThemeChange(theme.fileName, false);
-                                await VelocityNative.themes.deleteTheme(theme.fileName);
-                                refreshLocalThemes();
-                            }}
-                            theme={theme}
+                            setEnabled={enabled => onLocalThemeChange(theme.fileName, enabled)}
+                            infoButton={
+                                <div
+                                    style={{ cursor: "pointer", marginLeft: "8px" }}
+                                    onClick={() => {
+                                        Velocity.Webpack.Common.Alerts.show({
+                                            title: "Delete Theme",
+                                            body: `Are you sure you want to delete "${theme.name}"? This action cannot be undone.`,
+                                            confirmText: "Delete",
+                                            cancelText: "Cancel",
+                                            confirmColor: "vc-button-danger",
+                                            onConfirm: async () => {
+                                                onLocalThemeChange(theme.fileName, false);
+                                                await VelocityNative.themes.deleteTheme(theme.fileName);
+                                                showToast(`Theme "${theme.name}" deleted`, Toasts.Type.SUCCESS);
+                                                refreshLocalThemes();
+                                            }
+                                        });
+                                    }}
+                                >
+                                    <DeleteIcon width={20} height={20} />
+                                </div>
+                            }
                         />
                     ))}
                 </div>
+
+                {requiredThemes.length > 0 && (
+                    <>
+                        <Forms.FormDivider className={Margins.top20} />
+                        <Forms.FormTitle tag="h5" className={classes(Margins.top20, Margins.bottom8)}>
+                            Required Themes
+                        </Forms.FormTitle>
+                        <div className={cl("grid")}>
+                            {requiredThemes.map(theme => (
+                                <Tooltip key={theme.fileName} text="This theme is required for Velocity to function.">
+                                    {tooltipProps => (
+                                        <div {...tooltipProps}>
+                                            <AddonCard
+                                                name={theme.name}
+                                                description={theme.description}
+                                                author={theme.author}
+                                                enabled={settings.enabledThemes.includes(theme.fileName)}
+                                                setEnabled={() => { }}
+                                                disabled={true}
+                                            />
+                                        </div>
+                                    )}
+                                </Tooltip>
+                            ))}
+                        </div>
+                    </>
+                )}
             </section>
         </>
     );

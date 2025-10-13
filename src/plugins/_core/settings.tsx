@@ -5,7 +5,7 @@
  */
 
 import { Settings } from "@api/Settings";
-import { BackupAndRestoreTab, CloudTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
+import { BackupAndRestoreTab, CloudTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab, DickTab } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
@@ -108,10 +108,10 @@ export default definePlugin({
                 className: "vc-backup-restore"
             },
             {
-                section: "settings/bitch",
-                label: "Suck my fucking dick bro",
-                element: BackupAndRestoreTab,
-                className: "vc-bitch"
+                section: "VelocityDick",
+                label: "Suck my fucking dick",
+                element: DickTab,
+                className: "vc-dick"
             },
             IS_DEV && {
                 section: "VelocityPatchHelper",

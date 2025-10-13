@@ -99,6 +99,13 @@ ipcMain.handle(IpcEvents.GET_THEME_SYSTEM_VALUES, () => ({
     "os-accent-color": `#${systemPreferences.getAccentColor?.() || ""}`
 }));
 
+ipcMain.handle(IpcEvents.DELETE_THEME, async (_, fileName: string) => {
+    const safePath = ensureSafePath(THEMES_DIR, fileName);
+    if (!safePath) throw new Error(`Unsafe path ${fileName}`);
+    const { unlink } = await import("fs/promises");
+    await unlink(safePath);
+});
+
 ipcMain.handle(IpcEvents.OPEN_THEMES_FOLDER, () => shell.openPath(THEMES_DIR));
 ipcMain.handle(IpcEvents.OPEN_SETTINGS_FOLDER, () => shell.openPath(SETTINGS_DIR));
 

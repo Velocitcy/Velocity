@@ -32,7 +32,7 @@ import SettingsPlugin from "./settings";
 const CodeBlockRe = /```js\n(.+?)```/s;
 
 const AdditionalAllowedChannelIds = [
-    "1024286218801926184", // Velocity > #bot-spam
+    "1387051064355848262",
 ];
 
 const TrustedRolesIds = [
@@ -72,7 +72,7 @@ async function generateDebugInfoMessage() {
 
     const info = {
         Velocity:
-            `v${VERSION} • [${gitHash}](<https://github.com/Vendicated/Velocity/commit/${gitHash}>)` +
+            `v${VERSION} • [${gitHash}](<https://github.com/ROBOXNOTHACKER/Velocity/commit/${gitHash}>)` +
             `${SettingsPlugin.additionalInfo} - ${Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}`,
         Client: `${RELEASE_CHANNEL} ~ ${client}`,
         Platform: navigator.platform

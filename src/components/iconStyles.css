@@ -1,3 +1,7 @@
 .vc-owner-crown-icon {
     color: var(--status-warning);
 }
+
+.vc-delete-icon.vc-icon {
+    color: var(--status-danger);
+}

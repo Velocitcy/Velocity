@@ -125,7 +125,7 @@ function VelocityPopoutButton({ buttonClass }: { buttonClass: string; }) {
 export default definePlugin({
     name: "VelocityToolbox",
     description: "Adds a button to the titlebar that houses Velocity quick actions",
-    authors: [Devs.Ven, Devs.AutumnVN],
+    authors: [Devs.Velocity],
 
     patches: [
         {

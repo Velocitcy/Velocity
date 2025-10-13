@@ -185,17 +185,22 @@ export default function PluginModal({ plugin, onRestartNeeded, onClose, transiti
                                 showDefaultAvatarsForNullUsers
                                 renderMoreUsers={renderMoreUsers}
                                 renderUser={(user: User) => (
-                                    <Clickable
-                                        className={AvatarStyles.clickableAvatar}
-                                        onClick={() => openContributorModal(user)}
-                                    >
-                                        <img
-                                            className={AvatarStyles.avatar}
-                                            src={user.getAvatarURL(void 0, 80, true)}
-                                            alt={user.username}
-                                            title={user.username}
-                                        />
-                                    </Clickable>
+                                    <Tooltip text={user.username}>
+                                        {({ onMouseEnter, onMouseLeave }) => (
+                                            <Clickable
+                                                className={AvatarStyles.clickableAvatar}
+                                                onClick={() => openContributorModal(user)}
+                                                onMouseEnter={onMouseEnter}
+                                                onMouseLeave={onMouseLeave}
+                                            >
+                                                <img
+                                                    className={AvatarStyles.avatar}
+                                                    src={user.getAvatarURL(void 0, 80, true)}
+                                                    alt=""
+                                                />
+                                            </Clickable>
+                                        )}
+                                    </Tooltip>
                                 )}
                             />
                         </ErrorBoundary>
