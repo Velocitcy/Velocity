@@ -149,12 +149,14 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                                 <img
                                                     className={cl("modal-role-image")}
                                                     src={roleIconSrc}
+                                                    alt={role?.name ?? "Role icon"}
                                                 />
                                             )}
                                             {permission.type === PermissionType.User && user != null && (
                                                 <img
                                                     className={cl("modal-user-img")}
                                                     src={user.getAvatarURL(void 0, void 0, false)}
+                                                    alt={`${getUniqueUsername(user)}'s avatar`}
                                                 />
                                             )}
                                             <Text variant="text-md/normal" className={cl("modal-list-item-text")}>

@@ -5,7 +5,7 @@
  */
 
 import { Settings } from "@api/Settings";
-import { BackupAndRestoreTab, CloudTab, DickTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
+import { BackupAndRestoreTab, CloudTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
@@ -107,12 +107,6 @@ export default definePlugin({
                 element: BackupAndRestoreTab,
                 className: "vc-backup-restore"
             },
-            {
-                section: "VelocityDick",
-                label: "Suck my fucking dick",
-                element: DickTab,
-                className: "vc-dick"
-            },
             IS_DEV && {
                 section: "VelocityPatchHelper",
                 label: "Patch Helper",
@@ -128,13 +122,14 @@ export default definePlugin({
 
     isRightSpot({ header, settings }: { header?: string; settings?: string[]; }) {
         const firstChild = settings?.[0];
-        // lowest two elements... sanity backup
         if (firstChild === "LOGOUT" || firstChild === "SOCIAL_LINKS") return true;
 
         const { settingsLocation } = Settings.plugins.Settings;
 
         if (settingsLocation === "bottom") return firstChild === "LOGOUT";
         if (settingsLocation === "belowActivity") return firstChild === "CHANGELOG";
+        if (settingsLocation === "belowAppearance") return firstChild === "ACCESSIBILITY";
+        if (settingsLocation === "belowAccessibility") return firstChild === "VOICE";
 
         if (!header) return;
 
@@ -143,7 +138,9 @@ export default definePlugin({
                 top: getIntlMessage("USER_SETTINGS"),
                 aboveNitro: getIntlMessage("BILLING_SETTINGS"),
                 belowNitro: getIntlMessage("APP_SETTINGS"),
-                aboveActivity: getIntlMessage("ACTIVITY_SETTINGS")
+                aboveActivity: getIntlMessage("ACTIVITY_SETTINGS"),
+                aboveAppearance: "Appearance",
+                aboveAccessibility: "Accessibility"
             };
 
             if (!names[settingsLocation] || names[settingsLocation].endsWith("_SETTINGS"))
@@ -189,6 +186,10 @@ export default definePlugin({
                 { label: "Below the Nitro section", value: "belowNitro" },
                 { label: "Above Activity Settings", value: "aboveActivity" },
                 { label: "Below Activity Settings", value: "belowActivity" },
+                { label: "Above Appearance", value: "aboveAppearance" },
+                { label: "Below Appearance", value: "belowAppearance" },
+                { label: "Above Accessibility", value: "aboveAccessibility" },
+                { label: "Below Accessibility", value: "belowAccessibility" },
                 { label: "At the very bottom", value: "bottom" },
             ]
         },
@@ -211,8 +212,6 @@ export default definePlugin({
 
     get additionalInfo() {
         if (IS_DEV) return " (Dev)";
-        if (IS_WEB) return " (Web)";
-        if (IS_VESKTOP) return ` (Vesktop v${VesktopNative.app.getVersion()})`;
         if (IS_STANDALONE) return " (Standalone)";
         return "";
     },

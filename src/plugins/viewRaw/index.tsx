@@ -21,7 +21,7 @@ import { CodeBlock } from "@components/CodeBlock";
 import { Divider } from "@components/Divider";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
-import { LogIcon } from "@components/Icons";
+import { CodeIcon, CopyIcon, IconTypes, LogIcon } from "@components/Icons";
 import { Message } from "@discord-types";
 import { Devs } from "@utils/constants";
 import { getCurrentGuild, getIntlMessage } from "@utils/discord";
@@ -29,7 +29,7 @@ import { Margins } from "@utils/margins";
 import { copyWithToast } from "@utils/misc";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
-import { Button, Forms, GuildRoleStore, Menu, React, Text } from "@webpack/common";
+import { Button, ChannelStore, Forms, GuildRoleStore, Menu, React, Text } from "@webpack/common";
 
 
 function sortObject<T extends object>(obj: T): T {
@@ -118,11 +118,11 @@ function openViewRawModal(json: string, type: string, content?: string) {
                 </ModalContent >
                 <ModalFooter>
                     <Flex cellSpacing={10}>
-                        <Button onClick={() => copyWithToast(json, `${type} data copied to clipboard!`)}>
+                        <Button icon={CodeIcon(IconTypes.DEFAULT)} onClick={() => copyWithToast(json, `${type} data copied to clipboard!`)}>
                             Copy {type} JSON
                         </Button>
                         {!!content && (
-                            <Button onClick={() => copyWithToast(content, "Content copied to clipboard!")}>
+                            <Button icon={CopyIcon(IconTypes.DEFAULT)} onClick={() => copyWithToast(content, "Content copied to clipboard!")}>
                                 Copy Raw Content
                             </Button>
                         )}
@@ -155,7 +155,7 @@ const messageContextCallback: NavContextMenuPatchCallback = (children, props) =>
             id="vc-view-message-raw"
             label="View Raw"
             action={() => openViewRawModalMessage(props.message)}
-            icon={LogIcon}
+            icon={LogIcon(IconTypes.DEFAULT)}
         />
     );
 };
@@ -186,7 +186,7 @@ function MakeContextCallback(name: "Guild" | "Role" | "User" | "Channel"): NavCo
                         openViewRawModal(JSON.stringify(value, null, 4), name);
                     }
                 }}
-                icon={LogIcon}
+                icon={LogIcon(IconTypes.DEFAULT)}
             />
         );
     };
@@ -204,7 +204,7 @@ const devContextCallback: NavContextMenuPatchCallback = (children, { id }: { id:
             id={"vc-view-role-raw"}
             label="View Raw"
             action={() => openViewRawModal(JSON.stringify(role, null, 4), "Role")}
-            icon={LogIcon}
+            icon={LogIcon(IconTypes.DEFAULT)}
         />
     );
 };
@@ -223,5 +223,17 @@ export default definePlugin({
         "gdm-context": MakeContextCallback("Channel"),
         "user-context": MakeContextCallback("User"),
         "dev-context": devContextCallback
+    },
+
+    renderMessagePopoverButton(msg) {
+        const channel = ChannelStore.getChannel(msg.channel_id);
+
+        return {
+            label: "View Raw",
+            icon: () => LogIcon(IconTypes.DEFAULT)(),
+            message: msg,
+            channel,
+            onClick: () => openViewRawModalMessage(msg)
+        };
     }
 });

@@ -235,7 +235,7 @@ export default definePlugin({
                                 </Flex>
                                 <div style={{ padding: "1em" }}>
                                     <Forms.FormText>
-                                        This Badge is a special perk for Velocity Donors
+                                        This Badge is a special perk for Vencord Donors
                                     </Forms.FormText>
                                     <Forms.FormText className={Margins.top20}>
                                         Please consider supporting the development of Velocity by becoming a donor. It would mean a lot!!

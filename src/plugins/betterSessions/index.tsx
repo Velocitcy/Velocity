@@ -21,6 +21,7 @@ import "./styles.css";
 import { showNotification } from "@api/Notifications";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { IconTypes } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, findComponentByCodeLazy, findStoreLazy } from "@webpack";
@@ -128,9 +129,10 @@ export default definePlugin({
             </Tooltip>
         );
     }, { noop: true }),
-
     renderIcon: ErrorBoundary.wrap(({ session, DeviceIcon }: { session: Session, DeviceIcon: React.ComponentType<any>; }) => {
         const PlatformIcon = GetPlatformIcon(session.client_info.platform);
+        const iconResult = PlatformIcon(IconTypes.MEDIUM);
+        const icon = typeof iconResult === "function" ? iconResult() : iconResult;
 
         return (
             <BlobMask
@@ -142,18 +144,16 @@ export default definePlugin({
                         style={{
                             width: "20px",
                             height: "20px",
-
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
                             overflow: "hidden",
-
                             borderRadius: "50%",
                             backgroundColor: "var(--interactive-normal)",
                             color: "var(--background-base-lower)",
                         }}
                     >
-                        <PlatformIcon width={14} height={14} />
+                        {icon}
                     </div>
                 }
                 lowerBadgeSize={{

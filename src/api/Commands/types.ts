@@ -7,6 +7,6 @@
 import { Command } from "@discord-types";
 export { ApplicationCommandInputType, ApplicationCommandOptionType, ApplicationCommandType } from "@discord-types/enums";
 
-export interface VencordCommand extends Command {
-    isVencordCommand?: boolean;
+export interface VelocityCommand extends Command {
+    isVelocityCommand?: boolean;
 }

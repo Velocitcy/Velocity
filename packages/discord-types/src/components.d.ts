@@ -25,7 +25,9 @@ export interface ButtonProps extends PropsWithChildren<Omit<HTMLProps<HTMLButton
     size?: string;
 
     className?: string;
+    icon?: any;
 }
+
 
 export type Button = ComponentType<ButtonProps> & {
     Colors: Record<"BRAND" | "RED" | "GREEN" | "PRIMARY" | "LINK" | "WHITE" | "TRANSPARENT" | "CUSTOM", string>;

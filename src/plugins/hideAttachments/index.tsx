@@ -61,10 +61,17 @@ export default definePlugin({
         if (!hasMedia(msg) && !msg.messageSnapshots.some(s => hasMedia(s.message))) return null;
 
         const isHidden = hiddenMessages.has(msg.id);
+        const IconComponent = isHidden ? ImageVisible : ImageInvisible;
+
+        const WrappedIcon = (props: any) => {
+            const icon = IconComponent({});
+            const result = typeof icon === "function" ? icon() : icon;
+            return <div style={{ width: "20px", height: "20px" }}>{result}</div>;
+        };
 
         return {
             label: isHidden ? "Show Media" : "Hide Media",
-            icon: isHidden ? ImageVisible : ImageInvisible,
+            icon: WrappedIcon,
             message: msg,
             channel: ChannelStore.getChannel(msg.channel_id),
             onClick: () => this.toggleHide(msg.channel_id, msg.id)

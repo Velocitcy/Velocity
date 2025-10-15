@@ -1,8 +1,3 @@
-.vc-toolbox-btn,
-.vc-toolbox-icon {
-    -webkit-app-region: no-drag;
-}
-
 .vc-toolbox-icon {
     color: var(--interactive-normal);
 }

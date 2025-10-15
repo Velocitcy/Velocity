@@ -20,7 +20,8 @@ export interface Menu {
         label: ReactNode;
         action?(e: MouseEvent): void;
         icon?: ComponentType<any>;
-
+        iconLeft?: ComponentType<any>;
+        subtext?: ReactNode;
         color?: string;
         render?: ComponentType<any>;
         onChildrenScroll?: Function;
@@ -32,6 +33,7 @@ export interface Menu {
         id: string;
         label: string;
         checked: boolean;
+        subtext?: ReactNode;
         action?(e: MouseEvent): void;
         disabled?: boolean;
     }>;

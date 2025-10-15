@@ -7,7 +7,6 @@
 import "./styles.css";
 
 export * from "./BaseTab";
-export { default as DickTab } from "./dick";
 export { default as PatchHelperTab } from "./patchHelper";
 export { default as PluginsTab } from "./plugins";
 export { openContributorModal } from "./plugins/ContributorModal";
