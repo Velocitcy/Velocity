@@ -29,8 +29,17 @@ const settings = definePluginSettings({
         type: OptionType.BOOLEAN,
         description: "Toggle DM Echo",
         default: true,
+    },
+    cooldown: {
+        type: OptionType.SLIDER,
+        description: "Cooldown between repeats (seconds)",
+        default: 0,
+        markers: [0, 10, 20, 30, 40, 50, 60],
+        stickToMarkers: false
     }
 });
+
+let lastRepeatTime = 0;
 
 const DMEchoToggle: ChatBarButtonFactory = ({ isMainChat }) => {
     const { isEnabled, showIcon } = settings.use(["isEnabled", "showIcon"]);
@@ -93,9 +102,15 @@ export default definePlugin({
             const channel = ChannelStore.getChannel(message.channel_id);
 
             if (channel?.type === 1 && message.author.id !== UserStore.getCurrentUser()?.id && !message.author.bot) {
+                const now = Date.now();
+                const cooldownMs = settings.store.cooldown * 1000;
+
+                if (now - lastRepeatTime < cooldownMs) return;
+
                 const { content } = message;
                 if (content) {
                     sendMessage(message.channel_id, { content });
+                    lastRepeatTime = now;
                 }
             }
         }

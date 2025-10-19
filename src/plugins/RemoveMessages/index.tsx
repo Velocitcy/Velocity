@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import { Flex } from "@components/Flex";
 import { DeleteIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, Forms, React, TextInput, UserStore, useState } from "@webpack/common";
+import { Button, Forms, Menu, React, TextInput, Toasts, UserStore, useState } from "@webpack/common";
 
 type Rule = Record<"word", string>;
 
@@ -124,12 +125,90 @@ const settings = definePluginSettings({
     }
 });
 
+function addWordToRemove(word: string) {
+    const rules = settings.store.wordRules;
+
+    const lastIndex = rules.length - 1;
+    if (rules[lastIndex] && !rules[lastIndex].word) {
+        rules[lastIndex].word = word;
+    } else {
+        rules.push({ word });
+    }
+
+    rules.push(makeEmptyRule());
+
+    Toasts.show({
+        message: `Added "${word}" to message filter`,
+        id: Toasts.genId(),
+        type: Toasts.Type.SUCCESS
+    });
+}
+
+function removeWordFromFilter(word: string) {
+    const rules = settings.store.wordRules;
+    const index = rules.findIndex(r => r.word.toLowerCase() === word.toLowerCase());
+
+    if (index !== -1 && index !== rules.length - 1) {
+        rules.splice(index, 1);
+
+        Toasts.show({
+            message: `Removed "${word}" from message filter`,
+            id: Toasts.genId(),
+            type: Toasts.Type.SUCCESS
+        });
+    }
+}
+
+function wordExists(word: string): boolean {
+    const rules = settings.store.wordRules;
+    return rules.some(r => r.word.toLowerCase() === word.toLowerCase());
+}
+
+const messageContextMenuPatch: NavContextMenuPatchCallback = (children, _props) => {
+    const selection = document.getSelection()?.toString();
+    if (!selection) return;
+
+    const group = findGroupChildrenByChildId("search-google", children);
+    if (group) {
+        const idx = group.findIndex(c => c?.props?.id === "search-google");
+        if (idx !== -1) {
+            const exists = wordExists(selection);
+            const displayText = selection.length > 15 ? selection.slice(0, 15) + "..." : selection;
+            group.splice(idx + 1, 0,
+                <Menu.MenuItem
+                    key="vc-add-message-filter"
+                    id="vc-add-message-filter"
+                    label={
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span>{exists ? "Remove MessageFilter" : "Add MessageFilter"}</span>
+                            <span style={{
+                                backgroundColor: "var(--background-secondary)",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                                fontSize: "0.875rem",
+                                color: "var(--text-muted)"
+                            }}>
+                                {displayText}
+                            </span>
+                        </div>
+                    }
+                    action={() => exists ? removeWordFromFilter(selection) : addWordToRemove(selection)}
+                />
+            );
+        }
+    }
+};
+
 export default definePlugin({
     name: "RemoveMessages",
     description: "Removes messages containing specified words",
     authors: [Devs.Velocity],
 
     settings,
+
+    contextMenus: {
+        "message": messageContextMenuPatch
+    },
 
     renderMessageAccessory(props) {
         const currentUser = UserStore.getCurrentUser();
