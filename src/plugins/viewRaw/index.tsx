@@ -172,7 +172,7 @@ function MakeContextCallback(name: "Guild" | "Role" | "User" | "Channel"): NavCo
                         openViewRawModal(JSON.stringify(value, null, 4), name);
                     }
                 }}
-                icon={LogIcon()}
+                icon={setIconClassName(LogIcon, Iconclasses.discord)}
             />
         );
     };
