@@ -81,7 +81,7 @@ function openViewRawModal(json: string, type: string, content?: string) {
             <ModalRoot {...props} size={ModalSize.LARGE}>
                 <ModalHeader>
                     <Text variant="heading-lg/semibold" style={{ flexGrow: 1 }}>View Raw</Text>
-                    <ModalCloseButton onClick={() => closeModal(key)} />
+                    <ModalCloseButton withCircleBackground={false} onClick={() => closeModal(key)} />
                 </ModalHeader>
                 <ModalContent>
                     <div style={{ padding: "16px" }}>

@@ -96,7 +96,7 @@ interface Modals {
         focusProps?: any;
         onClick(): void;
         withCircleBackground?: boolean;
-        hideOnFullscreen?: boolean;
+        hideOnFullscreen?: boolean | true;
         className?: string;
     }>;
 }
