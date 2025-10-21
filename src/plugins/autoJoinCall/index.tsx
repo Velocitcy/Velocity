@@ -21,6 +21,7 @@ import { definePluginSettings } from "@api/Settings";
 import { CogWheel } from "@components/Icons";
 import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { Devs } from "@utils/constants";
+import { Iconclasses, setIconClassName } from "@utils/icon";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { Menu } from "@webpack/common";
@@ -74,15 +75,17 @@ function joinCall(channelId: string) {
     } catch (e) { }
 }
 
-const streamContextMenuPatch: NavContextMenuPatchCallback = (children, props) => {
-    children.push(
+const streamContextMenuPatch: NavContextMenuPatchCallback = children => {
+    const menuItem = (
         <Menu.MenuItem
             id="vc-autojoin-settings"
             label="Auto Join Settings"
-            icon={CogWheel()}
+            icon={setIconClassName(CogWheel, Iconclasses.discord)}
             action={() => openPluginModal(Velocity.Plugins.plugins.autoJoinCall)}
         />
     );
+
+    children.splice(4, 0, menuItem);
 };
 
 export default definePlugin({
