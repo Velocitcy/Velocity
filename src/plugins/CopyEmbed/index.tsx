@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { NavContextMenuPatchCallback } from "@api/ContextMenu";
+import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { CodeBlock } from "@components/CodeBlock";
 import { Divider } from "@components/Divider";
 import ErrorBoundary from "@components/ErrorBoundary";
@@ -237,45 +237,50 @@ const messageContextCallback: NavContextMenuPatchCallback = (children, props) =>
     if (!props?.message?.embeds?.length) return;
     if (!props.message.embeds.some((e: any) => e.type === "rich")) return;
 
-    children.push(
-        <Menu.MenuItem
-            id="vc-embed-data"
-            label="Embed Data"
-        >
+    const group = findGroupChildrenByChildId("copy-link", children);
+
+    if (group) {
+        group.push(
             <Menu.MenuItem
-                id="vc-copy-embed-data"
-                label="Copy Embed Data"
-                action={() => copyEmbedData(props.message)}
+                id="vc-embed-data"
+                label="Embed Data"
                 icon={setIconClassName(CodeIcon, Iconclasses.discord)}
-            />
-            <Menu.MenuItem
-                id="vc-copy-full-json"
-                label="Copy Full JSON"
-                action={() => copyFullMessageJSON(props.message)}
-                icon={setIconClassName(LogIcon, Iconclasses.discord)}
-            />
-            <Menu.MenuSeparator />
-            <Menu.MenuItem
-                id="vc-copy-embed-description"
-                label="Copy Embed Description"
-                action={() => copyEmbedDescription(props.message)}
-                icon={setIconClassName(NotesIcon, Iconclasses.discord)}
-            />
-            <Menu.MenuItem
-                id="vc-copy-embed-builder"
-                label="Copy EmbedBuilder"
-                action={() => copyEmbedBuilder(props.message)}
-                icon={setIconClassName(CopyIcon, Iconclasses.discord)}
-            />
-            <Menu.MenuSeparator />
-            <Menu.MenuItem
-                id="vc-view-raw-embed"
-                label="View Raw Embed"
-                action={() => openEmbedRawModal(props.message)}
-                icon={setIconClassName(LogIcon, Iconclasses.discord)}
-            />
-        </Menu.MenuItem>
-    );
+            >
+                <Menu.MenuItem
+                    id="vc-copy-embed-data"
+                    label="Copy Embed Data"
+                    action={() => copyEmbedData(props.message)}
+                    icon={setIconClassName(CodeIcon, Iconclasses.discord)}
+                />
+                <Menu.MenuItem
+                    id="vc-copy-full-json"
+                    label="Copy Full JSON"
+                    action={() => copyFullMessageJSON(props.message)}
+                    icon={setIconClassName(LogIcon, Iconclasses.discord)}
+                />
+                <Menu.MenuSeparator />
+                <Menu.MenuItem
+                    id="vc-copy-embed-description"
+                    label="Copy Embed Description"
+                    action={() => copyEmbedDescription(props.message)}
+                    icon={setIconClassName(NotesIcon, Iconclasses.discord)}
+                />
+                <Menu.MenuItem
+                    id="vc-copy-embed-builder"
+                    label="Copy EmbedBuilder"
+                    action={() => copyEmbedBuilder(props.message)}
+                    icon={setIconClassName(CopyIcon, Iconclasses.discord)}
+                />
+                <Menu.MenuSeparator />
+                <Menu.MenuItem
+                    id="vc-view-raw-embed"
+                    label="View Raw Embed"
+                    action={() => openEmbedRawModal(props.message)}
+                    icon={setIconClassName(LogIcon, Iconclasses.discord)}
+                />
+            </Menu.MenuItem>
+        );
+    }
 };
 
 export default definePlugin({
