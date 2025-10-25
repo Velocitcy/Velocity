@@ -23,8 +23,6 @@ import definePlugin, { OptionType } from "@utils/types";
 
 import quotes from "./quotes.json";
 
-const noQuotesQuote = "Did you really disable all loading quotes? What a buffoon you are...";
-
 const settings = definePluginSettings({
     replaceEvents: {
         description: "Should this plugin also apply during events with special event themed quotes? (e.g. Halloween)",
@@ -40,11 +38,6 @@ const settings = definePluginSettings({
         description: "Enable Discord's preset quotes (including event quotes, during events)",
         type: OptionType.BOOLEAN,
         default: false
-    },
-    additionalQuotes: {
-        description: "Additional custom quotes (JSON array format)",
-        type: OptionType.STRING,
-        default: "[]",
     }
 });
 
@@ -73,7 +66,7 @@ export default definePlugin({
 
     mutateQuotes(quotesArr: string[]) {
         try {
-            const { enableDiscordPresetQuotes, additionalQuotes, enablePluginPresetQuotes } = settings.store;
+            const { enableDiscordPresetQuotes, enablePluginPresetQuotes } = settings.store;
 
             if (!enableDiscordPresetQuotes)
                 quotesArr.length = 0;
@@ -81,16 +74,6 @@ export default definePlugin({
             if (enablePluginPresetQuotes && Array.isArray(quotes.presetQuotes))
                 quotesArr.push(...quotes.presetQuotes);
 
-            try {
-                const parsedQuotes = JSON.parse(additionalQuotes);
-                if (Array.isArray(parsedQuotes))
-                    quotesArr.push(...parsedQuotes.filter(q => typeof q === "string"));
-            } catch (e) {
-                new Logger("LoadingQuotes").error("Failed to parse additional quotes JSON", e);
-            }
-
-            if (!quotesArr.length)
-                quotesArr.push(noQuotesQuote);
         } catch (e) {
             new Logger("LoadingQuotes").error("Failed to mutate quotes", e);
         }
