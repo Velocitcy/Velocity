@@ -38,6 +38,16 @@ export const Forms = {
     FormDivider: Divider as never, // Backwards compat since Vesktop uses this
 };
 
+export const FormNotice = waitForComponent("Notice", filters.componentByCode("messageType:", "textColor:", "children:")) as React.FC<{
+    children: React.ReactNode;
+    messageType: "warn" | "info" | "danger" | "positive" | "preview";
+    action?: React.ReactNode;
+    className?: string;
+    textColor?: string;
+    textVariant?: string;
+    icon?: React.ComponentType<any>;
+}>;
+
 // TODO: Stop using this and use Paragraph/Span directly
 export const Text = TextCompat;
 export const Button = ButtonCompat;

@@ -10,6 +10,6 @@ import { generateTextCss } from "./BaseText";
 import { generateMarginCss } from "./margins";
 
 export function addVelocityUiStyles() {
-    createAndAppendStyle("velocity-text", document.head).textContent = generateTextCss();
+    createAndAppendStyle("velocity-text", document.body).textContent = generateTextCss();
     createAndAppendStyle("velocity-margins").textContent = generateMarginCss();
 }

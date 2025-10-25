@@ -28,7 +28,7 @@ import { Paragraph } from "@components/Paragraph";
 import { SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
 import { ChangeList } from "@utils/ChangeList";
 import { Logger } from "@utils/Logger";
-import { Margins } from "@utils/margins";
+import { Margins } from "@components/margins";
 import { classes } from "@utils/misc";
 import { useAwaiter, useCleanupEffect } from "@utils/react";
 import { Alerts, Button, Card, lodash, Parser, React, Select, TextInput, Tooltip, useMemo, useState } from "@webpack/common";

@@ -19,7 +19,7 @@
 import { BaseText } from "@components/BaseText";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { handleComponentFailed } from "@components/handleComponentFailed";
-import { Margins } from "@utils/margins";
+import { Margins } from "@components/margins";
 import { onlyOnce } from "@utils/onlyOnce";
 import type { ComponentType, PropsWithChildren } from "react";
 

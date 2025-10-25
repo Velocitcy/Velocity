@@ -6,7 +6,7 @@
 
 import { classNameFactory } from "@api/Styles";
 import { ErrorCard } from "@components/ErrorCard";
-import { Margins } from "@utils/margins";
+import { Margins } from "@components/margins";
 import { findByCodeLazy, findStoreLazy } from "@webpack";
 import { Button, ColorPicker, Forms, ThemeStore, useStateFromStores } from "@webpack/common";
 

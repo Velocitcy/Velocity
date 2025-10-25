@@ -27,7 +27,7 @@ import { openContributorModal } from "@components/settings/tabs";
 import { User } from "@discord-types/";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
-import { Margins } from "@utils/margins";
+import { Margins } from "@components/margins";
 import { copyWithToast, shouldShowContributorBadge } from "@utils/misc";
 import { closeModal, ModalContent, ModalFooter, ModalHeader, ModalRoot, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";

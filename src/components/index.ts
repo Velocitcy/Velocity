@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import "./IconAnimations.css";
+
 export * from "./BaseText";
 export * from "./CheckedTextInput";
 export * from "./CodeBlock";
@@ -12,6 +14,7 @@ export * from "./Divider";
 export { default as ErrorBoundary } from "./ErrorBoundary";
 export * from "./ErrorCard";
 export * from "./Flex";
+export * from "./fonts";
 export * from "./FormSwitch";
 export * from "./Grid";
 export * from "./Heading";

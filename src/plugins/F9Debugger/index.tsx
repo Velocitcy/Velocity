@@ -5,28 +5,12 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
-import { Flex } from "@components/Flex";
+import { Margins } from "@components/margins";
 import { Devs } from "@utils/constants";
-import { Margins } from "@utils/margins";
-import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
-import { Card, Text } from "@webpack/common";
+import { FormNotice, Text } from "@webpack/common";
 
 const settings = definePluginSettings({
-    warning: {
-        type: OptionType.COMPONENT,
-        description: "",
-        component: () => (
-            <>
-                <Card className={classes("vc-settings-card", "vc-backup-restore-card")}>
-                    <Flex flexDirection="column">
-                        <strong>Warning</strong>
-                        <span>Pressing the selected key will freeze Discord. You need DevTools open to trigger the debugger.</span>
-                    </Flex>
-                </Card>
-            </>
-        )
-    },
     debugKey: {
         type: OptionType.SELECT,
         description: "Key to trigger debugger",
@@ -37,16 +21,6 @@ const settings = definePluginSettings({
                 default: i === 8
             }))
         ]
-    },
-    bottomText: {
-        type: OptionType.COMPONENT,
-        description: "",
-        component: () => (
-            <Text variant="text-md/normal" className={Margins.bottom8}>
-                This plugin is designed for developers debugging Discord or Velocity issues.
-                Only enable this if you understand how to use browser DevTools.
-            </Text>
-        )
     }
 });
 
@@ -69,5 +43,20 @@ export default definePlugin({
             e.preventDefault();
             debugger;
         }
-    }
+    },
+
+    settingsAboutComponent: () => (
+        <>
+            <FormNotice
+                messageType="danger"
+                textColor="text-feedback-danger"
+            >
+                Pressing the selected key will trigger debugger.
+            </FormNotice>
+            <Text variant="text-md/normal" className={Margins.top8}>
+                This plugin is designed for developers debugging Discord or Velocity issues.
+                Only enable this if you understand how to use browser DevTools.
+            </Text>
+        </>
+    )
 });

@@ -23,7 +23,7 @@ import { Guild, GuildSticker } from "@discord-types";
 import { Devs } from "@utils/constants";
 import { getGuildAcronym } from "@utils/discord";
 import { Logger } from "@utils/Logger";
-import { Margins } from "@utils/margins";
+import { Margins } from "@components/margins";
 import { ModalContent, ModalHeader, ModalRoot, openModalLazy } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { findByCodeLazy } from "@webpack";

@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Margins } from "@components/margins";
 import { LazyComponent, LazyComponentWrapper } from "@utils/lazyReact";
 import { Logger } from "@utils/Logger";
-import { Margins } from "@utils/margins";
 import type { React } from "@webpack/common";
 
 import { ErrorCard } from "./ErrorCard";
@@ -37,9 +37,7 @@ interface Props<T = any> {
     wrappedProps?: T;
 }
 
-const color = "#e78284";
-
-const logger = new Logger("React ErrorBoundary", color);
+const logger = new Logger("React ErrorBoundary", "#e78284");
 
 const NO_ERROR = {};
 

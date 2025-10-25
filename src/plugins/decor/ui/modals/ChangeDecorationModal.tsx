@@ -1,14 +1,14 @@
 /*
- * Vencord, a Discord client mod
- * Copyright (c) 2023 Vendicated and contributors
+ * Velocity, a Discord client mod
+ * Copyright (c) 2025 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 import { Button as NewButton } from "@components/Button";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
+import { Margins } from "@components/margins";
 import { openInviteModal } from "@utils/discord";
-import { Margins } from "@utils/margins";
 import { copyWithToast } from "@utils/misc";
 import { closeAllModals, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { Queue } from "@utils/Queue";

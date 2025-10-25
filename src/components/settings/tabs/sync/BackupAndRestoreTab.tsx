@@ -17,8 +17,8 @@
 */
 
 import { Flex } from "@components/Flex";
+import { Margins } from "@components/margins";
 import { SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
-import { Margins } from "@utils/margins";
 import { classes } from "@utils/misc";
 import { downloadSettingsBackup, uploadSettingsBackup } from "@utils/settingsSync";
 import { Button, Card, Text } from "@webpack/common";

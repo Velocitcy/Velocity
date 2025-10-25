@@ -22,7 +22,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { ErrorCard } from "@components/ErrorCard";
 import { Paragraph } from "@components/Paragraph";
 import { Devs, IS_MAC } from "@utils/constants";
-import { Margins } from "@utils/margins";
+import { Margins } from "@components/margins";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, findLazy } from "@webpack";
 import { Forms, React } from "@webpack/common";

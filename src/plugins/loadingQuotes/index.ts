@@ -21,7 +21,7 @@ import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
 
-import { presetQuotes } from "./quotes";
+import quotes from "./quotes.json";
 
 const noQuotesQuote = "Did you really disable all loading quotes? What a buffoon you are...";
 
@@ -50,9 +50,8 @@ const settings = definePluginSettings({
 
 export default definePlugin({
     name: "LoadingQuotes",
-    description: "Replace Discords loading quotes",
+    description: "Replace Discord’s loading quotes",
     authors: [Devs.Ven, Devs.KraXen72, Devs.UlyssesZhan],
-
     settings,
 
     patches: [
@@ -72,27 +71,26 @@ export default definePlugin({
         },
     ],
 
-    mutateQuotes(quotes: string[]) {
+    mutateQuotes(quotesArr: string[]) {
         try {
             const { enableDiscordPresetQuotes, additionalQuotes, enablePluginPresetQuotes } = settings.store;
 
             if (!enableDiscordPresetQuotes)
-                quotes.length = 0;
+                quotesArr.length = 0;
 
-            if (enablePluginPresetQuotes)
-                quotes.push(...presetQuotes);
+            if (enablePluginPresetQuotes && Array.isArray(quotes.presetQuotes))
+                quotesArr.push(...quotes.presetQuotes);
 
             try {
                 const parsedQuotes = JSON.parse(additionalQuotes);
-                if (Array.isArray(parsedQuotes)) {
-                    quotes.push(...parsedQuotes.filter(q => typeof q === "string"));
-                }
+                if (Array.isArray(parsedQuotes))
+                    quotesArr.push(...parsedQuotes.filter(q => typeof q === "string"));
             } catch (e) {
                 new Logger("LoadingQuotes").error("Failed to parse additional quotes JSON", e);
             }
 
-            if (!quotes.length)
-                quotes.push(noQuotesQuote);
+            if (!quotesArr.length)
+                quotesArr.push(noQuotesQuote);
         } catch (e) {
             new Logger("LoadingQuotes").error("Failed to mutate quotes", e);
         }

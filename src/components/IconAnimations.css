@@ -1,0 +1,106 @@
+/* stylelint-disable keyframes-name-pattern */
+@keyframes PencilFrame {
+    0% {
+        transform: rotate(0deg) translate(0, 0);
+    }
+
+    15% {
+        transform: rotate(-6deg) translate(-0.5px, 0.5px);
+    }
+
+    30% {
+        transform: rotate(5deg) translate(0.5px, -0.5px);
+    }
+
+    45% {
+        transform: rotate(-4deg) translate(-0.4px, 0.3px);
+    }
+
+    60% {
+        transform: rotate(3deg) translate(0.3px, -0.3px);
+    }
+
+    75% {
+        transform: rotate(-2deg) translate(-0.2px, 0.2px);
+    }
+
+    90% {
+        transform: rotate(1deg) translate(0.1px, -0.1px);
+    }
+
+    100% {
+        transform: rotate(0deg) translate(0, 0);
+    }
+}
+
+@keyframes DeleteFrame {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    15% {
+        transform: rotate(-16deg);
+    }
+
+    30% {
+        transform: rotate(16deg);
+    }
+
+    45% {
+        transform: rotate(-10deg);
+    }
+
+    60% {
+        transform: rotate(6deg);
+    }
+
+    75% {
+        transform: rotate(-3deg);
+    }
+
+    90% {
+        transform: rotate(2deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes CogWheelFrame {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes RestartFrame {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    33.8% {
+        transform: rotate(360deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes ErrorFrame {
+    0% {
+        transform: scale(1);
+    }
+
+    75% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
