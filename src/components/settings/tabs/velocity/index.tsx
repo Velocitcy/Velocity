@@ -30,7 +30,7 @@ import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { gitRemote } from "@shared/velocityUserAgent";
 import { DONOR_ROLE_ID, IS_MAC, IS_WINDOWS, Owner, VELOCITY_GUILD_ID } from "@utils/constants";
 import { isPluginDev } from "@utils/misc";
-import { relaunch } from "@utils/native";
+import { relaunch, reload } from "@utils/native";
 import { Alerts, Forms, GuildMemberStore, React, UserStore } from "@webpack/common";
 import BadgeAPI from "plugins/_api/badges";
 
@@ -179,6 +179,11 @@ function VelocitySettings() {
                                 Icon={RestartIcon()}
                                 text="Relaunch Discord"
                                 action={relaunch}
+                            />
+                            <QuickAction
+                                Icon={RestartIcon()}
+                                text="Restart Discord"
+                                action={reload}
                             />
                             <QuickAction
                                 Icon={FolderIcon()}

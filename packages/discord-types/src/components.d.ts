@@ -185,6 +185,15 @@ export type TextInput = ComponentType<PropsWithChildren<{
     Sizes: Record<"DEFAULT" | "MINI", string>;
 };
 
+export type SearchBar = ComponentType<{
+    placeholder?: string;
+    autoFocus?: boolean;
+    onChange: (value: string) => void;
+    query: string;
+    onClear: () => void;
+    className?: string;
+}>;
+
 // FIXME: this is wrong, it's not actually just HTMLTextAreaElement
 export type TextArea = ComponentType<Omit<HTMLProps<HTMLTextAreaElement>, "onChange"> & {
     onChange(v: string): void;
@@ -514,4 +523,37 @@ export type ColorPicker = ComponentType<{
     suggestedColors?: string[];
     label?: ReactNode;
     onChange(value: number | null): void;
+}>;
+
+export type KeybindRecorder = ComponentClass<{
+    mode: "DEFAULT" | "RECORDING";
+    value: number[];
+    onChange: (keybind: number[]) => void;
+    onClick: () => void;
+    disabled?: boolean;
+    disableOnClickWhileRecording?: boolean;
+    registerNativeRecorder?: (id: string, onChange: (keybind: number[]) => void) => () => void;
+}>;
+
+export type FeatureCard = ComponentType<{
+    /** The icon component to display in the circle. */
+    icon: Icon;
+    /** Optional className applied to the icon element. */
+    iconClassName?: string;
+    /** The header text shown at the top of the card. */
+    header: React.ReactNode;
+    /** The description text shown under the header. */
+    description: string;
+    /** Optional additional className for the outer container. */
+    className?: string;
+}>;
+
+export type FormNotice = ComponentType<{
+    children: React.ReactNode;
+    messageType: "warn" | "info" | "danger" | "positive" | "preview";
+    action?: React.ReactNode;
+    className?: string;
+    textColor?: string;
+    textVariant?: string;
+    icon?: React.ComponentType<any>;
 }>;

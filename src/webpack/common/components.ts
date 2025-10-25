@@ -38,16 +38,6 @@ export const Forms = {
     FormDivider: Divider as never, // Backwards compat since Vesktop uses this
 };
 
-export const FormNotice = waitForComponent("Notice", filters.componentByCode("messageType:", "textColor:", "children:")) as React.FC<{
-    children: React.ReactNode;
-    messageType: "warn" | "info" | "danger" | "positive" | "preview";
-    action?: React.ReactNode;
-    className?: string;
-    textColor?: string;
-    textVariant?: string;
-    icon?: React.ComponentType<any>;
-}>;
-
 // TODO: Stop using this and use Paragraph/Span directly
 export const Text = TextCompat;
 export const Button = ButtonCompat;
@@ -65,14 +55,17 @@ const Tooltips = mapMangledModuleLazy(".tooltipTop,bottom:", {
     TooltipContainer: t.TooltipContainer;
 };
 
+
 export const Tooltip = LazyComponent(() => Tooltips.Tooltip);
 export const TooltipContainer = LazyComponent(() => Tooltips.TooltipContainer);
-
+export const FeatureCard = waitForComponent<t.FeatureCard>("FeatureCard", filters.componentByCode("iconClassName:n,header:i,description:c", "className:a()(l.container,s.box)"));
 export const TextInput = waitForComponent<t.TextInput>("TextInput", filters.componentByCode("#{intl::MAXIMUM_LENGTH_ERROR}", '"input"'));
+export const SearchBar = waitForComponent<t.SearchBar>("SearchBar", filters.componentByCode("query:", "size:", "autoFocus"));
 export const TextArea = waitForComponent<t.TextArea>("TextArea", filters.componentByCode("this.getPaddingRight()},id:"));
 export const Select = waitForComponent<t.Select>("Select", filters.componentByCode('"Select"', ".newOptionLabel"));
 export const SearchableSelect = waitForComponent<t.SearchableSelect>("SearchableSelect", filters.componentByCode('"SearchableSelect"'));
 export const Slider = waitForComponent<t.Slider>("Slider", filters.componentByCode('"markDash".concat('));
+export const FormNotice = waitForComponent<t.FormNotice>("Notice", filters.componentByCode("messageType:", "textColor:", "children:"));
 export const Popout = waitForComponent<t.Popout>("Popout", filters.componentByCode("ref:this.ref,", "renderPopout:this.renderPopout,"));
 export const Dialog = waitForComponent<t.Dialog>("Dialog", filters.componentByCode('role:"dialog",tabIndex:-1'));
 export const TabBar = waitForComponent("TabBar", filters.componentByCode("ref:this.tabBarRef,className:"));
@@ -81,6 +74,7 @@ export const Clickable = waitForComponent<t.Clickable>("Clickable", filters.comp
 export const Avatar = waitForComponent<t.Avatar>("Avatar", filters.componentByCode(".size-1.375*"));
 
 export const ColorPicker = waitForComponent<t.ColorPicker>("ColorPicker", filters.componentByCode("#{intl::USER_SETTINGS_PROFILE_COLOR_SELECT_COLOR}", "showEyeDropper"));
+export const KeybindRecorder = waitForComponent<t.KeybindRecorder>("KeybindRecorder", filters.componentByCode("keybindInput", "recorderContainer"));
 
 export const UserSummaryItem = waitForComponent("UserSummaryItem", filters.componentByCode("defaultRenderUser", "showDefaultAvatarsForNullUsers"));
 

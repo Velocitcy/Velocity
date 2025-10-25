@@ -26,7 +26,7 @@ import { Button, Card, Text } from "@webpack/common";
 function BackupAndRestoreTab() {
     return (
         <SettingsTab title="Backup & Restore">
-            <Card className={classes("vc-settings-card", "vc-backup-restore-card")}>
+            <Card className={classes("vc-settings-card", "vc-warning-card")}>
                 <Flex flexDirection="column">
                     <strong>Warning</strong>
                     <span>Importing a settings file will overwrite your current settings.</span>

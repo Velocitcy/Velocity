@@ -17,9 +17,9 @@
 */
 
 import { Settings } from "@api/Settings";
-import { ClockIcon } from "@components/Icons";
+import { ClockIcon, CogWheel, WarningIcon } from "@components/Icons";
 import { AddonBadge, AddonBadgeTypes } from "@components/settings/AddonBadge";
-import { BackupAndRestoreTab, CloudTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
+import { BackupAndRestoreTab, CloudTab, DeveloperTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
@@ -101,6 +101,13 @@ export default definePlugin({
                 element: PluginsTab,
                 icon: <AddonBadge text="BETA" icon={ClockIcon()()} type={AddonBadgeTypes.BRAND} />,
                 className: "vc-plugins"
+            },
+            IS_DEV && {
+                section: "VelocityDeveloper",
+                label: "Developer Tools",
+                element: DeveloperTab,
+                icon: <AddonBadge text="NEW" icon={WarningIcon()()} type={AddonBadgeTypes.PRIMARY} />,
+                className: "vc-developer"
             },
             {
                 section: "VelocityThemes",
@@ -201,7 +208,7 @@ export default definePlugin({
             type: OptionType.SELECT,
             description: "Where to put the Velocity settings section",
             options: [
-                { label: "At the very top", value: "top" },
+                { label: "At the very top", value: "top", icon: CogWheel() },
                 { label: "Above the Nitro section", value: "aboveNitro", default: true },
                 { label: "Below the Nitro section", value: "belowNitro" },
                 { label: "Above Activity Settings", value: "aboveActivity" },

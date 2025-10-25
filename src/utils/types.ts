@@ -121,6 +121,10 @@ export interface PluginDef {
      */
     hidden?: boolean;
     /**
+     * Whether this plugin should be unavailable for use
+     */
+    unavailable?: boolean;
+    /**
      * Whether this plugin should be enabled by default, but can be disabled
      */
     enabledByDefault?: boolean;
@@ -163,6 +167,8 @@ export interface PluginDef {
      * The key will be used as text for the button
      */
     toolboxActions?: Record<string, () => void>;
+
+    renderBadge?: () => React.ReactNode;
 
     tags?: string[];
 
@@ -213,8 +219,9 @@ export const enum OptionType {
     BOOLEAN,
     SELECT,
     SLIDER,
+    KEYBIND,
     COMPONENT,
-    CUSTOM
+    CUSTOM,
 }
 
 export type SettingsDefinition = Record<string, PluginSettingDef>;
@@ -230,6 +237,7 @@ export type PluginSettingDef =
         | PluginSettingNumberDef
         | PluginSettingBooleanDef
         | PluginSettingSelectDef
+        | PluginSettingKeybindDef
         | PluginSettingSliderDef
         | PluginSettingBigIntDef
     ) & PluginSettingCommon);
@@ -289,10 +297,16 @@ export interface PluginSettingSelectDef {
     options: readonly PluginSettingSelectOption[];
 }
 
+export interface PluginSettingKeybindDef {
+    type: OptionType.KEYBIND;
+    default?: number[];
+}
+
 export interface PluginSettingSelectOption {
     label: string;
     value: string | number | boolean;
     default?: boolean;
+    icon?: React.ReactNode | (() => React.ReactElement);
 }
 
 export interface PluginSettingCustomDef {
@@ -341,6 +355,7 @@ type PluginSettingType<O extends PluginSettingDef> = O extends PluginSettingStri
     O extends PluginSettingBigIntDef ? BigInt :
     O extends PluginSettingBooleanDef ? boolean :
     O extends PluginSettingSelectDef ? O["options"][number]["value"] :
+    O extends PluginSettingKeybindDef ? number[] :
     O extends PluginSettingSliderDef ? number :
     O extends PluginSettingComponentDef ? O extends { default: infer Default; } ? Default : any :
     O extends PluginSettingCustomDef ? O extends { default: infer Default; } ? Default : any :
@@ -397,6 +412,7 @@ export type PluginOptionsItem =
     | PluginOptionBoolean
     | PluginOptionSelect
     | PluginOptionSlider
+    | PluginOptionKeybind
     | PluginOptionComponent
     | PluginOptionCustom;
 export type PluginOptionString = PluginSettingStringDef & PluginSettingCommon & IsDisabled & IsValid<string>;
@@ -404,6 +420,7 @@ export type PluginOptionNumber = (PluginSettingNumberDef | PluginSettingBigIntDe
 export type PluginOptionBoolean = PluginSettingBooleanDef & PluginSettingCommon & IsDisabled & IsValid<boolean>;
 export type PluginOptionSelect = PluginSettingSelectDef & PluginSettingCommon & IsDisabled & IsValid<PluginSettingSelectOption>;
 export type PluginOptionSlider = PluginSettingSliderDef & PluginSettingCommon & IsDisabled & IsValid<number>;
+export type PluginOptionKeybind = PluginSettingKeybindDef & PluginSettingCommon & IsDisabled & IsValid<number[]>;
 export type PluginOptionComponent = PluginSettingComponentDef & Omit<PluginSettingCommon, "description" | "placeholder">;
 export type PluginOptionCustom = PluginSettingCustomDef & Pick<PluginSettingCommon, "onChange">;
 

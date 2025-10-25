@@ -1,3 +1,17 @@
+.vc-settings-tab-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vc-settings-tab-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .vc-settings-tab-bar {
     margin-top: 20px;
     margin-bottom: 10px;
@@ -27,10 +41,18 @@
     color: var(--info-warning-foreground);
 }
 
-.vc-backup-restore-card {
-    background-color: var(--info-warning-background);
-    border-color: var(--info-warning-foreground);
-    color: var(--info-warning-foreground);
+.vc-danger-card {
+    padding: 1em;
+    background: var(--info-danger-background);
+    border: 1px solid var(--info-danger-foreground);
+    color: var(--info-danger-foreground);
+}
+
+.vc-positive-card {
+    padding: 1em;
+    background: var(--info-positive-background);
+    border: 1px solid var(--info-positive-foreground);
+    color: var(--info-positive-foreground);
 }
 
 .vc-settings-theme-links {

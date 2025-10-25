@@ -48,7 +48,6 @@ export function AddonBadge({ text, color, backgroundColor, icon, type = "CUSTOM"
                 display: "flex",
                 marginLeft: "auto",
                 padding: "0 6px",
-                gap: "4px",
                 fontWeight: "bold",
                 textTransform: "uppercase",
                 cursor: onClick ? "pointer" : "default"

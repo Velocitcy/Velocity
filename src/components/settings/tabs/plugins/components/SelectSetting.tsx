@@ -22,21 +22,23 @@ import { React, Select, useState } from "@webpack/common";
 import { resolveError, SettingProps, SettingsSection } from "./Common";
 
 export function SelectSetting({ option, pluginSettings, definedSettings, onChange, id }: SettingProps<PluginOptionSelect>) {
-    const def = pluginSettings[id] ?? option.options?.find(o => o.default)?.value;
-
-    const [state, setState] = useState<any>(def ?? null);
+    const defaultValue = option.options?.find(o => o.default)?.value ?? null;
+    const [state, setState] = useState<any>(pluginSettings[id] ?? defaultValue);
     const [error, setError] = useState<string | null>(null);
 
     function handleChange(newValue: any) {
         const isValid = option.isValid?.call(definedSettings, newValue) ?? true;
-
         setState(newValue);
         setError(resolveError(isValid));
-
-        if (isValid === true) {
-            onChange(newValue);
-        }
+        if (isValid === true) onChange(newValue);
     }
+
+    function handleClear() {
+        setState(defaultValue);
+        onChange(defaultValue);
+    }
+
+    const isDefault = state === defaultValue;
 
     return (
         <SettingsSection name={id} description={option.description} error={error}>
@@ -49,8 +51,41 @@ export function SelectSetting({ option, pluginSettings, definedSettings, onChang
                 isSelected={v => v === state}
                 serialize={v => String(v)}
                 isDisabled={option.disabled?.call(definedSettings) ?? false}
+                clearable={!isDefault}
+                clear={handleClear}
+                renderOptionLabel={opt => {
+                    const pluginOpt = opt as any;
+                    if (pluginOpt.icon) {
+                        const IconElement =
+                            typeof pluginOpt.icon === "function" ? pluginOpt.icon() : pluginOpt.icon;
+                        return (
+                            <div className="vc-select-option">
+                                {IconElement}
+                                {opt.label}
+                            </div>
+                        );
+                    }
+                    return opt.label;
+                }}
+                renderOptionValue={opts => {
+                    const opt = Array.isArray(opts) ? opts[0] : opts;
+                    if (!opt) return null;
+                    const pluginOpt = opt as any;
+                    if (pluginOpt.icon) {
+                        const IconElement =
+                            typeof pluginOpt.icon === "function" ? pluginOpt.icon() : pluginOpt.icon;
+                        return (
+                            <div className="vc-select-option">
+                                {IconElement}
+                                {opt.label}
+                            </div>
+                        );
+                    }
+                    return opt.label;
+                }}
                 {...option.componentProps}
             />
         </SettingsSection>
     );
 }
+

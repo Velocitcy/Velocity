@@ -152,6 +152,9 @@ export const SettingsStore = new SettingsStoreClass(settings, {
                         target[key] = def.value;
                     return def?.value;
                 }
+                if (setting.type === OptionType.KEYBIND) {
+                    return (target[key] = []);
+                }
             }
         }
         return v;

@@ -23,6 +23,10 @@ export function relaunch() {
         window.VesktopNative.app.relaunch();
 }
 
+export function reload() {
+    window.location.reload();
+}
+
 export function showItemInFolder(path: string) {
     if (IS_DISCORD_DESKTOP)
         window.DiscordNative.fileManager.showItemInFolder(path);

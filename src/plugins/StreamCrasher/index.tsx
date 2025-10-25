@@ -6,6 +6,8 @@
 
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { WarningIcon } from "@components/Icons";
+import { AddonBadge, AddonBadgeTypes } from "@components/settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, findComponentByCodeLazy } from "@webpack";
@@ -93,5 +95,7 @@ export default definePlugin({
             }
         }
     ],
+    renderBadge: () => <AddonBadge text="BETA" type={AddonBadgeTypes.PRIMARY} icon={WarningIcon()()} />,
     CrashButton: ErrorBoundary.wrap(CrashButton, { noop: true })
 });
+
