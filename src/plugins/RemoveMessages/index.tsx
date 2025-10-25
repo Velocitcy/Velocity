@@ -22,7 +22,7 @@ import { Flex } from "@components/Flex";
 import { DeleteIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, Forms, Menu, React, TextInput, Toasts, UserStore, useState } from "@webpack/common";
+import { Button, FormNotice, Forms, Menu, React, TextInput, Toasts, UserStore, useState } from "@webpack/common";
 
 type Rule = Record<"word", string>;
 
@@ -34,6 +34,19 @@ const makeEmptyRule: () => Rule = () => ({
     word: ""
 });
 const makeEmptyRuleArray = () => [makeEmptyRule()];
+
+function warningComponent() {
+    return (
+        <>
+            <FormNotice
+                messageType="danger"
+                textColor="text-feedback-danger"
+            >
+                Note that this plugin will unrender <b>ANY</b> message that contains a specific word.
+            </FormNotice>
+        </>
+    );
+}
 
 function Input({ initialValue, onChange, placeholder }: {
     placeholder: string;
@@ -221,6 +234,8 @@ export default definePlugin({
     contextMenus: {
         "message": messageContextMenuPatch
     },
+
+    settingsAboutComponent: warningComponent,
 
     renderMessageAccessory(props) {
         const currentUser = UserStore.getCurrentUser();
