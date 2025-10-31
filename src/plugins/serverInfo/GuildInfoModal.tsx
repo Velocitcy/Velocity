@@ -1,8 +1,20 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2023 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import "./styles.css";
 
@@ -31,7 +43,8 @@ export function openGuildInfoModal(guild: Guild) {
 const enum Tabs {
     ServerInfo,
     Friends,
-    BlockedUsers
+    BlockedUsers,
+    IgnoredUsers
 }
 
 interface GuildProps {
@@ -45,6 +58,7 @@ interface RelationshipProps extends GuildProps {
 const fetched = {
     friends: false,
     blocked: false,
+    ignored: false
 };
 
 function renderTimestamp(timestamp: number) {
@@ -56,10 +70,12 @@ function renderTimestamp(timestamp: number) {
 function GuildInfoModal({ guild }: GuildProps) {
     const [friendCount, setFriendCount] = useState<number>();
     const [blockedCount, setBlockedCount] = useState<number>();
+    const [ignoredCount, setIgnoredCount] = useState<number>();
 
     useEffect(() => {
         fetched.friends = false;
         fetched.blocked = false;
+        fetched.ignored = false;
     }, []);
 
     const [currentTab, setCurrentTab] = useState(Tabs.ServerInfo);
@@ -133,12 +149,19 @@ function GuildInfoModal({ guild }: GuildProps) {
                 >
                     Blocked Users{blockedCount !== undefined ? ` (${blockedCount})` : ""}
                 </TabBar.Item>
+                <TabBar.Item
+                    className={cl("tab", { selected: currentTab === Tabs.IgnoredUsers })}
+                    id={Tabs.IgnoredUsers}
+                >
+                    Ignored Users{ignoredCount !== undefined ? ` (${ignoredCount})` : ""}
+                </TabBar.Item>
             </TabBar>
 
             <div className={cl("tab-content")}>
                 {currentTab === Tabs.ServerInfo && <ServerInfoTab guild={guild} />}
                 {currentTab === Tabs.Friends && <FriendsTab guild={guild} setCount={setFriendCount} />}
                 {currentTab === Tabs.BlockedUsers && <BlockedUsersTab guild={guild} setCount={setBlockedCount} />}
+                {currentTab === Tabs.IgnoredUsers && <IgnoredUserTab guild={guild} setCount={setIgnoredCount} />}
             </div>
         </div>
     );
@@ -213,9 +236,13 @@ function BlockedUsersTab({ guild, setCount }: RelationshipProps) {
     return UserList("blocked", guild, blockedIds, setCount);
 }
 
+function IgnoredUserTab({ guild, setCount }: RelationshipProps) {
+    const ignoredIds = RelationshipStore.getIgnoredIDs();
+    return UserList("ignored", guild, ignoredIds, setCount);
+}
 
 
-function UserList(type: "friends" | "blocked", guild: Guild, ids: string[], setCount: (count: number) => void) {
+function UserList(type: "friends" | "blocked" | "ignored", guild: Guild, ids: string[], setCount: (count: number) => void) {
     const missing = [] as string[];
     const members = [] as string[];
 

@@ -1,4 +1,4 @@
-/*!
+/*
  * Velocity, a modification for Discord's desktop app
  * Copyright (c) 2022 Vendicated and contributors
  *
@@ -15,12 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-/*
- * Velocity, a Discord client mod
- * Copyright (c) 2025 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
 
 import { React } from "@webpack/common";
 

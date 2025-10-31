@@ -557,3 +557,53 @@ export type FormNotice = ComponentType<{
     textVariant?: string;
     icon?: React.ComponentType<any>;
 }>;
+
+export type CalendarPicker = ComponentType<{
+    value?: moment.Moment;
+    minDate?: moment.Moment;
+    maxDate?: moment.Moment;
+    onSelect?: (date: moment.Moment, event?: Event) => void;
+    calendarClassName?: string;
+    autoFocus?: boolean;
+    onClickOutside?: (event: MouseEvent | FocusEvent) => void;
+}>;
+
+export type RadioGroup = React.ComponentType<any> & {
+    DQ: React.ComponentType<{
+        checked: boolean;
+        radioItemIconClassName?: string;
+        icon?: React.ComponentType;
+        disabled?: boolean;
+    }>;
+    Gu: React.ComponentType<{
+        label?: string;
+        description?: string;
+        required?: boolean;
+        errorMessage?: string;
+        value?: any;
+        options: Array<{
+            name: string;
+            value: any;
+            desc?: string;
+            color?: string;
+            disabled?: boolean;
+            radioItemIconClassName?: string;
+            radioBarClassName?: string;
+        }>;
+        onChange?: (option: any) => void;
+        disabled?: boolean;
+        size?: string;
+        radioPosition?: "left" | "right";
+        className?: string;
+        itemInfoClassName?: string;
+        itemTitleClassName?: string;
+        radioItemClassName?: string;
+        collapsibleClassName?: string;
+        "aria-labelledby"?: string;
+        orientation?: "vertical" | "horizontal";
+        withTransparentBackground?: boolean;
+    }>;
+    Jb: () => any;
+    jm: (props: { isSelected: boolean; label: string; }) => any;
+    l7: Record<string, string>;
+};

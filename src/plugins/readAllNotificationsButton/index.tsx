@@ -21,9 +21,9 @@ import "./style.css";
 import { addServerListElement, removeServerListElement, ServerListRenderPosition } from "@api/ServerList";
 import { TextButton } from "@components/Button";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Channel } from "@discord-types";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
+import { Channel } from "@vencord/discord-types";
 import { findStoreLazy } from "@webpack";
 import { FluxDispatcher, GuildChannelStore, GuildStore, React, ReadStateStore } from "@webpack/common";
 
@@ -44,7 +44,7 @@ const ActiveJoinedThreadsStore: ActiveJoinedThreadsStore = findStoreLazy("Active
 function onClick() {
     const channels: Array<any> = [];
 
-    Object.values(GuildStore.getGuilds()).forEach((guild: any) => {
+    Object.values(GuildStore.getGuilds()).forEach(guild => {
         GuildChannelStore.getChannels(guild.id).SELECTABLE // Array<{ channel, comparator }>
             .concat(GuildChannelStore.getChannels(guild.id).VOCAL) // Array<{ channel, comparator }>
             .concat(

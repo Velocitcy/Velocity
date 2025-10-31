@@ -17,8 +17,8 @@
 */
 
 declare global {
-    export var VelocityNative: typeof import("./VelocityNative").default;
-    export var Velocity: typeof import("./Velocity");
+    export var VencordNative: typeof import("./VencordNative").default;
+    export var Vencord: typeof import("./Vencord");
 }
 
 export { };

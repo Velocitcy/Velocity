@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import { Guild, Role, UnicodeEmoji, User } from "@vencord/discord-types";
 import { findByCodeLazy } from "@webpack";
 import { ContextMenuApi, FluxDispatcher, GuildMemberStore, GuildRoleStore, i18n, Menu, PermissionsBits, ScrollerThin, Text, Tooltip, useEffect, useMemo, UserStore, useState, useStateFromStores } from "@webpack/common";
 
+import { openViewRawModal, openViewRawModalUser } from "../../viewRaw";
 import { settings } from "..";
 import { cl, getGuildPermissionSpecMap } from "../utils";
 import { PermissionAllowedIcon, PermissionDefaultIcon, PermissionDeniedIcon } from "./icons";
@@ -149,14 +150,12 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                                 <img
                                                     className={cl("modal-role-image")}
                                                     src={roleIconSrc}
-                                                    alt={role?.name ?? "Role icon"}
                                                 />
                                             )}
                                             {permission.type === PermissionType.User && user != null && (
                                                 <img
                                                     className={cl("modal-user-img")}
                                                     src={user.getAvatarURL(void 0, void 0, false)}
-                                                    alt={`${getUniqueUsername(user)}'s avatar`}
                                                 />
                                             )}
                                             <Text variant="text-md/normal" className={cl("modal-list-item-text")}>
@@ -168,7 +167,7 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                                             : (
                                                                 <Flex style={{ gap: "0.2em", justifyItems: "center" }}>
                                                                     @owner
-                                                                    {OwnerCrownIcon({ height: 18, width: 18, "aria-hidden": "true" })()}
+                                                                    {OwnerCrownIcon({ height: 18, width: 18, "aria-hidden": true })()}
                                                                 </Flex>
                                                             )
                                                 }
@@ -207,7 +206,7 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                             return typeof description === "function" ? i18n.intl.format(description, {}) : description;
                                         })()
                                     }>
-                                        {props => InfoIcon({ ...props })()}
+                                        {props => InfoIcon({ ...props, className: "vc-info-icon" })()}
                                     </Tooltip>
                                 </div>
                             ))}
@@ -220,6 +219,8 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
 }
 
 function RoleContextMenu({ guild, roleId, onClose }: { guild: Guild; roleId: string; onClose: () => void; }) {
+    const role = GuildRoleStore.getRole(guild.id, roleId);
+
     return (
         <Menu.Menu
             navId={cl("role-context-menu")}
@@ -229,28 +230,33 @@ function RoleContextMenu({ guild, roleId, onClose }: { guild: Guild; roleId: str
             <Menu.MenuItem
                 id={cl("copy-role-id")}
                 label={getIntlMessage("COPY_ID_ROLE")}
-                action={() => {
-                    copyToClipboard(roleId);
-                }}
+                action={() => copyToClipboard(roleId)}
             />
+
+            {role && (
+                <Menu.MenuItem
+                    id={cl("view-role-raw")}
+                    label="View Raw"
+                    action={() => {
+                        const roleJson = JSON.stringify(role, null, 4);
+                        openViewRawModal(roleJson, "Role");
+                    }}
+                />
+            )}
 
             {(settings.store as any).unsafeViewAsRole && (
                 <Menu.MenuItem
                     id={cl("view-as-role")}
                     label={getIntlMessage("VIEW_AS_ROLE")}
                     action={() => {
-                        const role = GuildRoleStore.getRole(guild.id, roleId);
                         if (!role) return;
-
                         onClose();
                         FluxDispatcher.dispatch({
                             type: "IMPERSONATE_UPDATE",
                             guildId: guild.id,
                             data: {
                                 type: "ROLES",
-                                roles: {
-                                    [roleId]: role
-                                }
+                                roles: { [roleId]: role }
                             }
                         });
                     }}
@@ -261,6 +267,8 @@ function RoleContextMenu({ guild, roleId, onClose }: { guild: Guild; roleId: str
 }
 
 function UserContextMenu({ userId }: { userId: string; }) {
+    const user = UserStore.getUser(userId);
+
     return (
         <Menu.Menu
             navId={cl("user-context-menu")}
@@ -270,13 +278,20 @@ function UserContextMenu({ userId }: { userId: string; }) {
             <Menu.MenuItem
                 id={cl("copy-user-id")}
                 label={getIntlMessage("COPY_ID_USER")}
-                action={() => {
-                    copyToClipboard(userId);
-                }}
+                action={() => copyToClipboard(userId)}
             />
+
+            {user && (
+                <Menu.MenuItem
+                    id={cl("view-user-raw")}
+                    label="View Raw"
+                    action={() => openViewRawModalUser(user)}
+                />
+            )}
         </Menu.Menu>
     );
 }
+
 
 const RolesAndUsersPermissions = ErrorBoundary.wrap(RolesAndUsersPermissionsComponent);
 

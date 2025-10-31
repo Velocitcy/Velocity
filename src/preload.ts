@@ -28,10 +28,10 @@ contextBridge.exposeInMainWorld("VelocityNative", VelocityNative);
 // Discord
 if (location.protocol !== "data:") {
     // #region cssInsert
-    const rendererCss = join(__dirname, IS_VESKTOP ? "VelocityDesktopRenderer.css" : "renderer.css");
+    const rendererCss = join(__dirname, IS_VESKTOP ? "velocityDesktopRenderer.css" : "renderer.css");
 
     const style = document.createElement("style");
-    style.id = "Velocity-css-core";
+    style.id = "velocity-css-core";
     style.textContent = readFileSync(rendererCss, "utf-8");
 
     if (document.readyState === "complete") {
@@ -46,7 +46,7 @@ if (location.protocol !== "data:") {
         // persistent means keep process running if watcher is the only thing still running
         // which we obviously don't want
         watch(rendererCss, { persistent: false }, () => {
-            document.getElementById("Velocity-css-core")!.textContent = readFileSync(rendererCss, "utf-8");
+            document.getElementById("velocity-css-core")!.textContent = readFileSync(rendererCss, "utf-8");
         });
     }
     // #endregion

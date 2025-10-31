@@ -23,13 +23,13 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { CodeIcon, CopyIcon, LogIcon } from "@components/Icons";
 import { Margins } from "@components/margins";
-import { Message } from "@discord-types";
 import { Devs } from "@utils/constants";
 import { getCurrentGuild, getIntlMessage } from "@utils/discord";
 import { Iconclasses, setIconClassName } from "@utils/icon";
 import { copyWithToast } from "@utils/misc";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { Message } from "@vencord/discord-types";
 import { Button, ChannelStore, Forms, GuildRoleStore, Menu, React, Text } from "@webpack/common";
 
 import { openEmbedRawModal } from "../CopyEmbed/index";
@@ -77,13 +77,19 @@ function makeNoteSpan(text: string, color: string) {
     );
 }
 
-function openViewRawModal(json: string, type: string, content?: string, originalMessage?: any) {
+export function openViewRawModal(json: string, type: string, content?: string, originalMessage?: any) {
     const key = openModal(props => (
         <ErrorBoundary>
             <ModalRoot {...props} size={ModalSize.LARGE}>
                 <ModalHeader>
                     <Text variant="heading-lg/semibold" style={{ flexGrow: 1 }}>View Raw</Text>
-                    <ModalCloseButton withCircleBackground={false} onClick={() => closeModal(key)} />
+                    <ModalCloseButton
+                        onClick={() => closeModal(key)}
+                        className="icon-only_a22cb0"
+                        variant="icon-only"
+                        size="xxs"
+                    />
+
                 </ModalHeader>
                 <ModalContent>
                     <div style={{ padding: "16px" }}>
@@ -137,7 +143,7 @@ function openViewRawModalMessage(msg: Message) {
     return openViewRawModal(msgJson, "Message", msg.content, originalMsg);
 }
 
-function openViewRawModalUser(user: any) {
+export function openViewRawModalUser(user: any) {
     user = cleanUser(user);
     const userJson = JSON.stringify(user, null, 4);
 

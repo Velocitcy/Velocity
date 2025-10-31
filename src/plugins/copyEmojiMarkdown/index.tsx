@@ -1,13 +1,23 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import { definePluginSettings } from "@api/Settings";
-import { CopyIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import { copyWithToast } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
@@ -64,7 +74,6 @@ export default definePlugin({
                 <Menu.MenuItem
                     id="vc-copy-emoji-markdown"
                     label="Copy Emoji Markdown"
-                    icon={setIconClassName(CopyIcon, Iconclasses.discord)}
                     action={() => {
                         copyWithToast(
                             getEmojiMarkdown(target, settings.store.copyUnicode),

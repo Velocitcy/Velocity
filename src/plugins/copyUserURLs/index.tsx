@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { LinkIcon } from "@components/Icons";
 import { copyToClipboard } from "@utils/clipboard";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import definePlugin from "@utils/types";
 import type { Channel, User } from "@vencord/discord-types";
 import { Menu } from "@webpack/common";
@@ -39,14 +38,14 @@ const UserContextMenuPatch: NavContextMenuPatchCallback = (children, { user }: U
             id="vc-copy-user-url"
             label="Copy User URL"
             action={() => copyToClipboard(`<https://discord.com/users/${user.id}>`)}
-            icon={setIconClassName(LinkIcon, Iconclasses.discord)}
+            icon={LinkIcon}
         />
     );
 };
 
 export default definePlugin({
     name: "CopyUserURLs",
-    authors: [Devs.castdrian, Devs.Velocity],
+    authors: [Devs.castdrian],
     description: "Adds a 'Copy User URL' option to the user context menu.",
     contextMenus: {
         "user-context": UserContextMenuPatch

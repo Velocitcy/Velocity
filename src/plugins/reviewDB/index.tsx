@@ -122,7 +122,7 @@ export default definePlugin({
                     cancelText: "Appeal",
                     confirmText: "Ok",
                     onCancel: async () =>
-                        VelocityNative.native.openExternal(
+                        VencordNative.native.openExternal(
                             "https://reviewdb.mantikafasi.dev/api/redirect?"
                             + new URLSearchParams({
                                 token: Auth.token!,

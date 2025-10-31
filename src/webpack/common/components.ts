@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,10 +73,13 @@ export const Paginator = waitForComponent<t.Paginator>("Paginator", filters.comp
 export const Clickable = waitForComponent<t.Clickable>("Clickable", filters.componentByCode("this.context?this.renderNonInteractive():"));
 export const Avatar = waitForComponent<t.Avatar>("Avatar", filters.componentByCode(".size-1.375*"));
 
+export const CalendarPicker = waitForComponent<t.CalendarPicker>("CalendarPicker", filters.componentByCode("react-datepicker__day", "calendarClassName:"));
 export const ColorPicker = waitForComponent<t.ColorPicker>("ColorPicker", filters.componentByCode("#{intl::USER_SETTINGS_PROFILE_COLOR_SELECT_COLOR}", "showEyeDropper"));
 export const KeybindRecorder = waitForComponent<t.KeybindRecorder>("KeybindRecorder", filters.componentByCode("keybindInput", "recorderContainer"));
 
 export const UserSummaryItem = waitForComponent("UserSummaryItem", filters.componentByCode("defaultRenderUser", "showDefaultAvatarsForNullUsers"));
+
+export const RadioGroup = waitForComponent("RadioGroup", filters.byProps("DQ", "Gu", "Jb"));
 
 export let createScroller: (scrollbarClassName: string, fadeClassName: string, customThemeClassName: string) => t.ScrollerThin;
 export let createListScroller: (scrollBarClassName: string, fadeClassName: string, someOtherClassIdkMan: string, resizeObserverClass: typeof ResizeObserver) => t.ListScrollerThin;
@@ -117,3 +120,23 @@ export const Animations = mapMangledModuleLazy(".assign({colorNames:", {
     Transition: filters.componentByCode('["items","children"]', ",null,"),
     animated: filters.byProps("div", "text")
 });
+
+/**
+ * PATCH LOCATIONS
+ *
+ * Patch 1: Account Section (Bottom)
+ * Find: "#{intl::ACCOUNT_SPEAKING_WHILE_MUTED}"
+ * Match: /className:\i\.buttons,.{0,50}children:\[/
+ * Injects: Start of button array
+ *
+ * Patch 2: Voice Panel (Between)
+ * Find: ".voiceButtonsContainer"
+ * Match: /(channel:\i)\}\)\]/
+ * Injects: End of button array (after disconnect)
+ *
+ * Patch 3: Activity Panel (Top when streaming)
+ * Find: 'action_type:"link_account"'
+ * Match: /className:(\i)\.actions,children:\[/
+ * Injects: Start of actions array
+ * Props: { showChevron: false }
+ */

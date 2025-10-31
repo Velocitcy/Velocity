@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelType } from "@discord-types/enums";
 import { getUniqueUsername, openUserProfile } from "@utils/discord";
+import { ChannelType } from "@vencord/discord-types/enums";
 import { UserUtils } from "@webpack/common";
 
 import settings from "./settings";

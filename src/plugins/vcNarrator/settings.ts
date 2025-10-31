@@ -1,14 +1,24 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2025 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import { definePluginSettings } from "@api/Settings";
 import { Logger } from "@utils/Logger";
 import { OptionType } from "@utils/types";
-
-import { VoiceSettingSection } from "./VoiceSetting";
 
 export const getDefaultVoice = () => window.speechSynthesis?.getVoices().find(v => v.default);
 
@@ -23,17 +33,24 @@ export function getCurrentVoice(voices = window.speechSynthesis?.getVoices()) {
     }
 
     const voice = voices.find(v => v.default);
-    settings.store.voice = voice?.voiceURI;
+    if (voice?.voiceURI) {
+        settings.store.voice = voice.voiceURI;
+    }
     return voice;
 }
 
 export const settings = definePluginSettings({
     voice: {
-        type: OptionType.COMPONENT,
-        component: VoiceSettingSection,
-        get default() {
-            return getDefaultVoice()?.voiceURI;
-        }
+        type: OptionType.SELECT,
+        description: "Narrator Voice",
+        options: (window.speechSynthesis?.getVoices() ?? [])
+            .filter(voice => voice.voiceURI)
+            .map(voice => ({
+                label: voice.name,
+                value: voice.voiceURI!,
+                default: voice.default
+            })),
+        isSearchable: true
     },
     volume: {
         type: OptionType.SLIDER,

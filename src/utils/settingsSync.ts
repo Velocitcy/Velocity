@@ -49,7 +49,7 @@ export async function exportSettings({ minify }: { minify?: boolean; } = {}) {
 }
 
 export async function downloadSettingsBackup() {
-    const filename = `Velocity-settings-backup-${moment().format("YYYY-MM-DD")}.json`;
+    const filename = `velocity-settings-backup-${moment().format("YYYY-MM-DD")}.json`;
     const backup = await exportSettings();
     const data = new TextEncoder().encode(backup);
 
@@ -124,7 +124,7 @@ export async function putCloudSettings(manual?: boolean) {
                 Authorization: await getCloudAuth(),
                 "Content-Type": "application/octet-stream"
             },
-            body: deflateSync(new TextEncoder().encode(settings))
+            body: new Uint8Array(deflateSync(new TextEncoder().encode(settings)))
         });
 
         if (!res.ok) {

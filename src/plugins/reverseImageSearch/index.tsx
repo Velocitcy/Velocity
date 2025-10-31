@@ -73,7 +73,7 @@ function makeSearchItem(src: string) {
                 id="search-image-all"
                 label={
                     <Flex style={{ alignItems: "center", gap: "0.5em" }}>
-                        {OpenExternalIcon({ height: 16, width: 16 })()}
+                        <OpenExternalIcon height={16} width={16} />
                         All
                     </Flex>
                 }

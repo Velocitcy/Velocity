@@ -218,6 +218,7 @@ export const enum OptionType {
     BIGINT,
     BOOLEAN,
     SELECT,
+    RADIO,
     SLIDER,
     KEYBIND,
     COMPONENT,
@@ -237,8 +238,9 @@ export type PluginSettingDef =
         | PluginSettingNumberDef
         | PluginSettingBooleanDef
         | PluginSettingSelectDef
-        | PluginSettingKeybindDef
+        | PluginSettingRadioDef
         | PluginSettingSliderDef
+        | PluginSettingKeybindDef
         | PluginSettingBigIntDef
     ) & PluginSettingCommon);
 
@@ -294,7 +296,13 @@ export interface PluginSettingBooleanDef {
 
 export interface PluginSettingSelectDef {
     type: OptionType.SELECT;
-    options: readonly PluginSettingSelectOption[];
+    options: readonly PluginSettingSelectOption[] | (() => Promise<readonly PluginSettingSelectOption[]>);
+    isSearchable?: boolean;
+}
+
+export interface PluginSettingRadioDef {
+    type: OptionType.RADIO;
+    options: readonly PluginSettingRadioOption[];
 }
 
 export interface PluginSettingKeybindDef {
@@ -307,6 +315,19 @@ export interface PluginSettingSelectOption {
     value: string | number | boolean;
     default?: boolean;
     icon?: React.ReactNode | (() => React.ReactElement);
+}
+
+export interface PluginSettingRadioOption {
+    label: string;
+    value: string | number | boolean;
+    default?: boolean;
+    desc?: string;
+    description?: string;
+    color?: string;
+    disabled?: boolean;
+    icon?: React.ComponentType;
+    radioItemIconClassName?: string;
+    radioBarClassName?: string;
 }
 
 export interface PluginSettingCustomDef {
@@ -348,13 +369,19 @@ export interface PluginSettingComponentDef {
     component: (props: IPluginOptionComponentProps) => ReactNode | Promise<ReactNode>;
     default?: any;
 }
-
 /** Maps a `PluginSettingDef` to its value type */
 type PluginSettingType<O extends PluginSettingDef> = O extends PluginSettingStringDef ? string :
     O extends PluginSettingNumberDef ? number :
     O extends PluginSettingBigIntDef ? BigInt :
     O extends PluginSettingBooleanDef ? boolean :
-    O extends PluginSettingSelectDef ? O["options"][number]["value"] :
+    O extends PluginSettingSelectDef ? (
+        O["options"] extends readonly PluginSettingSelectOption[]
+        ? O["options"][number]["value"]
+        : O["options"] extends (() => Promise<readonly PluginSettingSelectOption[]>)
+        ? string
+        : never
+    ) :
+    O extends PluginSettingRadioDef ? O["options"][number]["value"] :
     O extends PluginSettingKeybindDef ? number[] :
     O extends PluginSettingSliderDef ? number :
     O extends PluginSettingComponentDef ? O extends { default: infer Default; } ? Default : any :
@@ -362,7 +389,11 @@ type PluginSettingType<O extends PluginSettingDef> = O extends PluginSettingStri
     never;
 
 type PluginSettingDefaultType<O extends PluginSettingDef> = O extends PluginSettingSelectDef ? (
-    O["options"] extends { default?: boolean; }[] ? O["options"][number]["value"] : undefined
+    O["options"] extends readonly { default?: boolean; value: infer V; }[]
+    ? V
+    : O["options"] extends (() => Promise<readonly PluginSettingSelectOption[]>)
+    ? string | undefined
+    : undefined
 ) : O extends { default: infer T; } ? T : undefined;
 
 type SettingsStore<D extends SettingsDefinition> = {
@@ -411,14 +442,17 @@ export type PluginOptionsItem =
     | PluginOptionNumber
     | PluginOptionBoolean
     | PluginOptionSelect
+    | PluginOptionRadio
     | PluginOptionSlider
     | PluginOptionKeybind
     | PluginOptionComponent
     | PluginOptionCustom;
+
 export type PluginOptionString = PluginSettingStringDef & PluginSettingCommon & IsDisabled & IsValid<string>;
 export type PluginOptionNumber = (PluginSettingNumberDef | PluginSettingBigIntDef) & PluginSettingCommon & IsDisabled & IsValid<number | BigInt>;
 export type PluginOptionBoolean = PluginSettingBooleanDef & PluginSettingCommon & IsDisabled & IsValid<boolean>;
 export type PluginOptionSelect = PluginSettingSelectDef & PluginSettingCommon & IsDisabled & IsValid<PluginSettingSelectOption>;
+export type PluginOptionRadio = PluginSettingRadioDef & PluginSettingCommon & IsDisabled & IsValid<PluginSettingRadioOption>;
 export type PluginOptionSlider = PluginSettingSliderDef & PluginSettingCommon & IsDisabled & IsValid<number>;
 export type PluginOptionKeybind = PluginSettingKeybindDef & PluginSettingCommon & IsDisabled & IsValid<number[]>;
 export type PluginOptionComponent = PluginSettingComponentDef & Omit<PluginSettingCommon, "description" | "placeholder">;

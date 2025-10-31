@@ -21,18 +21,18 @@ import { getUserSettingLazy } from "@api/UserSettings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { Link } from "@components/Link";
-import { Margins } from "@components/margins";
 import { openUpdaterModal } from "@components/settings/tabs/updater";
-import { Channel } from "@discord-types";
 import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, KNOWN_ISSUES_CHANNEL_ID, REGULAR_ROLE_ID, SUPPORT_CATEGORY_ID, SUPPORT_CHANNEL_ID, VELOCITY_GUILD_ID, VENBOT_USER_ID } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
+import { Margins } from "@utils/margins";
 import { isPluginDev, tryOrElse } from "@utils/misc";
 import { relaunch } from "@utils/native";
 import { onlyOnce } from "@utils/onlyOnce";
 import { makeCodeblock } from "@utils/text";
 import definePlugin from "@utils/types";
 import { checkForUpdates, isOutdated, update } from "@utils/updater";
+import { Channel } from "@vencord/discord-types";
 import { Alerts, Button, Card, ChannelStore, Forms, GuildMemberStore, Parser, PermissionsBits, PermissionStore, RelationshipStore, showToast, Text, Toasts, UserStore } from "@webpack/common";
 import { JSX } from "react";
 
@@ -44,7 +44,7 @@ import SettingsPlugin from "./settings";
 const CodeBlockRe = /```js\n(.+?)```/s;
 
 const AdditionalAllowedChannelIds = [
-    "1387051064355848262",
+    "1024286218801926184", // Velocity > #bot-spam
 ];
 
 const TrustedRolesIds = [
@@ -84,7 +84,7 @@ async function generateDebugInfoMessage() {
 
     const info = {
         Velocity:
-            `v${VERSION} • [${gitHash}](<https://github.com/ROBOXNOTHACKER/Velocity/commit/${gitHash}>)` +
+            `v${VERSION} • [${gitHash}](<https://github.com/Vendicated/Velocity/commit/${gitHash}>)` +
             `${SettingsPlugin.additionalInfo} - ${Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(BUILD_TIMESTAMP)}`,
         Client: `${RELEASE_CHANNEL} ~ ${client}`,
         Platform: navigator.platform
@@ -154,13 +154,13 @@ export default definePlugin({
 
     commands: [
         {
-            name: "Velocity-debug",
+            name: "velocity-debug",
             description: "Send Velocity debug info",
             predicate: ctx => isPluginDev(UserStore.getCurrentUser()?.id) || isSupportAllowedChannel(ctx.channel),
             execute: async () => ({ content: await generateDebugInfoMessage() })
         },
         {
-            name: "Velocity-plugins",
+            name: "velocity-plugins",
             description: "Send Velocity plugin list",
             predicate: ctx => isPluginDev(UserStore.getCurrentUser()?.id) || isSupportAllowedChannel(ctx.channel),
             execute: () => ({ content: generatePluginList() })
@@ -205,7 +205,7 @@ export default definePlugin({
                     body: <div>
                         <Forms.FormText>You are using an externally updated Velocity version, which we do not provide support for!</Forms.FormText>
                         <Forms.FormText className={Margins.top8}>
-                            Please either switch to an <Link href="https://Velocity.dev/download">officially supported version of Velocity</Link>, or
+                            Please either switch to an <Link href="https://velocity.dev/download">officially supported version of Velocity</Link>, or
                             contact your package maintainer for support instead.
                         </Forms.FormText>
                     </div>
@@ -219,8 +219,8 @@ export default definePlugin({
                         <Forms.FormText>You are using a custom build of Velocity, which we do not provide support for!</Forms.FormText>
 
                         <Forms.FormText className={Margins.top8}>
-                            We only provide support for <Link href="https://Velocity.dev/download">official builds</Link>.
-                            Either <Link href="https://Velocity.dev/download">switch to an official build</Link> or figure your issue out yourself.
+                            We only provide support for <Link href="https://velocity.dev/download">official builds</Link>.
+                            Either <Link href="https://velocity.dev/download">switch to an official build</Link> or figure your issue out yourself.
                         </Forms.FormText>
 
                         <Text variant="text-md/bold" className={Margins.top8}>You will be banned from receiving support if you ignore this rule.</Text>
@@ -267,21 +267,21 @@ export default definePlugin({
         }
 
         if (props.channel.parent_id === SUPPORT_CATEGORY_ID && PermissionStore.can(PermissionsBits.SEND_MESSAGES, props.channel)) {
-            if (props.message.content.includes("/Velocity-debug") || props.message.content.includes("/Velocity-plugins")) {
+            if (props.message.content.includes("/velocity-debug") || props.message.content.includes("/velocity-plugins")) {
                 buttons.push(
                     <Button
                         key="vc-dbg"
                         color={Button.Colors.PRIMARY}
                         onClick={async () => sendMessage(props.channel.id, { content: await generateDebugInfoMessage() })}
                     >
-                        Run /Velocity-debug
+                        Run /velocity-debug
                     </Button>,
                     <Button
                         key="vc-plg-list"
                         color={Button.Colors.PRIMARY}
                         onClick={async () => sendMessage(props.channel.id, { content: generatePluginList() })}
                     >
-                        Run /Velocity-plugins
+                        Run /velocity-plugins
                     </Button>
                 );
             }

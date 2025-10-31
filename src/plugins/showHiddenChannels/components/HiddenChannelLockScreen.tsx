@@ -171,10 +171,10 @@ function HiddenChannelLockScreen({ channel }: { channel: ExtendedChannel; }) {
     return (
         <div className={classes(ChatScrollClasses.auto, ChatScrollClasses.customTheme, ChatScrollClasses.managedReactiveScroller)}>
             <div className={cl("container")}>
-                <img className={cl("logo")} src={HiddenChannelLogo} alt="Hidden Channel" />
+                <img className={cl("logo")} src={HiddenChannelLogo} />
 
                 <div className={cl("heading-container")}>
-                    <Text variant="heading-xxl/bold">This is a fucking {!PermissionStore.can(PermissionsBits.VIEW_CHANNEL, channel) ? "hidden" : "locked"} {ChannelTypesToChannelNames[type]} channel</Text>
+                    <Text variant="heading-xxl/bold">This is a {!PermissionStore.can(PermissionsBits.VIEW_CHANNEL, channel) ? "hidden" : "locked"} {ChannelTypesToChannelNames[type]} channel</Text>
                     {channel.isNSFW() &&
                         <Tooltip text="NSFW">
                             {({ onMouseLeave, onMouseEnter }) => (
@@ -185,7 +185,7 @@ function HiddenChannelLockScreen({ channel }: { channel: ExtendedChannel; }) {
                                     width="32"
                                     height="32"
                                     viewBox="0 0 48 48"
-                                    aria-hidden="true"
+                                    aria-hidden={true}
                                     role="img"
                                 >
                                     <path fill="currentColor" d="M.7 43.05 24 2.85l23.3 40.2Zm23.55-6.25q.75 0 1.275-.525.525-.525.525-1.275 0-.75-.525-1.3t-1.275-.55q-.8 0-1.325.55-.525.55-.525 1.3t.55 1.275q.55.525 1.3.525Zm-1.85-6.1h3.65V19.4H22.4Z" />
@@ -280,7 +280,6 @@ function HiddenChannelLockScreen({ channel }: { channel: ExtendedChannel; }) {
                                     <button
                                         onMouseLeave={onMouseLeave}
                                         onMouseEnter={onMouseEnter}
-                                        aria-label="permissionDetails"
                                         className={cl("allowed-users-and-roles-container-permdetails-btn")}
                                         onClick={() => openRolesAndUsersPermissionsModal(permissions, GuildStore.getGuild(channel.guild_id), channel.name)}
                                     >
@@ -301,7 +300,6 @@ function HiddenChannelLockScreen({ channel }: { channel: ExtendedChannel; }) {
                                 <button
                                     onMouseLeave={onMouseLeave}
                                     onMouseEnter={onMouseEnter}
-                                    aria-label={defaultAllowedUsersAndRolesDropdownState ? "Hide Allowed Users and Roles" : "View Allowed Users and Roles"}
                                     className={cl("allowed-users-and-roles-container-toggle-btn")}
                                     onClick={() => settings.store.defaultAllowedUsersAndRolesDropdownState = !defaultAllowedUsersAndRolesDropdownState}
                                 >

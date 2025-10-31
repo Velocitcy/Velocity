@@ -31,13 +31,13 @@ async function initSystemValues() {
         .map(([k, v]) => `--${k}: ${v};`)
         .join("");
 
-    createAndAppendStyle("Velocity-os-theme-values").textContent = `:root{${variables}}`;
+    createAndAppendStyle("velocity-os-theme-values").textContent = `:root{${variables}}`;
 }
 
 async function toggle(isEnabled: boolean) {
     if (!style) {
         if (isEnabled) {
-            style = createAndAppendStyle("Velocity-custom-css");
+            style = createAndAppendStyle("velocity-custom-css");
             VelocityNative.quickCss.addChangeListener(css => {
                 style.textContent = css;
                 // At the time of writing this, changing textContent resets the disabled state
@@ -50,7 +50,7 @@ async function toggle(isEnabled: boolean) {
 }
 
 async function initThemes() {
-    themesStyle ??= createAndAppendStyle("Velocity-themes");
+    themesStyle ??= createAndAppendStyle("velocity-themes");
 
     const { themeLinks, enabledThemes } = Settings;
 
@@ -78,7 +78,7 @@ async function initThemes() {
             links.push(URL.createObjectURL(blob));
         }
     } else {
-        const localThemes = enabledThemes.map(theme => `Velocity:///themes/${theme}?v=${Date.now()}`);
+        const localThemes = enabledThemes.map(theme => `velocity:///themes/${theme}?v=${Date.now()}`);
         links.push(...localThemes);
     }
 

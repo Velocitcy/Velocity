@@ -62,7 +62,7 @@ async function ensureBinary() {
 
     const res = await fetch(BASE_URL + filename, {
         headers: {
-            "User-Agent": "Velocity (https://github.com/ROBOXNOTHACKER/Velocity)",
+            "User-Agent": "Velocity (https://github.com/Vendicated/Velocity)",
             "If-None-Match": etag
         }
     });
@@ -126,8 +126,8 @@ try {
         stdio: "inherit",
         env: {
             ...process.env,
-            VELOCITY_USER_DATA_DIR: BASE_DIR,
-            VELOCITY_DEV_INSTALL: "1"
+            VENCORD_USER_DATA_DIR: BASE_DIR,
+            VENCORD_DEV_INSTALL: "1"
         }
     });
 } catch {

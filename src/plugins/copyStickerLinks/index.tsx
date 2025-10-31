@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2025 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ function buildMenuItem(sticker: PartialSticker, addBottomSeparator: boolean) {
                     id="vc-open-sticker-link"
                     key="vc-open-sticker-link"
                     label="Open Link"
-                    action={() => VelocityNative.native.openExternal(getUrl(sticker))}
+                    action={() => VencordNative.native.openExternal(getUrl(sticker))}
                 />
             </Menu.MenuGroup>
             {addBottomSeparator && <Menu.MenuSeparator />}
@@ -79,7 +79,7 @@ const expressionPickerPatch: NavContextMenuPatchCallback = (children, props: { t
 
     const sticker = StickersStore.getStickerById(id);
     if (sticker) {
-        children.push(buildMenuItem(sticker, Velocity.Plugins.isPluginEnabled(ExpressionClonerPlugin.name)));
+        children.push(buildMenuItem(sticker, Vencord.Plugins.isPluginEnabled(ExpressionClonerPlugin.name)));
     }
 };
 

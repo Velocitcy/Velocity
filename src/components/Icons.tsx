@@ -25,9 +25,9 @@ interface BaseIconProps extends IconProps {
     viewBox?: string;
 }
 
-type IconProps = JSX.IntrinsicElements["svg"];
+export type IconProps = JSX.IntrinsicElements["svg"];
 
-function Icon({
+export function Icon({
     height = 24,
     width = 24,
     viewBox = "0 0 24 24",
@@ -53,7 +53,7 @@ function Icon({
     );
 }
 
-function createIcon(component: (props: IconProps) => JSX.Element) {
+export function createIcon(component: (props: IconProps) => JSX.Element) {
     return (props: IconProps = {}) => () => component(props);
 }
 
@@ -312,11 +312,27 @@ export const DeleteIcon = createIcon((props: IconProps) => (
 export const PlusIcon = createIcon((props: IconProps) => (
     <Icon
         {...props}
+        width={24}
+        height={24}
+        viewBox="0 0 24 24"
     >
-        <polygon
-            fillRule="nonzero"
+        <path
             fill="currentColor"
-            points="15 10 10 10 10 15 8 15 8 10 3 10 3 8 8 8 8 3 10 3 10 8 15 8"
+            d="M12 5c.55 0 1 .45 1 1v5h5c.55 0 1 .45 1 1s-.45 1-1 1h-5v5c0 .55-.45 1-1 1s-1-.45-1-1v-5H6c-.55 0-1-.45-1-1s.45-1 1-1h5V6c0-.55.45-1 1-1z"
+        />
+    </Icon>
+));
+
+export const MinusIcon = createIcon((props: IconProps) => (
+    <Icon
+        {...props}
+        width={24}
+        height={24}
+        viewBox="0 0 24 24"
+    >
+        <path
+            fill="currentColor"
+            d="M6 11c-.55 0-1 .45-1 1s.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1H6z"
         />
     </Icon>
 ));

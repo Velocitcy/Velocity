@@ -67,7 +67,7 @@ export const filters = {
             return stringMatches(Function.prototype.toString.call(m), parsedCode);
         };
 
-        filter.$$VelocityProps = [...code];
+        filter.$$velocityProps = [...code];
         return filter;
     },
     byStoreName: (name: StoreNameFilter): FilterFn => m =>
@@ -89,7 +89,7 @@ export const filters = {
             return false;
         };
 
-        filter.$$VelocityProps = [...code];
+        filter.$$velocityProps = [...code];
         return filter;
     }
 };

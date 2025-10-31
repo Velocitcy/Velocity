@@ -216,7 +216,7 @@ function computeWidthAndHeight(width: number, height: number) {
 function withEmbeddedBy(message: Message, embeddedBy: string[]) {
     return new Proxy(message, {
         get(_, prop) {
-            if (prop === "VelocityEmbeddedBy") return embeddedBy;
+            if (prop === "velocityEmbeddedBy") return embeddedBy;
             // @ts-expect-error ts so bad
             return Reflect.get(...arguments);
         }
@@ -226,7 +226,7 @@ function withEmbeddedBy(message: Message, embeddedBy: string[]) {
 
 function MessageEmbedAccessory({ message }: { message: Message; }) {
     // @ts-expect-error
-    const embeddedBy: string[] = message.VelocityEmbeddedBy ?? [];
+    const embeddedBy: string[] = message.velocityEmbeddedBy ?? [];
 
     const accessories = [] as (JSX.Element | null)[];
 

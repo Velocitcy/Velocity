@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { CopyIcon, LinkIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { setIconClassName } from "@utils/icon";
 import { copyWithToast } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
 import { ConnectedAccount, User } from "@vencord/discord-types";
@@ -120,7 +119,7 @@ function CompactConnectionComponent({ connection, theme }: { connection: Connect
                 <span className="vc-sc-tooltip">
                     <span className="vc-sc-connection-name">{connection.name}</span>
                     {connection.verified && <VerifiedIcon />}
-                    {setIconClassName(TooltipIcon, "vc-sc-tooltip-icon")()}
+                    <TooltipIcon height={16} width={16} className="vc-sc-tooltip-icon" />
                 </span>
             }
             key={connection.id}
@@ -134,7 +133,7 @@ function CompactConnectionComponent({ connection, theme }: { connection: Connect
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => {
-                            if (Velocity.Plugins.isPluginEnabled("OpenInApp")) {
+                            if (Vencord.Plugins.isPluginEnabled("OpenInApp")) {
                                 // handleLink will .preventDefault() if applicable
                                 OpenInAppPlugin.handleLink(e.currentTarget, e);
                             }

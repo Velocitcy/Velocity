@@ -57,8 +57,8 @@ export default definePlugin({
             replacement: {
                 // react.jsx)(AccountPanel, { ..., showTaglessAccountPanel: blah })
                 match: /(?<=\i\.jsxs?\)\()(\i),{(?=[^}]*?userTag:\i,hidePrivateData:)/,
-                // react.jsx(WrapperComponent, { VelocityOriginal: AccountPanel, ...
-                replace: "$self.PanelWrapper,{VelocityOriginal:$1,"
+                // react.jsx(WrapperComponent, { VencordOriginal: AccountPanel, ...
+                replace: "$self.PanelWrapper,{VencordOriginal:$1,"
             }
         },
         {
@@ -93,7 +93,7 @@ export default definePlugin({
 
     start: () => toggleHoverControls(Settings.plugins.SpotifyControls.hoverControls),
 
-    PanelWrapper({ VelocityOriginal, ...props }) {
+    PanelWrapper({ VencordOriginal, ...props }) {
         return (
             <>
                 <ErrorBoundary
@@ -107,7 +107,7 @@ export default definePlugin({
                     <Player />
                 </ErrorBoundary>
 
-                <VelocityOriginal {...props} />
+                <VencordOriginal {...props} />
             </>
         );
     }

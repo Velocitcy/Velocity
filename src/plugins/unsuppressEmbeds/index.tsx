@@ -19,7 +19,6 @@
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { ImageInvisible, ImageVisible } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import definePlugin from "@utils/types";
 import { Channel, Message } from "@vencord/discord-types";
 import { Constants, Menu, PermissionsBits, PermissionStore, RestAPI, UserStore } from "@webpack/common";
@@ -49,7 +48,7 @@ const messageContextMenuPatch: NavContextMenuPatchCallback = (
             key="unsuppress-embeds"
             label={isEmbedSuppressed ? "Unsuppress Embeds" : "Suppress Embeds"}
             color={isEmbedSuppressed ? undefined : "danger"}
-            icon={isEmbedSuppressed ? setIconClassName(ImageVisible, Iconclasses.discord) : setIconClassName(ImageInvisible, Iconclasses.discord)}
+            icon={isEmbedSuppressed ? ImageVisible() : ImageInvisible()}
             action={() =>
                 RestAPI.patch({
                     url: Constants.Endpoints.MESSAGE(channel.id, messageId),

@@ -1,22 +1,33 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2024 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { getCurrentChannel } from "@utils/discord";
 import definePlugin from "@utils/types";
 import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
-import { Clickable, RelationshipStore, Text, TooltipContainer } from "@webpack/common";
+import { RelationshipStore, Text } from "@webpack/common";
 
 const containerWrapper = findByPropsLazy("memberSinceWrapper");
 const container = findByPropsLazy("memberSince");
 const getCreatedAtDate = findByCodeLazy('month:"short",day:"numeric"');
 const locale = findByPropsLazy("getLocale");
 const Section = findComponentByCodeLazy('"auto":"smooth"', ".section");
-const BannerButtonClasses = findByPropsLazy("bannerButton");
 
 export default definePlugin({
     name: "FriendsSince",
@@ -46,35 +57,8 @@ export default definePlugin({
                 match: /#{intl::USER_PROFILE_MEMBER_SINCE}\),.{0,100}userId:(\i\.id),.{0,100}}\)}\),/,
                 replace: "$&,$self.FriendsSinceComponent({userId:$1,isSidebar:false}),"
             }
-        },
-        {
-            find: ".POPOUT,user:",
-            replacement: {
-                match: /children:\[(?=[^[]+?shouldShowTooltip:)/,
-                replace: "$&$self.FriendsSinceButton({user:arguments[0].user}),"
-            }
         }
     ],
-
-    FriendsSinceButton: ErrorBoundary.wrap(({ user }: { user: any; }) => {
-        if (!RelationshipStore.isFriend(user.id)) return null;
-
-        const friendsSince = RelationshipStore.getSince(user.id);
-        if (!friendsSince) return null;
-
-        return (
-            <TooltipContainer text={`Friends since ${getCreatedAtDate(friendsSince, locale.getLocale())}`}>
-                <Clickable
-                    className={BannerButtonClasses.bannerButton}
-                >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M13 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-                        <path d="M3 5v-.75C3 3.56 3.56 3 4.25 3s1.24.56 1.33 1.25C6.12 8.65 9.46 12 13 12h1a8 8 0 0 1 8 8 2 2 0 0 1-2 2 .21.21 0 0 1-.2-.15 7.65 7.65 0 0 0-1.32-2.3c-.15-.2-.42-.06-.39.17l.25 2c.02.15-.1.28-.25.28H9a2 2 0 0 1-2-2v-2.22c0-1.57-.67-3.05-1.53-4.37A15.85 15.85 0 0 1 3 5Z" />
-                    </svg>
-                </Clickable>
-            </TooltipContainer>
-        );
-    }, { noop: true }),
 
     FriendsSinceComponent: ErrorBoundary.wrap(({ userId, isSidebar }: { userId: string; isSidebar: boolean; }) => {
         if (!RelationshipStore.isFriend(userId)) return null;

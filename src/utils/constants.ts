@@ -18,13 +18,13 @@
 
 export const REACT_GLOBAL = "Velocity.Webpack.Common.React";
 export const VENBOT_USER_ID = "1017176847865352332";
-export const VELOCITY_GUILD_ID = "1384314700908462212";
-export const DONOR_ROLE_ID = "1428703911740444766";
-export const CONTRIB_ROLE_ID = "1428704013083476018";
-export const REGULAR_ROLE_ID = "1428703983496728657";
-export const SUPPORT_CHANNEL_ID = "1428704586352431124";
-export const SUPPORT_CATEGORY_ID = "1428704339802984508";
-export const KNOWN_ISSUES_CHANNEL_ID = "1428704297524137994";
+export const VELOCITY_GUILD_ID = "1015060230222131221";
+export const DONOR_ROLE_ID = "1042507929485586532";
+export const CONTRIB_ROLE_ID = "1026534353167208489";
+export const REGULAR_ROLE_ID = "1026504932959977532";
+export const SUPPORT_CHANNEL_ID = "1026515880080842772";
+export const SUPPORT_CATEGORY_ID = "1108135649699180705";
+export const KNOWN_ISSUES_CHANNEL_ID = "1222936386626129920";
 
 const platform = navigator.platform.toLowerCase();
 export const IS_WINDOWS = platform.startsWith("win");
@@ -45,7 +45,7 @@ export interface Dev {
  */
 export const Devs = /* #__PURE__*/ Object.freeze({
     Velocity: {
-        name: "Velocity.dev",
+        name: "Velocity",
         id: 1352787303168344095n
     },
     Ven: {
@@ -611,15 +611,6 @@ export const Devs = /* #__PURE__*/ Object.freeze({
         id: 848339671629299742n
     },
 } satisfies Record<string, Dev>);
-
-/**
- * only for da mighty owner of velocity
- */
-export const Owner: Dev = /* #__PURE__*/ Object.freeze({
-    name: "robnik3546",
-    id: 1352787303168344095n
-});
-
 
 // iife so #__PURE__ works correctly
 export const DevsById = /* #__PURE__*/ (() =>

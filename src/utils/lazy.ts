@@ -35,8 +35,8 @@ const unconfigurable = ["arguments", "caller", "prototype"];
 
 const handler: ProxyHandler<any> = {};
 
-export const SYM_LAZY_GET = Symbol.for("Velocity.lazy.get");
-export const SYM_LAZY_CACHED = Symbol.for("Velocity.lazy.cached");
+export const SYM_LAZY_GET = Symbol.for("velocity.lazy.get");
+export const SYM_LAZY_CACHED = Symbol.for("velocity.lazy.cached");
 
 for (const method of [
     "apply",

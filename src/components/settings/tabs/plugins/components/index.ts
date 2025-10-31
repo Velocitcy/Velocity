@@ -26,6 +26,7 @@ import { ComponentSettingProps, SettingProps } from "./Common";
 import { ComponentSetting } from "./ComponentSetting";
 import { KeybindSetting } from "./KeybindSetting";
 import { NumberSetting } from "./NumberSetting";
+import { RadioSetting } from "./RadioSetting";
 import { SelectSetting } from "./SelectSetting";
 import { SliderSetting } from "./SliderSetting";
 import { TextSetting } from "./TextSetting";
@@ -36,6 +37,7 @@ export const OptionComponentMap: Record<OptionType, ComponentType<SettingProps<a
     [OptionType.BIGINT]: NumberSetting,
     [OptionType.BOOLEAN]: BooleanSetting,
     [OptionType.SELECT]: SelectSetting,
+    [OptionType.RADIO]: RadioSetting,
     [OptionType.SLIDER]: SliderSetting,
     [OptionType.KEYBIND]: KeybindSetting,
     [OptionType.COMPONENT]: ComponentSetting,

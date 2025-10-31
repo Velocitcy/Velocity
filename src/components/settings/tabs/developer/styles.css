@@ -1,0 +1,27 @@
+/* developer tab styles */
+
+.vc-settings-tab-bar {
+    margin-bottom: 16px;
+}
+
+.vc-settings-tab-bar-item {
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-normal);
+}
+
+.vc-settings-tab-bar-item:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+
+
+.vc-card {
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.vc-card button {
+    margin-top: 8px;
+}

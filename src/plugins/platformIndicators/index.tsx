@@ -22,9 +22,9 @@ import { addProfileBadge, BadgePosition, BadgeUserArgs, ProfileBadge, removeProf
 import { addMemberListDecorator, removeMemberListDecorator } from "@api/MemberListDecorators";
 import { addMessageDecoration, removeMessageDecoration } from "@api/MessageDecorations";
 import { Settings } from "@api/Settings";
-import { User } from "@discord-types";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import { User } from "@vencord/discord-types";
 import { filters, findStoreLazy, mapMangledModuleLazy } from "@webpack";
 import { AuthenticationStore, PresenceStore, Tooltip, UserStore, useStateFromStores } from "@webpack/common";
 
@@ -142,7 +142,7 @@ const PlatformIndicator = ({ user, small = false }: { user: User; small?: boolea
         <PlatformIcon
             key={platform}
             platform={platform as Platform}
-            status={status as string}
+            status={status}
             small={small}
         />
     ));

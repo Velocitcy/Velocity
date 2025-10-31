@@ -24,7 +24,7 @@ import { debounce } from "@shared/debounce";
 import { IpcEvents } from "@shared/IpcEvents";
 import { BrowserWindow, ipcMain, shell, systemPreferences } from "electron";
 import monacoHtml from "file://monacoWin.html?minify&base64";
-import { FSWatcher, mkdirSync, watch, writeFileSync } from "fs";
+import { FSWatcher, mkdirSync, unlinkSync, watch, writeFileSync } from "fs";
 import { open, readdir, readFile } from "fs/promises";
 import { join, normalize } from "path";
 
@@ -99,18 +99,18 @@ ipcMain.handle(IpcEvents.GET_THEME_SYSTEM_VALUES, () => ({
     "os-accent-color": `#${systemPreferences.getAccentColor?.() || ""}`
 }));
 
-ipcMain.handle(IpcEvents.DELETE_THEME, async (_, fileName: string) => {
-    const safePath = ensureSafePath(THEMES_DIR, fileName);
-    if (!safePath) throw new Error(`Unsafe path ${fileName}`);
-    const { unlink } = await import("fs/promises");
-    await unlink(safePath);
+ipcMain.handle(IpcEvents.UPLOAD_THEME, (_, fileName, css) => {
+    const path = ensureSafePath(THEMES_DIR, fileName);
+    if (!path) return;
+    writeFileSync(path, css, "utf-8");
 });
 
-ipcMain.handle(IpcEvents.UPLOAD_THEME, async (_, fileName: string, content: string) => {
-    const safePath = ensureSafePath(THEMES_DIR, fileName);
-    if (!safePath) throw new Error(`Unsafe path ${fileName}`);
-    writeFileSync(safePath, content);
+ipcMain.handle(IpcEvents.DELETE_THEME, (_, name) => {
+    const path = ensureSafePath(THEMES_DIR, name);
+    if (!path) return;
+    unlinkSync(path);
 });
+
 
 ipcMain.handle(IpcEvents.OPEN_THEMES_FOLDER, () => shell.openPath(THEMES_DIR));
 ipcMain.handle(IpcEvents.OPEN_SETTINGS_FOLDER, () => shell.openPath(SETTINGS_DIR));
@@ -148,7 +148,7 @@ ipcMain.handle(IpcEvents.OPEN_MONACO_EDITOR, async () => {
         autoHideMenuBar: true,
         darkTheme: true,
         webPreferences: {
-            preload: join(__dirname, IS_DISCORD_DESKTOP ? "preload.js" : "VelocityDesktopPreload.js"),
+            preload: join(__dirname, IS_DISCORD_DESKTOP ? "preload.js" : "velocityDesktopPreload.js"),
             contextIsolation: true,
             nodeIntegration: false,
             sandbox: false

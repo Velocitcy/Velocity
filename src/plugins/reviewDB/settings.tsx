@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ export const settings = definePluginSettings({
                 <Button
                     color={Button.Colors.GREEN}
                     onClick={() => {
-                        VelocityNative.native.openExternal("https://github.com/sponsors/mantikafasi");
+                        VencordNative.native.openExternal("https://github.com/sponsors/mantikafasi");
                     }}
                 >
                     Support ReviewDB development
@@ -74,14 +74,14 @@ export const settings = definePluginSettings({
                     if (token)
                         url += "/api/redirect?token=" + encodeURIComponent(token);
 
-                    VelocityNative.native.openExternal(url);
+                    VencordNative.native.openExternal(url);
                 }}>
                     ReviewDB website
                 </Button>
 
 
                 <Button onClick={() => {
-                    VelocityNative.native.openExternal("https://discord.gg/eWPBSbvznt");
+                    VencordNative.native.openExternal("https://discord.gg/eWPBSbvznt");
                 }}>
                     ReviewDB Support Server
                 </Button>

@@ -167,7 +167,6 @@ function ExcludedPluginsList({ search }: { search: string; }) {
                     Start a filter with <code>#</code>, add a key and value, then close it with another <code>#</code>.<br />
                     Example: <code>#type setting#</code><br />
                     You can chain multiple filters like <code>#type setting# #badge true#</code>.<br />
-                    If no plugins match, “No plugins meet the search criteria.” will appear.
                 </Paragraph>
             </Paragraph>
         );
@@ -362,7 +361,7 @@ function PluginSettings() {
                 const pluginMatches =
                     !pluginQuery ||
                     plugin.name.toLowerCase().includes(pluginQuery) ||
-                    plugin.description.toLowerCase().includes(pluginQuery);
+                    (typeof plugin.description === "string" && plugin.description.toLowerCase().includes(pluginQuery));
 
                 return authorMatches && pluginMatches;
             }
@@ -402,7 +401,7 @@ function PluginSettings() {
         // ---- plain text search (either after inline remainder, or normal)
         switch (true) {
             case plugin.name.toLowerCase().includes(query):
-            case plugin.description.toLowerCase().includes(query):
+            case typeof plugin.description === "string" && plugin.description.toLowerCase().includes(query):
             case plugin.tags?.some(t => t.toLowerCase().includes(query)):
                 return true;
             default:

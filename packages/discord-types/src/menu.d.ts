@@ -20,27 +20,18 @@ export interface Menu {
         label: ReactNode;
         action?(e: MouseEvent): void;
         icon?: ComponentType<any>;
-        iconLeft?: ComponentType<any>;
-        subtext?: ReactNode;
+
         color?: string;
         render?: ComponentType<any>;
         onChildrenScroll?: Function;
         childRowHeight?: number;
         listClassName?: string;
         disabled?: boolean;
-        className?: string;
-        focusedClassName?: string;
-        children?: ReactNode;
-        hasSubmenu?: boolean;
-        dontCloseOnAction?: boolean;
-        keepItemStyles?: boolean;
-        separator?: boolean;
     }>;
     MenuCheckboxItem: RC<{
         id: string;
         label: string;
         checked: boolean;
-        subtext?: ReactNode;
         action?(e: MouseEvent): void;
         disabled?: boolean;
     }>;

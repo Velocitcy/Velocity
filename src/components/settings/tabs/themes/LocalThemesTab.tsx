@@ -170,6 +170,17 @@ function CreateThemeModal({ onSuccess, modalKey, transitionState, ...props }: {
                         if (!finalFileName.endsWith(".css"))
                             finalFileName += ".css";
 
+                        const existing = await VelocityNative.themes.getThemesList();
+                        if (existing.some(t => t.fileName === finalFileName)) {
+                            Velocity.Webpack.Common.Alerts.show({
+                                title: "File Already Exists",
+                                body: `A theme named "${finalFileName}" already exists. Please choose a different name.`,
+                                confirmText: "OK",
+                                confirmColor: "vc-button-danger"
+                            });
+                            return;
+                        }
+
                         try {
                             await VelocityNative.themes.uploadTheme(finalFileName, cssCode);
                             showToast(`Theme "${finalFileName}" created successfully!`, Toasts.Type.SUCCESS);
@@ -183,6 +194,7 @@ function CreateThemeModal({ onSuccess, modalKey, transitionState, ...props }: {
                 >
                     Create
                 </Button>
+
 
                 <Button
                     look={Button.Looks.LINK}
@@ -475,27 +487,37 @@ export function LocalThemesTab() {
                             enabled={settings.enabledThemes.includes(theme.fileName)}
                             setEnabled={enabled => onLocalThemeChange(theme.fileName, enabled)}
                             infoButton={
-                                <div
-                                    style={{ cursor: "pointer", marginLeft: "8px" }}
-                                    onClick={() => {
-                                        Velocity.Webpack.Common.Alerts.show({
-                                            title: "Delete Theme",
-                                            body: `Are you sure you want to delete "${theme.name}"? This action cannot be undone.`,
-                                            confirmText: "Delete",
-                                            cancelText: "Cancel",
-                                            confirmColor: "vc-button-danger",
-                                            onConfirm: async () => {
-                                                onLocalThemeChange(theme.fileName, false);
-                                                await VelocityNative.themes.deleteTheme(theme.fileName);
-                                                showToast(`Theme "${theme.name}" deleted`, Toasts.Type.SUCCESS);
-                                                refreshLocalThemes();
-                                            }
-                                        });
-                                    }}
-                                >
-                                    {DeleteIcon()()}
-                                </div>
+                                <Tooltip text="Delete Theme">
+                                    {tooltipProps => (
+                                        <div
+                                            {...tooltipProps}
+                                            style={{
+                                                cursor: "pointer",
+                                                marginLeft: "8px",
+                                                color: "var(--status-danger)"
+                                            }}
+                                            onClick={() => {
+                                                Velocity.Webpack.Common.Alerts.show({
+                                                    title: "Delete Theme",
+                                                    body: `Are you sure you want to delete "${theme.name}"? This action cannot be undone.`,
+                                                    confirmText: "Delete",
+                                                    cancelText: "Cancel",
+                                                    confirmColor: "vc-button-danger",
+                                                    onConfirm: async () => {
+                                                        onLocalThemeChange(theme.fileName, false);
+                                                        await VelocityNative.themes.deleteTheme(theme.fileName);
+                                                        showToast(`Theme "${theme.name}" deleted`, Toasts.Type.SUCCESS);
+                                                        refreshLocalThemes();
+                                                    }
+                                                });
+                                            }}
+                                        >
+                                            {DeleteIcon()()}
+                                        </div>
+                                    )}
+                                </Tooltip>
                             }
+
                         />
                     ))}
                 </div>

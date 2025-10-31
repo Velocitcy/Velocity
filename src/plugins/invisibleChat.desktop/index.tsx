@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,10 @@ export default definePlugin({
             type: "rich",
             rawTitle: "Decrypted Message",
             color: "#45f5f5",
-            rawDescription: revealed
+            rawDescription: revealed,
+            footer: {
+                text: "Made with ❤️ by c0dine and Sammy!",
+            },
         });
 
         if (urlCheck?.length) {

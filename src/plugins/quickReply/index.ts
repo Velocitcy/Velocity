@@ -17,10 +17,10 @@
 */
 
 import { definePluginSettings } from "@api/Settings";
-import { Message } from "@discord-types";
-import { MessageFlags } from "@discord-types/enums";
 import { Devs, IS_MAC } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
+import { Message } from "@vencord/discord-types";
+import { MessageFlags } from "@vencord/discord-types/enums";
 import { ChannelStore, ComponentDispatch, FluxDispatcher as Dispatcher, MessageActions, MessageStore, MessageTypeSets, PermissionsBits, PermissionStore, RelationshipStore, SelectedChannelStore, UserStore } from "@webpack/common";
 import NoBlockedMessagesPlugin from "plugins/noBlockedMessages";
 import NoReplyMentionPlugin from "plugins/noReplyMention";
@@ -134,7 +134,7 @@ function getNextMessage(isUp: boolean, isReply: boolean) {
     let messages: Message[] = MessageStore.getMessages(SelectedChannelStore.getChannelId())._array;
 
     const meId = UserStore.getCurrentUser().id;
-    const hasNoBlockedMessages = Velocity.Plugins.isPluginEnabled(NoBlockedMessagesPlugin.name);
+    const hasNoBlockedMessages = Vencord.Plugins.isPluginEnabled(NoBlockedMessagesPlugin.name);
 
     messages = messages.filter(m => {
         if (m.deleted) return false;
@@ -170,7 +170,7 @@ function getNextMessage(isUp: boolean, isReply: boolean) {
 function shouldMention(message: Message) {
     switch (settings.store.shouldMention) {
         case MentionOptions.NO_REPLY_MENTION_PLUGIN:
-            if (!Velocity.Plugins.isPluginEnabled(NoReplyMentionPlugin.name)) return true;
+            if (!Vencord.Plugins.isPluginEnabled(NoReplyMentionPlugin.name)) return true;
             return NoReplyMentionPlugin.shouldMention(message, false);
         case MentionOptions.DISABLED:
             return false;

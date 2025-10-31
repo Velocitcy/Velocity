@@ -28,7 +28,7 @@ import { SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
 import { openContributorModal } from "@components/settings/tabs/plugins/ContributorModal";
 import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { gitRemote } from "@shared/velocityUserAgent";
-import { DONOR_ROLE_ID, IS_MAC, IS_WINDOWS, Owner, VELOCITY_GUILD_ID } from "@utils/constants";
+import { Devs, DONOR_ROLE_ID, IS_MAC, IS_WINDOWS, VELOCITY_GUILD_ID } from "@utils/constants";
 import { isPluginDev } from "@utils/misc";
 import { relaunch, reload } from "@utils/native";
 import { Alerts, Forms, GuildMemberStore, React, UserStore } from "@webpack/common";
@@ -137,7 +137,7 @@ function VelocitySettings() {
                 <SpecialCard
                     title="Donations"
                     subtitle="Thank you for donating!"
-                    description={`You can manage your perks at any time by messaging @${Owner.name}`}
+                    description={`You can manage your perks at any time by messaging @${Devs.Velocity.name}`}
                     backgroundImage={DONOR_BACKGROUND_IMAGE}
                     backgroundColor="#ED87A9"
                 >

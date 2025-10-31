@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { classNameFactory } from "@api/Styles";
-import { findStoreLazy } from "@webpack";
+import { findByPropsLazy } from "@webpack";
 
-export const MediaEngineStore = findStoreLazy("MediaEngineStore");
-export const cl = classNameFactory("vc-vmsg-");
+const InlineCodeClasses = findByPropsLazy("inlineCode", "bold", "italics");
+/**
+ * Renders inline code in Discord's style with the grey background
+ */
+export function InlineCode(props: { content: string; }) {
+    return (
+        <code className={InlineCodeClasses.inlineCode}>
+            {props.content}
+        </code>
+    );
+}

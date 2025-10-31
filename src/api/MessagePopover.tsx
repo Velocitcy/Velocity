@@ -17,8 +17,8 @@
 */
 
 import ErrorBoundary from "@components/ErrorBoundary";
-import { Channel, Message } from "@discord-types";
 import { Logger } from "@utils/Logger";
+import { Channel, Message } from "@vencord/discord-types";
 import type { ComponentType, MouseEventHandler } from "react";
 
 const logger = new Logger("MessagePopover");
@@ -31,13 +31,6 @@ export interface MessagePopoverButtonItem {
     channel: Channel,
     onClick?: MouseEventHandler<HTMLButtonElement>,
     onContextMenu?: MouseEventHandler<HTMLButtonElement>;
-    showNewBadge?: boolean;
-    disabled?: boolean;
-    dangerous?: boolean;
-    separator?: boolean;
-    selected?: boolean;
-    onTooltipShow?: () => void;
-    onTooltipHide?: () => void;
 }
 
 export type MessagePopoverButtonFactory = (message: Message) => MessagePopoverButtonItem | null;

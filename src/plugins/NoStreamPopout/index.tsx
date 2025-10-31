@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { definePluginSettings } from "@api/Settings";
-import { OptionType } from "@utils/types";
+import { Devs } from "@utils/constants";
+import definePlugin from "@utils/types";
 
-export const settings = definePluginSettings({
-    noiseSuppression: {
-        type: OptionType.BOOLEAN,
-        description: "Noise Suppression",
-        default: true,
-    },
-    echoCancellation: {
-        type: OptionType.BOOLEAN,
-        description: "Echo Cancellation",
-        default: true,
-    },
+export default definePlugin({
+    name: "NoStreamPopout",
+    description: "Removes the annoying small stream window when not in DMs",
+    authors: [Devs.Velocity],
+
+    patches: [
+        {
+            find: "pictureInPictureVideo,{[",
+            replacement: {
+                match: /return\(0,\i\.jsxs\)\("div",\{onMouseMove/,
+                replace: "return null;return(0,i.jsxs)(\"div\",{onMouseMove"
+            }
+        }
+
+    ]
 });

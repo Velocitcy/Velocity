@@ -21,12 +21,23 @@ import type { ComponentType, PropsWithChildren, ReactNode, Ref } from "react";
 
 import { LazyComponent } from "./react";
 
+
 export const enum ModalSize {
     SMALL = "small",
     MEDIUM = "medium",
     LARGE = "large",
     DYNAMIC = "dynamic",
 }
+
+export type ModalCloseSize =
+    | "xxs"
+    | "xs"
+    | "sm"
+    | "refresh_sm"
+    | "md"
+    | "lg"
+    | "custom";
+
 
 const enum ModalTransitionState {
     ENTERING,
@@ -35,6 +46,7 @@ const enum ModalTransitionState {
     EXITED,
     HIDDEN,
 }
+
 
 export interface ModalProps {
     transitionState: ModalTransitionState;
@@ -45,6 +57,13 @@ export interface ModalOptions {
     modalKey?: string;
     onCloseRequest?: (() => void);
     onCloseCallback?: (() => void);
+    contextKey?: string;
+    dismissable?: boolean;
+    instant?: boolean;
+    Layer?: any;
+    backdropStyle?: string;
+    stackingBehavior?: string;
+    stackNextByDefault?: boolean;
 }
 
 type RenderFunction = (props: ModalProps) => ReactNode | Promise<ReactNode>;
@@ -56,9 +75,13 @@ interface Modals {
         role?: "alertdialog" | "dialog";
         className?: string;
         fullscreenOnMobile?: boolean;
+        hideShadow?: boolean;
         "aria-label"?: string;
         "aria-labelledby"?: string;
-        onAnimationEnd?(): string;
+        onAnimationEnd?(): void;
+        animation?: "default" | "subtle";
+        returnRef?: Ref<HTMLElement>;
+        parentComponent?: string;
     }>>;
     ModalHeader: ComponentType<PropsWithChildren<{
         /** Flex.Justify.START */
@@ -70,13 +93,16 @@ interface Modals {
         /** Flex.Wrap.NO_WRAP */
         wrap?: string;
         separator?: boolean;
-
+        id?: string;
         className?: string;
+        headerId?: string;
     }>>;
     /** This also accepts Scroller props but good luck with that */
     ModalContent: ComponentType<PropsWithChildren<{
         className?: string;
         scrollerRef?: Ref<HTMLElement>;
+        scrollbarType?: "auto" | "thin" | "none";
+        "data-migration-pending"?: boolean;
         [prop: string]: any;
     }>>;
     ModalFooter: ComponentType<PropsWithChildren<{
@@ -89,15 +115,20 @@ interface Modals {
         /** Flex.Wrap.NO_WRAP */
         wrap?: string;
         separator?: boolean;
-
+        "data-migration-pending"?: boolean;
         className?: string;
     }>>;
     ModalCloseButton: ComponentType<{
         focusProps?: any;
         onClick(): void;
         withCircleBackground?: boolean;
-        hideOnFullscreen?: boolean | true;
+        hideOnFullscreen?: boolean;
         className?: string;
+        innerClassName?: string;
+        variant?: "default" | "icon-only";
+        size?: ModalCloseSize;
+        "aria-label"?: string;
+        "data-migration-pending"?: boolean;
     }>;
 }
 
@@ -140,12 +171,28 @@ export type MediaModalProps = {
     shouldHideMediaOptions?: boolean;
 };
 
+// Modal key: "Media Viewer Modal"
 export const openMediaModal: (props: MediaModalProps) => void = findByCodeLazy("hasMediaOptions", "shouldHideMediaOptions");
 
 interface ModalAPI {
+    /**
+     * Wait for the render promise to resolve, then open a modal with it.
+     * This is equivalent to render().then(openModal)
+     * You should use the Modal components exported by this file
+     */
     openModalLazy: (render: () => Promise<RenderFunction>, options?: ModalOptions & { contextKey?: string; }) => Promise<string>;
+    /**
+     * Open a Modal with the given render function.
+     * You should use the Modal components exported by this file
+     */
     openModal: (render: RenderFunction, options?: ModalOptions, contextKey?: string) => string;
+    /**
+     * Close a modal by its key
+     */
     closeModal: (modalKey: string, contextKey?: string) => void;
+    /**
+     * Close all open modals
+     */
     closeAllModals: () => void;
 }
 

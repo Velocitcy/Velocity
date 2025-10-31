@@ -17,7 +17,7 @@
 */
 
 import { Settings } from "@api/Settings";
-import { ClockIcon, WarningIcon } from "@components/Icons";
+import { StarIcon } from "@components/Icons";
 import { AddonBadge, AddonBadgeTypes } from "@components/settings/AddonBadge";
 import { BackupAndRestoreTab, CloudTab, DeveloperTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
@@ -99,15 +99,8 @@ export default definePlugin({
                 section: "VelocityPlugins",
                 label: "Plugins",
                 element: PluginsTab,
-                icon: <AddonBadge text="BETA" icon={ClockIcon()()} type={AddonBadgeTypes.BRAND} />,
+                icon: <AddonBadge text="NEW" icon={StarIcon()()} type={AddonBadgeTypes.BRAND} />,
                 className: "vc-plugins"
-            },
-            IS_DEV && {
-                section: "VelocityDeveloper",
-                label: "Developer Tools",
-                element: DeveloperTab,
-                icon: <AddonBadge text="NEW" icon={WarningIcon()()} type={AddonBadgeTypes.PRIMARY} />,
-                className: "vc-developer"
             },
             {
                 section: "VelocityThemes",
@@ -132,6 +125,12 @@ export default definePlugin({
                 label: "Backup & Restore",
                 element: BackupAndRestoreTab,
                 className: "vc-backup-restore"
+            },
+            IS_DEV && {
+                section: "VelocityDeveloper",
+                label: "Developer Tools",
+                element: DeveloperTab,
+                className: "vc-developer"
             },
             IS_DEV && {
                 section: "VelocityPatchHelper",

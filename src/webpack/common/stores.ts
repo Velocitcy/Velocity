@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ export let PermissionStore: GenericStore;
 export let GuildChannelStore: GenericStore;
 export let ReadStateStore: GenericStore;
 export let PresenceStore: GenericStore;
+export let ApplicationCommandIndexStore: GenericStore;
 
 export let GuildStore: t.GuildStore;
 export let GuildRoleStore: t.GuildRoleStore;
@@ -81,6 +82,7 @@ waitForStore("WindowStore", m => WindowStore = m);
 waitForStore("EmojiStore", m => EmojiStore = m);
 waitForStore("StickersStore", m => StickersStore = m);
 waitForStore("TypingStore", m => TypingStore = m);
+waitForStore("ApplicationCommandIndexStore", m => ApplicationCommandIndexStore = m);
 waitForStore("VoiceStateStore", m => VoiceStateStore = m);
 waitForStore("StreamerModeStore", m => StreamerModeStore = m);
 waitForStore("ThemeStore", m => {

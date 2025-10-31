@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type { Channel, CloudUpload, CustomEmoji, Message } from "@discord-types";
 import { Logger } from "@utils/Logger";
+import type { Channel, CloudUpload, CustomEmoji, Message } from "@vencord/discord-types";
 import { MessageStore } from "@webpack/common";
 import type { Promisable } from "type-fest";
 

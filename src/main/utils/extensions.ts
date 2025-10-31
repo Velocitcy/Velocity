@@ -71,7 +71,7 @@ export async function installExt(id: string) {
 
         const buf = await fetchBuffer(url, {
             headers: {
-                "User-Agent": `Electron ${process.versions.electron} ~ Velocity (https://github.com/Vendicated/Velocity)`
+                "User-Agent": `Electron ${process.versions.electron} ~ Velocity (https://github.com/ROBOXNOTHACKER/Velocity)`
             }
         });
 

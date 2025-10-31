@@ -46,7 +46,7 @@ export function enableStyle(name: string) {
 
     if (!style.dom) {
         style.dom = document.createElement("style");
-        style.dom.dataset.VelocityName = style.name;
+        style.dom.dataset.velocityName = style.name;
     }
     compileStyle(style);
 

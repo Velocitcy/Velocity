@@ -102,7 +102,7 @@ const DefaultSettings: Settings = {
 
     cloud: {
         authenticated: false,
-        url: "https://api.Velocity.dev/",
+        url: "https://api.vencord.dev/",
         settingsSync: false,
         settingsSyncVersion: 0
     }
@@ -147,13 +147,12 @@ export const SettingsStore = new SettingsStoreClass(settings, {
                     return (target[key] = setting.default);
 
                 if (setting.type === OptionType.SELECT) {
-                    const def = setting.options.find(o => o.default);
-                    if (def)
-                        target[key] = def.value;
-                    return def?.value;
-                }
-                if (setting.type === OptionType.KEYBIND) {
-                    return (target[key] = []);
+                    if (Array.isArray(setting.options)) {
+                        const def = setting.options.find(o => o.default);
+                        if (def)
+                            target[key] = def.value;
+                        return def?.value;
+                    }
                 }
             }
         }

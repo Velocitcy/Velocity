@@ -17,10 +17,10 @@
 */
 
 export const VELOCITY_FILES = [
-    IS_DISCORD_DESKTOP ? "patcher.js" : "VelocityDesktopMain.js",
-    IS_DISCORD_DESKTOP ? "preload.js" : "VelocityDesktopPreload.js",
-    IS_DISCORD_DESKTOP ? "renderer.js" : "VelocityDesktopRenderer.js",
-    IS_DISCORD_DESKTOP ? "renderer.css" : "VelocityDesktopRenderer.css",
+    IS_DISCORD_DESKTOP ? "patcher.js" : "velocityDesktopMain.js",
+    IS_DISCORD_DESKTOP ? "preload.js" : "velocityDesktopPreload.js",
+    IS_DISCORD_DESKTOP ? "renderer.js" : "velocityDesktopRenderer.js",
+    IS_DISCORD_DESKTOP ? "renderer.css" : "velocityDesktopRenderer.css",
 ];
 
 export function serializeErrors(func: (...args: any[]) => any) {

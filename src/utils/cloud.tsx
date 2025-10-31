@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ export async function checkCloudUrlCsp() {
     if (IS_WEB) return true;
 
     const { host } = getCloudUrl();
-    if (host === "api.Velocity.dev") return true;
+    if (host === "api.velocity.dev") return true;
 
     if (await VelocityNative.csp.isDomainAllowed(Settings.cloud.url, ["connect-src"])) {
         return true;

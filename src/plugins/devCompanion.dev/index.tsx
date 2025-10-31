@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 import { showNotification } from "@api/Notifications";
 import { definePluginSettings } from "@api/Settings";
-import { LockIcon } from "@components/Icons";
-import { AddonBadge, AddonBadgeTypes } from "@components/settings";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import { canonicalizeMatch, canonicalizeReplace } from "@utils/patches";
@@ -175,7 +173,7 @@ function initWs(isManual = false) {
 
                     try {
                         const matcher = canonicalizeMatch(parseNode(match));
-                        const replacement = canonicalizeReplace(parseNode(replace), 'Velocity.Plugins.plugins["PlaceHolderPluginName"]');
+                        const replacement = canonicalizeReplace(parseNode(replace), 'Vencord.Plugins.plugins["PlaceHolderPluginName"]');
 
                         const newSource = src.replace(matcher, replacement as string);
 
@@ -262,7 +260,5 @@ export default definePlugin({
     stop() {
         socket?.close(1000, "Plugin Stopped");
         socket = void 0;
-    },
-
-    renderBadge: () => <AddonBadge text="DEV" type={AddonBadgeTypes.BRAND} icon={LockIcon()()} />,
+    }
 });

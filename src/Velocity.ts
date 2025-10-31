@@ -1,4 +1,4 @@
-/*!
+/*
  * Velocity, a modification for Discord's desktop app
  * Copyright (c) 2022 Vendicated and contributors
  *
@@ -171,6 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // FIXME
     if (IS_DISCORD_DESKTOP && Settings.winNativeTitleBar && IS_WINDOWS) {
-        createAndAppendStyle("Velocity-native-titlebar-style").textContent = "[class*=titleBar]{display: none!important}";
+        createAndAppendStyle("velocity-native-titlebar-style").textContent = "[class*=titleBar]{display: none!important}";
     }
 }, { once: true });

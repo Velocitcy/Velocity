@@ -89,11 +89,11 @@ export const SpotifyStore = proxyLazyWebpack(() => {
         public isSettingPosition = false;
 
         public openExternal(path: string) {
-            const url = Settings.plugins.SpotifyControls.useSpotifyUris || Velocity.Plugins.isPluginEnabled("OpenInApp")
+            const url = Settings.plugins.SpotifyControls.useSpotifyUris || Vencord.Plugins.isPluginEnabled("OpenInApp")
                 ? "spotify:" + path.replaceAll("/", (_, idx) => idx === 0 ? "" : ":")
                 : "https://open.spotify.com" + path;
 
-            VelocityNative.native.openExternal(url);
+            VencordNative.native.openExternal(url);
         }
 
         // Need to keep track of this manually
@@ -159,7 +159,7 @@ export const SpotifyStore = proxyLazyWebpack(() => {
                     position_ms: Math.round(ms)
                 }
             }).catch((e: any) => {
-                console.error("[VelocitySpotifyControls] Failed to seek", e);
+                console.error("[VencordSpotifyControls] Failed to seek", e);
                 this.isSettingPosition = false;
             });
         }

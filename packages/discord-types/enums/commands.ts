@@ -17,7 +17,7 @@ export const enum ApplicationCommandInputType {
     BUILT_IN_TEXT = 1,
     BUILT_IN_INTEGRATION = 2,
     BOT = 3,
-    PLACEHOLDER = 4
+    PLACEHOLDER = 4,
 }
 
 export const enum ApplicationCommandType {

@@ -18,16 +18,16 @@
 
 import "./styles.css";
 
+import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { get, set } from "@api/DataStore";
 import { updateMessage } from "@api/MessageUpdater";
-import { migratePluginSettings } from "@api/Settings";
+import { definePluginSettings, migratePluginSettings } from "@api/Settings";
 import { ImageInvisible, ImageVisible } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import { classes } from "@utils/misc";
-import definePlugin from "@utils/types";
-import { Message } from "@vencord/discord-types";
-import { ChannelStore } from "@webpack/common";
+import definePlugin, { OptionType } from "@utils/types";
+import { Channel, Message } from "@vencord/discord-types";
+import { ChannelStore, Menu } from "@webpack/common";
 
 const KEY = "HideAttachments_HiddenIds";
 
@@ -44,11 +44,51 @@ migratePluginSettings("HideMedia", "HideAttachments");
 
 const hasMedia = (msg: Message) => msg.attachments.length > 0 || msg.embeds.length > 0 || msg.stickerItems.length > 0;
 
+const settings = definePluginSettings({
+    contextMenu: {
+        type: OptionType.BOOLEAN,
+        description: "Show context menu option to hide/show media",
+        default: true
+    }
+});
+
+const messageContextMenuPatch: NavContextMenuPatchCallback = (
+    children,
+    { channel, message }: { channel: Channel; message: Message; }
+) => {
+    if (!settings.store.contextMenu) return;
+    if (!hasMedia(message) && !message.messageSnapshots.some(s => hasMedia(s.message))) return;
+
+    const isHidden = hiddenMessages.has(message.id);
+
+    const menuGroup = findGroupChildrenByChildId("delete", children);
+    const deleteIndex = menuGroup?.findIndex(i => i?.props?.id === "delete");
+    if (!deleteIndex || !menuGroup) return;
+
+    menuGroup.splice(deleteIndex - 1, 0, (
+        <Menu.MenuItem
+            id="toggle-hide-media"
+            key="toggle-hide-media"
+            label={isHidden ? "Show Media" : "Hide Media"}
+            color={isHidden ? undefined : "danger"}
+            icon={isHidden ? ImageVisible() : ImageInvisible()}
+            action={async () => {
+                const ids = await getHiddenMessages();
+                if (!ids.delete(message.id))
+                    ids.add(message.id);
+                await saveHiddenMessages(ids);
+                updateMessage(channel.id, message.id);
+            }}
+        />
+    ));
+};
+
 export default definePlugin({
     name: "HideMedia",
     description: "Hide attachments and embeds for individual messages via hover button",
     authors: [Devs.Ven],
     dependencies: ["MessageUpdaterAPI"],
+    settings,
 
     patches: [{
         find: "this.renderAttachments(",
@@ -58,6 +98,10 @@ export default definePlugin({
         }
     }],
 
+    contextMenus: {
+        "message": messageContextMenuPatch
+    },
+
     renderMessagePopoverButton(msg) {
         if (!hasMedia(msg) && !msg.messageSnapshots.some(s => hasMedia(s.message))) return null;
 
@@ -65,7 +109,7 @@ export default definePlugin({
 
         return {
             label: isHidden ? "Show Media" : "Hide Media",
-            icon: isHidden ? setIconClassName(ImageVisible, Iconclasses.discord) : setIconClassName(ImageInvisible, Iconclasses.discord),
+            icon: isHidden ? ImageVisible() : ImageInvisible(),
             message: msg,
             channel: ChannelStore.getChannel(msg.channel_id),
             onClick: () => this.toggleHide(msg.channel_id, msg.id)

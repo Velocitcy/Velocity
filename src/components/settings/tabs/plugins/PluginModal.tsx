@@ -21,6 +21,7 @@ import "./PluginModal.css";
 import { generateId } from "@api/Commands";
 import { useSettings } from "@api/Settings";
 import { classNameFactory } from "@api/Styles";
+import { Emoji } from "@components/Emoji";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { Margins } from "@components/margins";
@@ -43,6 +44,7 @@ import { openContributorModal } from "./ContributorModal";
 import { GithubButton, WebsiteButton } from "./LinkIconButton";
 
 const cl = classNameFactory("vc-plugin-modal-");
+const KbdStyles = findByPropsLazy("key", "combo");
 
 const AvatarStyles = findByPropsLazy("moreUsers", "emptyUser", "avatarContainer", "clickableAvatar");
 const UserRecord: Constructor<Partial<User>> = proxyLazy(() => UserStore.getCurrentUser().constructor) as any;
@@ -67,6 +69,75 @@ function makeDummyUser(user: { username: string; id?: string; avatar?: string; }
     });
 
     return newUser;
+}
+
+function renderDescription(description: string) {
+    const lines = description.split("\n");
+
+    return lines.map((lineText, lineIndex) => {
+        const parts: (string | React.JSX.Element)[] = [];
+        const comboRegex = /((?:Keybind\("[^"]+"\)\s*\+\s*)+Keybind\("[^"]+"\))/g;
+        const emojiRegex = /Emoji\("([^"]+)"\)/g;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = comboRegex.exec(lineText)) !== null) {
+            if (match.index > lastIndex) {
+                const textBetween = lineText.substring(lastIndex, match.index);
+                let emojiMatch;
+                let lastEmojiIndex = 0;
+
+                while ((emojiMatch = emojiRegex.exec(textBetween)) !== null) {
+                    if (emojiMatch.index > lastEmojiIndex) {
+                        parts.push(textBetween.substring(lastEmojiIndex, emojiMatch.index));
+                    }
+                    parts.push(<Emoji key={`${lineIndex}-${emojiMatch.index}`} name={emojiMatch[1]} />);
+                    lastEmojiIndex = emojiMatch.index + emojiMatch[0].length;
+                }
+
+                if (lastEmojiIndex < textBetween.length) {
+                    parts.push(textBetween.substring(lastEmojiIndex));
+                }
+            }
+
+            const keys = match[1].match(/Keybind\("([^"]+)"\)/g).map(k => k.match(/Keybind\("([^"]+)"\)/)[1]);
+
+            parts.push(
+                <div key={match.index} className={KbdStyles.combo} style={{ display: "inline-flex" }}>
+                    {keys.map((key, i) => (
+                        <React.Fragment key={i}>
+                            <kbd className={KbdStyles.key} style={{ fontWeight: "bold" }}>{key.toUpperCase()}</kbd>
+                            {i < keys.length - 1 && " + "}
+                        </React.Fragment>
+                    ))}
+                </div>
+            );
+
+            lastIndex = match.index + match[0].length;
+        }
+
+        if (lastIndex < lineText.length) {
+            const remainingText = lineText.substring(lastIndex);
+            let emojiMatch;
+            let lastEmojiIndex = 0;
+
+            emojiRegex.lastIndex = 0;
+
+            while ((emojiMatch = emojiRegex.exec(remainingText)) !== null) {
+                if (emojiMatch.index > lastEmojiIndex) {
+                    parts.push(remainingText.substring(lastEmojiIndex, emojiMatch.index));
+                }
+                parts.push(<Emoji key={`${lineIndex}-${emojiMatch.index}`} name={emojiMatch[1]} />);
+                lastEmojiIndex = emojiMatch.index + emojiMatch[0].length;
+            }
+
+            if (lastEmojiIndex < remainingText.length) {
+                parts.push(remainingText.substring(lastEmojiIndex));
+            }
+        }
+
+        return <div key={lineIndex}>{parts.length > 0 ? parts : lineText}</div>;
+    });
 }
 
 export default function PluginModal({ plugin, onRestartNeeded, onClose, transitionState }: PluginModalProps) {
@@ -155,14 +226,15 @@ export default function PluginModal({ plugin, onRestartNeeded, onClose, transiti
         <ModalRoot transitionState={transitionState} size={ModalSize.MEDIUM}>
             <ModalHeader separator={false} className={Margins.bottom8}>
                 <Text variant="heading-xl/bold" style={{ flexGrow: 1 }}>{plugin.name}</Text>
-                <ModalCloseButton onClick={onClose} />
+                <ModalCloseButton className="icon-only_a22cb0" variant="icon-only" onClick={onClose} />
             </ModalHeader>
 
             <ModalContent className={Margins.bottom16}>
                 <section>
                     <Flex className={cl("info")}>
-                        <Forms.FormText className={cl("description")}>{plugin.description}</Forms.FormText>
-                        {!pluginMeta.userPlugin && (
+                        <Forms.FormText className={cl("description")}>
+                            {renderDescription(plugin.description)}
+                        </Forms.FormText>            {!pluginMeta.userPlugin && (
                             <div className="vc-settings-modal-links">
                                 <WebsiteButton
                                     text="View more info"

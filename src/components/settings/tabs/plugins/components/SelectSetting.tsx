@@ -17,12 +17,30 @@
 */
 
 import { PluginOptionSelect } from "@utils/types";
-import { React, Select, useState } from "@webpack/common";
+import { React, SearchableSelect, Select, useState } from "@webpack/common";
 
 import { resolveError, SettingProps, SettingsSection } from "./Common";
 
 export function SelectSetting({ option, pluginSettings, definedSettings, onChange, id }: SettingProps<PluginOptionSelect>) {
-    const defaultValue = option.options?.find(o => o.default)?.value ?? null;
+    const [options, setOptions] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    React.useEffect(() => {
+        if (typeof option.options === "function") {
+            setLoading(true);
+            option.options().then(opts => {
+                setOptions(opts as any);
+                setLoading(false);
+            }).catch(() => {
+                setOptions([]);
+                setLoading(false);
+            });
+        } else {
+            setOptions(option.options as any);
+        }
+    }, []);
+
+    const defaultValue = options?.find(o => o.default)?.value ?? null;
     const [state, setState] = useState<any>(pluginSettings[id] ?? defaultValue);
     const [error, setError] = useState<string | null>(null);
 
@@ -40,52 +58,84 @@ export function SelectSetting({ option, pluginSettings, definedSettings, onChang
 
     const isDefault = state === defaultValue;
 
+    if (loading) {
+        return (
+            <SettingsSection name={id} description={option.description} error={error}>
+                <div>Loading options...</div>
+            </SettingsSection>
+        );
+    }
+
+    const renderOptionPrefix = (opt: any) => {
+        if (!opt || !opt.icon) {
+            return null;
+        }
+        const IconElement = typeof opt.icon === "function" ? opt.icon() : opt.icon;
+        return IconElement;
+    };
+
+    const renderOptionLabel = (opt: any) => {
+        const pluginOpt = opt as any;
+        if (pluginOpt.icon) {
+            const IconElement =
+                typeof pluginOpt.icon === "function" ? pluginOpt.icon() : pluginOpt.icon;
+            return (
+                <div className="vc-select-option">
+                    {IconElement}
+                    {opt.label}
+                </div>
+            );
+        }
+        return opt.label;
+    };
+
+    const renderOptionValue = (opts: any) => {
+        const opt = Array.isArray(opts) ? opts[0] : opts;
+        if (!opt) return null;
+        const pluginOpt = opt as any;
+        if (pluginOpt.icon) {
+            const IconElement =
+                typeof pluginOpt.icon === "function" ? pluginOpt.icon() : pluginOpt.icon;
+            return (
+                <div className="vc-select-option">
+                    {IconElement}
+                    {opt.label}
+                </div>
+            );
+        }
+        return opt.label;
+    };
+
     return (
         <SettingsSection name={id} description={option.description} error={error}>
-            <Select
-                placeholder={option.placeholder ?? "Select an option"}
-                options={option.options}
-                maxVisibleItems={5}
-                closeOnSelect={true}
-                select={handleChange}
-                isSelected={v => v === state}
-                serialize={v => String(v)}
-                isDisabled={option.disabled?.call(definedSettings) ?? false}
-                clearable={!isDefault}
-                clear={handleClear}
-                renderOptionLabel={opt => {
-                    const pluginOpt = opt as any;
-                    if (pluginOpt.icon) {
-                        const IconElement =
-                            typeof pluginOpt.icon === "function" ? pluginOpt.icon() : pluginOpt.icon;
-                        return (
-                            <div className="vc-select-option">
-                                {IconElement}
-                                {opt.label}
-                            </div>
-                        );
-                    }
-                    return opt.label;
-                }}
-                renderOptionValue={opts => {
-                    const opt = Array.isArray(opts) ? opts[0] : opts;
-                    if (!opt) return null;
-                    const pluginOpt = opt as any;
-                    if (pluginOpt.icon) {
-                        const IconElement =
-                            typeof pluginOpt.icon === "function" ? pluginOpt.icon() : pluginOpt.icon;
-                        return (
-                            <div className="vc-select-option">
-                                {IconElement}
-                                {opt.label}
-                            </div>
-                        );
-                    }
-                    return opt.label;
-                }}
-                {...option.componentProps}
-            />
+            {option.isSearchable ? (
+                <SearchableSelect
+                    placeholder={option.placeholder ?? "Select an option"}
+                    options={options}
+                    value={options.find(o => o.value === state)}
+                    maxVisibleItems={5}
+                    closeOnSelect={true}
+                    onChange={handleChange}
+                    renderOptionPrefix={renderOptionPrefix}
+                    {...option.componentProps}
+                />
+            ) : (
+                <Select
+                    placeholder={option.placeholder ?? "Select an option"}
+                    options={options}
+                    maxVisibleItems={5}
+                    closeOnSelect={true}
+                    select={handleChange}
+                    isSelected={v => v === state}
+                    serialize={v => String(v)}
+                    isDisabled={option.disabled?.call(definedSettings) ?? false}
+                    clearable={!isDefault}
+                    clear={handleClear}
+                    renderOptionLabel={renderOptionLabel}
+                    renderOptionValue={renderOptionValue}
+                    {...option.componentProps}
+                />
+            )}
         </SettingsSection>
     );
 }
-

@@ -1,8 +1,20 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2025 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import { fetchBuffer, fetchJson } from "@main/utils/http";
 import { IpcEvents } from "@shared/IpcEvents";
@@ -17,23 +29,19 @@ import gitRemote from "~git-remote";
 import { serializeErrors, VELOCITY_FILES } from "./common";
 
 const API_BASE = `https://api.github.com/repos/${gitRemote}`;
-let PendingUpdates: [string, string][] = [];
+let PendingUpdates = [] as [string, string][];
 
-/**
- * Fetch JSON data from the GitHub API with proper headers.
- */
-async function githubGet<T = any>(endpoint: string): Promise<T> {
+async function githubGet<T = any>(endpoint: string) {
     return fetchJson<T>(API_BASE + endpoint, {
         headers: {
             Accept: "application/vnd.github+json",
+            // "All API requests MUST include a valid User-Agent header.
+            // Requests with no User-Agent header will be rejected."
             "User-Agent": VELOCITY_USER_AGENT
         }
     });
 }
 
-/**
- * Compare the current local commit with GitHub’s latest.
- */
 async function calculateGitChanges() {
     const isOutdated = await fetchUpdates();
     if (!isOutdated) return [];
@@ -41,25 +49,22 @@ async function calculateGitChanges() {
     const data = await githubGet(`/compare/${gitHash}...HEAD`);
 
     return data.commits.map((c: any) => ({
+        // github api only sends the long sha
         hash: c.sha.slice(0, 7),
         author: c.author.login,
         message: c.commit.message.split("\n")[0]
     }));
 }
 
-/**
- * Fetches info about the latest release from GitHub
- * and stores matching downloadable files.
- */
 async function fetchUpdates() {
     const data = await githubGet("/releases/latest");
 
-    const latestHash = data.name.slice(data.name.lastIndexOf(" ") + 1);
-    if (latestHash === gitHash)
-        return false; // Already up to date
+    const hash = data.name.slice(data.name.lastIndexOf(" ") + 1);
+    if (hash === gitHash)
+        return false;
 
-    data.assets.forEach(({ name, browser_download_url }: any) => {
-        if (VELOCITY_FILES.some(f => name.startsWith(f))) {
+    data.assets.forEach(({ name, browser_download_url }) => {
+        if (VELOCITY_FILES.some(s => name.startsWith(s))) {
             PendingUpdates.push([name, browser_download_url]);
         }
     });
@@ -67,24 +72,20 @@ async function fetchUpdates() {
     return true;
 }
 
-/**
- * Downloads and applies updates by replacing existing .js files.
- */
 async function applyUpdates() {
     const fileContents = await Promise.all(PendingUpdates.map(async ([name, url]) => {
         const contents = await fetchBuffer(url);
         return [join(__dirname, name), contents] as const;
     }));
 
-    await Promise.all(fileContents.map(async ([filename, contents]) => {
-        await writeFile(filename, contents);
-    }));
+    await Promise.all(fileContents.map(async ([filename, contents]) =>
+        writeFile(filename, contents))
+    );
 
     PendingUpdates = [];
     return true;
 }
 
-// IPC event bindings
 ipcMain.handle(IpcEvents.GET_REPO, serializeErrors(() => `https://github.com/${gitRemote}`));
 ipcMain.handle(IpcEvents.GET_UPDATES, serializeErrors(calculateGitChanges));
 ipcMain.handle(IpcEvents.UPDATE, serializeErrors(fetchUpdates));

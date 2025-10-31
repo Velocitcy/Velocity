@@ -145,7 +145,7 @@ function makeShortcuts() {
 
                     if (s.parentElement?.tagName === "HEAD")
                         doc.head.append(n);
-                    else if (n.id?.startsWith("Velocity-") || n.id?.startsWith("vcd-"))
+                    else if (n.id?.startsWith("velocity-") || n.id?.startsWith("vcd-"))
                         doc.documentElement.append(n);
                     else
                         doc.body.append(n);
@@ -190,8 +190,8 @@ function loadAndCacheShortcut(key: string, val: any, forceLoad: boolean) {
     function unwrapProxy(value: any) {
         if (value[SYM_LAZY_GET]) {
             forceLoad ? currentVal[SYM_LAZY_GET]() : currentVal[SYM_LAZY_CACHED];
-        } else if (value.$$VelocityGetWrappedComponent) {
-            return forceLoad ? value.$$VelocityGetWrappedComponent() : value;
+        } else if (value.$$velocityGetWrappedComponent) {
+            return forceLoad ? value.$$velocityGetWrappedComponent() : value;
         }
 
         return value;

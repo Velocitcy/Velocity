@@ -1,12 +1,24 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2025 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
-import { CommandArgument, CommandContext, CommandOption } from "@discord-types";
 import { Logger } from "@utils/Logger";
 import { makeCodeblock } from "@utils/text";
+import { CommandArgument, CommandContext, CommandOption } from "@vencord/discord-types";
 
 import { sendBotMessage } from "./commandHelpers";
 import { ApplicationCommandInputType, ApplicationCommandOptionType, ApplicationCommandType, VelocityCommand } from "./types";
@@ -138,7 +150,7 @@ export function registerCommand<C extends VelocityCommand>(command: C, plugin: s
     command.untranslatedName ??= command.name;
     command.untranslatedDescription ??= command.description;
     command.id ??= `-${BUILT_IN.length + commandIdOffset + 1}`;
-    command.applicationId ??= "-1"; // BUILT_IN;
+    command.applicationId ??= "-1";
     command.type ??= ApplicationCommandType.CHAT_INPUT;
     command.inputType ??= ApplicationCommandInputType.BUILT_IN_TEXT;
     command.plugin ||= plugin;

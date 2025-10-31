@@ -20,9 +20,9 @@ import { definePluginSettings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { ErrorCard } from "@components/ErrorCard";
-import { Margins } from "@components/margins";
 import { Paragraph } from "@components/Paragraph";
 import { Devs, IS_MAC } from "@utils/constants";
+import { Margins } from "@utils/margins";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy, findLazy } from "@webpack";
 import { Forms, React } from "@webpack/common";
@@ -166,7 +166,7 @@ export default definePlugin({
             </Forms.FormText>
 
             <Forms.FormText className={Margins.top8}>
-                Only use experiments if you know what you're doing. Velocity is not responsible for any damage caused by enabling experiments.
+                Only use experiments if you know what you're doing. Vencord is not responsible for any damage caused by enabling experiments.
 
                 If you don't know what an experiment does, ignore it. Do not ask us what experiments do either, we probably don't know.
             </Forms.FormText>

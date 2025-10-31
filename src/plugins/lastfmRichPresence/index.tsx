@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2022 Sofia Lima
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { Link } from "@components/Link";
-import { Activity, ActivityAssets, ActivityButton } from "@discord-types";
-import { ActivityFlags, ActivityStatusDisplayType, ActivityType } from "@discord-types/enums";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
+import { Activity, ActivityAssets, ActivityButton } from "@vencord/discord-types";
+import { ActivityFlags, ActivityStatusDisplayType, ActivityType } from "@vencord/discord-types/enums";
 import { findByPropsLazy } from "@webpack";
 import { ApplicationAssetUtils, FluxDispatcher, Forms } from "@webpack/common";
 

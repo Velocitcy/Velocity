@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,13 +125,13 @@ function TextReplace({ title, rulesArray }: TextReplaceProps) {
     }
 
     async function onChange(e: string, index: number, key: string) {
-        rulesArray[index][key] = e;
-
-        if (index === rulesArray.length - 1 && rulesArray[index].find && rulesArray[index].replace) {
+        if (index === rulesArray.length - 1) {
             rulesArray.push(makeEmptyRule());
         }
 
-        if ((!rulesArray[index].find || !rulesArray[index].replace) && !rulesArray[index].onlyIfIncludes && index !== rulesArray.length - 1) {
+        rulesArray[index][key] = e;
+
+        if (rulesArray[index].find === "" && rulesArray[index].replace === "" && rulesArray[index].onlyIfIncludes === "" && index !== rulesArray.length - 1) {
             rulesArray.splice(index, 1);
         }
     }
@@ -141,45 +141,45 @@ function TextReplace({ title, rulesArray }: TextReplaceProps) {
             <Forms.FormTitle tag="h4">{title}</Forms.FormTitle>
             <Flex flexDirection="column" style={{ gap: "0.5em" }}>
                 {
-                    rulesArray.map((rule, index) => {
-                        const isLast = index === rulesArray.length - 1;
-                        return (
-                            <React.Fragment key={`${rule.find}-${index}`}>
-                                <Flex flexDirection="row" style={{ flexGrow: 1, gap: "0.5em" }}>
-                                    <div style={{ flexGrow: 1, display: "flex", gap: "0.5em" }}>
-                                        <Input
-                                            placeholder="Find"
-                                            initialValue={rule.find}
-                                            onChange={e => onChange(e, index, "find")}
-                                        />
-                                        <Input
-                                            placeholder="Replace"
-                                            initialValue={rule.replace}
-                                            onChange={e => onChange(e, index, "replace")}
-                                        />
-                                        <Input
-                                            placeholder="Only if includes"
-                                            initialValue={rule.onlyIfIncludes}
-                                            onChange={e => onChange(e, index, "onlyIfIncludes")}
-                                        />
-                                    </div>
-                                    {!isLast && (
-                                        <Button
-                                            size={Button.Sizes.MIN}
-                                            onClick={() => onClickRemove(index)}
-                                            style={{
-                                                background: "none",
-                                                color: "var(--status-danger)"
-                                            }}
-                                        >
-                                            {DeleteIcon()()}
-                                        </Button>
-                                    )}
-                                </Flex>
-                                {isRegexRules && renderFindError(rule.find)}
-                            </React.Fragment>
-                        );
-                    })
+                    rulesArray.map((rule, index) =>
+                        <React.Fragment key={`${rule.find}-${index}`}>
+                            <Flex flexDirection="row" style={{ flexGrow: 1, gap: "0.5em" }}>
+                                <Input
+                                    placeholder="Find"
+                                    initialValue={rule.find}
+                                    onChange={e => onChange(e, index, "find")}
+                                />
+                                <Input
+                                    placeholder="Replace"
+                                    initialValue={rule.replace}
+                                    onChange={e => onChange(e, index, "replace")}
+                                />
+                                <Input
+                                    placeholder="Only if includes"
+                                    initialValue={rule.onlyIfIncludes}
+                                    onChange={e => onChange(e, index, "onlyIfIncludes")}
+                                />
+                                <Button
+                                    size={Button.Sizes.MIN}
+                                    onClick={() => onClickRemove(index)}
+                                    style={{
+                                        background: "none",
+                                        color: "var(--status-danger)",
+                                        ...(index === rulesArray.length - 1
+                                            ? {
+                                                visibility: "hidden",
+                                                pointerEvents: "none"
+                                            }
+                                            : {}
+                                        )
+                                    }}
+                                >
+                                    <DeleteIcon />
+                                </Button>
+                            </Flex>
+                            {isRegexRules && renderFindError(rule.find)}
+                        </React.Fragment>
+                    )
                 }
             </Flex>
         </>
@@ -229,7 +229,7 @@ const TEXT_REPLACE_RULES_CHANNEL_ID = "1102784112584040479";
 
 export default definePlugin({
     name: "TextReplace",
-    description: "Replace text in your messages. You can find pre-made rules in the #textreplace-rules channel in Velocity's Server",
+    description: "Replace text in your messages. You can find pre-made rules in the #textreplace-rules channel in Vencord's Server",
     authors: [Devs.AutumnVN, Devs.TheKodeToad],
 
     settings,

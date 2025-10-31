@@ -24,7 +24,7 @@ import { Devs } from "@utils/constants";
 import { Iconclasses, setIconClassName } from "@utils/icon";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
-import { FluxDispatcher, FormNotice, Menu, React, Select } from "@webpack/common";
+import { FluxDispatcher, Menu, React } from "@webpack/common";
 
 const VoiceActions = findByPropsLazy("selectVoiceChannel", "disconnect");
 const ChannelStore = findByPropsLazy("getChannel", "getDMFromUserId");
@@ -39,15 +39,14 @@ const settings = definePluginSettings({
         description: "Channel IDs (comma separated for multiple channels)",
         default: ""
     },
-    autoMute: {
-        type: OptionType.BOOLEAN,
-        description: "Automatically mute on join",
-        default: false
-    },
-    autoDeafen: {
-        type: OptionType.BOOLEAN,
-        description: "Automatically deafen on join",
-        default: false
+    muteOption: {
+        type: OptionType.RADIO,
+        description: "Audio state on join",
+        options: [
+            { label: "None", value: "none", default: true },
+            { label: "Auto Mute", value: "mute" },
+            { label: "Auto Deafen", value: "deafen" }
+        ]
     },
     autoStream: {
         type: OptionType.BOOLEAN,
@@ -60,49 +59,30 @@ const settings = definePluginSettings({
         default: true
     },
     streamSource: {
-        type: OptionType.STRING,
-        description: "Stream source ID",
-        default: "screen:0:0",
-        hidden: true
-    },
-    streamSourcePicker: {
-        type: OptionType.COMPONENT,
-        description: "",
-        component: () => {
-            const [sources, setSources] = React.useState<{ label: string; value: string; }[]>([]);
-            const [selected, setSelected] = React.useState(settings.store.streamSource || "screen:0:0");
-
-            React.useEffect(() => {
-                (async () => {
-                    try {
-                        const srcs = await DiscordNative.desktopCapture.getDesktopCaptureSources({
-                            types: ["screen"]
-                        });
-                        setSources(
-                            srcs.map((s: any, index: number) => ({
-                                label: `Screen ${index + 1}`,
-                                value: s.id
-                            }))
-                        );
-                    } catch (err) {
-                        console.error("Failed to load sources:", err);
-                    }
-                })();
-            }, []);
-
-            return (
-                <>
-                    <Select
-                        options={sources}
-                        isSelected={v => v === selected}
-                        select={v => {
-                            setSelected(v);
-                            settings.store.streamSource = v;
-                        }}
-                        serialize={v => v}
-                    />
-                </>
-            );
+        type: OptionType.SELECT,
+        isSearchable: true,
+        description: "Stream source",
+        options: async () => {
+            try {
+                const sources = await DiscordNative.desktopCapture.getDesktopCaptureSources({
+                    types: ["screen"]
+                });
+                return sources.map((s: any, index: number) => ({
+                    label: `Screen ${index + 1}`,
+                    value: s.id,
+                    default: index === 0
+                }));
+            } catch (err) {
+                return [{ label: "Screen 1", value: "screen:0:0", default: true }];
+            }
+        },
+        onChange() {
+            if (Velocity.Plugins.isPluginEnabled("StreamCrasher")) {
+                const StreamCrasher = Velocity.Plugins.plugins.StreamCrasher as any;
+                if (StreamCrasher?.updateStream) {
+                    StreamCrasher.updateStream();
+                }
+            }
         }
     }
 });
@@ -134,9 +114,11 @@ function joinCall(channelId: string) {
         VoiceActions.selectVoiceChannel(channelId);
 
         try {
-            if (settings.store.autoDeafen && ToggleDeafen?.toggleSelfDeaf) {
+            const { muteOption } = settings.store;
+
+            if (muteOption === "deafen" && ToggleDeafen?.toggleSelfDeaf) {
                 ToggleDeafen.toggleSelfDeaf();
-            } else if (settings.store.autoMute) {
+            } else if (muteOption === "mute") {
                 if (ToggleMute?.toggleSelfMute) {
                     ToggleMute.toggleSelfMute();
                 } else if (MediaEngineStore?.setLocalMute) {
@@ -163,31 +145,32 @@ const streamContextMenuPatch: NavContextMenuPatchCallback = children => {
             id="vc-autojoin-settings"
             label="Auto Join Settings"
             icon={setIconClassName(CogWheel, Iconclasses.discord)}
-            action={() => openPluginModal(Velocity.Plugins.plugins.autoJoinCall)}
+            action={() => openPluginModal(Velocity.Plugins.plugins.AutoJoinCall)}
         />
     );
 
     children.splice(4, 0, menuItem);
 };
 
-
 const streamEnablingPatch: NavContextMenuPatchCallback = children => {
-    const menuItem = (
+    const { autoStream } = settings.use(["autoStream"]);
+
+    children.splice(2, 0,
+        <Menu.MenuSeparator />,
         <Menu.MenuCheckboxItem
             id="vc-stream-checkbox"
             label="Auto Stream"
             subtext="Whether to automaticly start a stream thru AutoJoinCall plugin"
-            checked={settings.store.autoStream}
+            checked={autoStream}
             action={() => {
                 settings.store.autoStream = !settings.store.autoStream;
             }}
         />
     );
-
-    children.splice(2, 0, menuItem);
 };
+
 export default definePlugin({
-    name: "autoJoinCall",
+    name: "AutoJoinCall",
     description: "Automatically joins the specified DM or guild call(s)",
     authors: [Devs.Velocity],
     settings,
@@ -213,16 +196,5 @@ export default definePlugin({
         if (channelIds.length === 0) return;
 
         channelIds.forEach(id => joinCall(id));
-    },
-
-    settingsAboutComponent: () => (
-        <>
-            <FormNotice
-                messageType="danger"
-                textColor="text-feedback-danger"
-            >
-                This will force your streams to the selected screen no matter what (only if StreamCrasher is enabled)
-            </FormNotice>
-        </>
-    )
+    }
 });

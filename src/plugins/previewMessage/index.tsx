@@ -1,6 +1,6 @@
 /*
  * Velocity, a modification for Discord's desktop app
- * Copyright (c) 2023 Vendicated and contributors
+ * Copyright (c) 2022 Vendicated and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 
 import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
 import { generateId, sendBotMessage } from "@api/Commands";
-import { CloudUpload, MessageAttachment } from "@discord-types";
 import { Devs } from "@utils/constants";
 import definePlugin, { StartAt } from "@utils/types";
+import { CloudUpload, MessageAttachment } from "@vencord/discord-types";
 import { findByPropsLazy } from "@webpack";
 import { DraftStore, DraftType, SelectedChannelStore, UserStore, useStateFromStores } from "@webpack/common";
 
