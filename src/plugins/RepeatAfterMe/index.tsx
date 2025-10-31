@@ -1,10 +1,23 @@
 /*
- * Velocity, a Discord client mod
- * Copyright (c) 2025 Vendicated and contributors
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+ * Velocity, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
+import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { definePluginSettings } from "@api/Settings";
 import { DisabledLine } from "@components/DisabledLine";
@@ -27,7 +40,7 @@ const settings = definePluginSettings({
     },
     isEnabled: {
         type: OptionType.BOOLEAN,
-        description: "Toggle DM Echo",
+        description: "Toggle RepeatAfterMe",
         default: true,
     },
     cooldown: {
@@ -97,6 +110,27 @@ export default definePlugin({
     contextMenus: {
         "textarea-context": ChatBarContextCheckbox
     },
+
+    commands: [{
+        name: "repeatafterme",
+        description: "Toggle RepeatAfterMe",
+        inputType: ApplicationCommandInputType.BUILT_IN,
+        options: [
+            {
+                name: "value",
+                description: "whether to hide or not that you're typing (default is toggle)",
+                required: false,
+                type: ApplicationCommandOptionType.BOOLEAN,
+            },
+        ],
+        execute: async (args, ctx) => {
+            settings.store.isEnabled = !!findOption(args, "value", !settings.store.isEnabled);
+            sendBotMessage(ctx.channel.id, {
+                content: settings.store.isEnabled ? "RepeatAfterMe enabled!" : "RepeatAfterMe disabled!",
+            });
+        },
+    }],
+
 
     flux: {
         MESSAGE_CREATE(event) {
