@@ -45,7 +45,7 @@ export interface Dev {
  */
 export const Devs = /* #__PURE__*/ Object.freeze({
     Velocity: {
-        name: "Velocity",
+        name: "msc.dev",
         id: 1352787303168344095n
     },
     Ven: {

@@ -17,6 +17,7 @@
 */
 
 import { showNotice } from "@api/Notices";
+import { Emoji } from "@components/Emoji";
 import { CogWheel, InfoIcon } from "@components/Icons";
 import { AddonCard } from "@components/settings/AddonCard";
 import { setIconClassName } from "@utils/icon";
@@ -39,6 +40,59 @@ interface PluginCardProps extends React.HTMLProps<HTMLDivElement> {
     isNew?: boolean;
 }
 
+function renderDescription(description: string) {
+    const parts: (string | React.JSX.Element)[] = [];
+    const comboRegex = /((?:Keybind\("[^"]+"\)\s*\+\s*)+Keybind\("[^"]+"\))/g;
+    const emojiRegex = /Emoji\("([^"]+)"\)/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = comboRegex.exec(description)) !== null) {
+        if (match.index > lastIndex)
+            parts.push(description.substring(lastIndex, match.index));
+
+        const keys = match[1]
+            .match(/Keybind\("([^"]+)"\)/g)!
+            .map(k => k.match(/Keybind\("([^"]+)"\)/)![1]);
+
+        parts.push(
+            <div key={match.index} className="vc-keycombo" style={{ display: "inline-flex" }}>
+                {keys.map((key, i) => (
+                    <React.Fragment key={i}>
+                        <kbd style={{
+                            padding: "2px 4px",
+                            borderRadius: "4px",
+                            background: "var(--background-tertiary)",
+                            fontWeight: "bold"
+                        }}>{key.toUpperCase()}</kbd>
+                        {i < keys.length - 1 && " + "}
+                    </React.Fragment>
+                ))}
+            </div>
+        );
+
+        lastIndex = match.index + match[0].length;
+    }
+
+    if (lastIndex < description.length) {
+        const remaining = description.substring(lastIndex);
+        let eMatch: RegExpExecArray | null;
+        let eLast = 0;
+        emojiRegex.lastIndex = 0;
+        while ((eMatch = emojiRegex.exec(remaining)) !== null) {
+            if (eMatch.index > eLast)
+                parts.push(remaining.substring(eLast, eMatch.index));
+            parts.push(<Emoji key={`e${eMatch.index}`} name={eMatch[1]} />);
+            eLast = eMatch.index + eMatch[0].length;
+        }
+        if (eLast < remaining.length)
+            parts.push(remaining.substring(eLast));
+    }
+
+    return parts.length ? parts : [description];
+}
+
+
 export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, onMouseLeave, isNew }: PluginCardProps) {
     const settings = Settings.plugins[plugin.name];
 
@@ -53,7 +107,8 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
 
             if (failures.length) {
                 logger.error(`Failed to start dependencies for ${plugin.name}: ${failures.join(", ")}`);
-                showNotice("Failed to start dependencies: " + failures.join(", "), "Close", () => null);
+                const msg = "Failed to start dependencies: " + failures.join(", ");
+                showNotice("GENERIC", msg, () => null, { message: msg, buttonText: "Close", onClick: () => null });
                 return;
             }
 
@@ -97,7 +152,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
     return (
         <AddonCard
             name={plugin.name}
-            description={plugin.description}
+            description={renderDescription(plugin.description)}
             isNew={isNew}
             enabled={isEnabled()}
             setEnabled={toggleEnabled}

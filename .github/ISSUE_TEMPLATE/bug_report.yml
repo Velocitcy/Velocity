@@ -7,10 +7,7 @@ body:
     - type: markdown
       attributes:
           value: |
-              ![Are you a developer? No? This form is not for you!](https://github.com/Vendicated/Vencord/blob/main/.github/ISSUE_TEMPLATE/developer-banner.png?raw=true)
-
-              GitHub Issues are for development, not support! Please use our [support server](https://vencord.dev/discord) unless you are a Vencord Developer.
-
+              ![Are you a developer? No? This form is not for you!](https://github.com/ROBOXNOTHACKER/Velocity/blob/main/.github/ISSUE_TEMPLATE/developer-banner.png?raw=true)
     - type: textarea
       id: bug-description
       attributes:
@@ -25,7 +22,7 @@ body:
       attributes:
           label: What is the expected behaviour?
           description: Simply detail what the expected behaviour is.
-          placeholder: I expect Vencord/Discord to open the ... page instead of ..., it prevents me from doing ...
+          placeholder: I expect Velocity/Discord to open the ... page instead of ..., it prevents me from doing ...
       validations:
           required: true
 
@@ -62,5 +59,5 @@ body:
           options:
               - label: I am using Discord Stable or tried on Stable and this bug happens there as well
                 required: true
-              - label: I am a Vencord Developer
+              - label: I am a Velocity Developer
                 required: true

@@ -21,9 +21,26 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { handleComponentFailed } from "@components/handleComponentFailed";
 import { Margins } from "@components/margins";
 import { onlyOnce } from "@utils/onlyOnce";
+import { findComponentByCodeLazy } from "@webpack";
+import { React } from "@webpack/common";
 import type { ComponentType, PropsWithChildren, ReactNode } from "react";
 
+const Spinner = findComponentByCodeLazy("wanderingCubes", "aria-label");
+
 export function SettingsTab({ title, icon, children }: PropsWithChildren<{ title?: string; icon?: ReactNode; }>) {
+    if (!children) {
+        return (
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "200px"
+            }}>
+                <Spinner type="wanderingCubes" />
+            </div>
+        );
+    }
+
     return (
         <section>
             {title && (
@@ -38,7 +55,6 @@ export function SettingsTab({ title, icon, children }: PropsWithChildren<{ title
         </section>
     );
 }
-
 
 export const handleSettingsTabError = onlyOnce(handleComponentFailed);
 

@@ -16,24 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { get, set } from "@api/DataStore";
+import { showNotification } from "@api/Notifications";
 import { Settings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { Devs } from "@utils/constants";
 import { useTimer } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
-import { React } from "@webpack/common";
+import { React, SelectedChannelStore, Toasts, UserStore } from "@webpack/common";
 
 import alignedChatInputFix from "./alignedChatInputFix.css?managed";
 
 function formatDuration(ms: number) {
-    // here be dragons (moment fucking sucks)
     const human = Settings.plugins.CallTimer.format === "human";
 
     const format = (n: number) => human ? n : n.toString().padStart(2, "0");
     const unit = (s: string) => human ? s : "";
     const delim = human ? " " : ":";
 
-    // thx copilot
     const d = Math.floor(ms / 86400000);
     const h = Math.floor((ms % 86400000) / 3600000);
     const m = Math.floor(((ms % 86400000) % 3600000) / 60000);
@@ -48,10 +49,38 @@ function formatDuration(ms: number) {
     return res;
 }
 
+const timerData = new Map<string, Map<string, number>>();
+
+const getKey = (userId: string) => `CallTimer_${userId}`;
+
+async function loadTimerData(userId: string) {
+    const data = await get(getKey(userId));
+    if (data) {
+        timerData.set(userId, data);
+    } else {
+        timerData.set(userId, new Map());
+    }
+}
+
+async function saveTimerData(userId: string) {
+    await set(getKey(userId), timerData.get(userId));
+}
+
+function getTimerValue(userId: string, channelId: string): number {
+    return timerData.get(userId)?.get(channelId) ?? 0;
+}
+
+function setTimerValue(userId: string, channelId: string, time: number) {
+    if (!timerData.has(userId)) {
+        timerData.set(userId, new Map());
+    }
+    timerData.get(userId)!.set(channelId, time);
+}
+
 export default definePlugin({
     name: "CallTimer",
     description: "Adds a timer to vcs",
-    authors: [Devs.Ven],
+    authors: [Devs.Ven, Devs.Velocity],
     managedStyle: alignedChatInputFix,
 
     startTime: 0,
@@ -72,13 +101,40 @@ export default definePlugin({
                     value: "human"
                 }
             ]
+        },
+
+        saveTimer: {
+            type: OptionType.BOOLEAN,
+            description: "Save timer progress across sessions",
+            default: false,
+            onChange(newValue: boolean) {
+                const inCall = Object.keys(SelectedChannelStore.getVoiceChannelId?.() || {}).length > 0;
+
+                if (!newValue && inCall) {
+                    showNotification({
+                        title: "Call Timer",
+                        body: "Timer saving disabled. Your timer progress will no longer be saved.",
+                        color: "var(--status-danger)",
+                        onClick: () => openPluginModal(Velocity.Plugins.plugins.CallTimer)
+                    });
+                } else if (newValue && inCall) {
+                    Toasts.show({
+                        message: "Rejoin the call for timer saving to take effect",
+                        id: Toasts.genId(),
+                        type: Toasts.Type.MESSAGE,
+                        options: {
+                            duration: 5000,
+                            position: Toasts.Position.BOTTOM
+                        }
+                    });
+                }
+            }
         }
     },
 
     patches: [{
         find: "renderConnectionStatus(){",
         replacement: {
-            // in renderConnectionStatus()
             match: /(lineClamp:1,children:)(\i)(?=,|}\))/,
             replace: "$1[$2,$self.renderTimer(this.props.channel.id)]"
         }
@@ -91,10 +147,43 @@ export default definePlugin({
     },
 
     Timer({ channelId }: { channelId: string; }) {
+        const [baseTime, setBaseTime] = React.useState(0);
+        const userId = UserStore.getCurrentUser()?.id;
+        const totalTimeRef = React.useRef(0);
+
+        React.useEffect(() => {
+            if (Settings.plugins.CallTimer.saveTimer && userId) {
+                loadTimerData(userId).then(() => {
+                    const saved = getTimerValue(userId, channelId);
+                    if (saved > 0) {
+                        setBaseTime(saved);
+                    }
+                });
+            }
+        }, [channelId, userId]);
+
         const time = useTimer({
             deps: [channelId]
         });
 
-        return <p style={{ margin: 0, fontFamily: "var(--font-code)" }}>{formatDuration(time)}</p>;
+        const totalTime = time + baseTime;
+        totalTimeRef.current = totalTime;
+
+        React.useEffect(() => {
+            if (!Settings.plugins.CallTimer.saveTimer || !userId) return;
+
+            const saveInterval = setInterval(() => {
+                setTimerValue(userId, channelId, totalTimeRef.current);
+                saveTimerData(userId);
+            }, 5000);
+
+            return () => {
+                clearInterval(saveInterval);
+                setTimerValue(userId, channelId, totalTimeRef.current);
+                saveTimerData(userId);
+            };
+        }, [userId, channelId]);
+
+        return <p style={{ margin: 0, fontFamily: "var(--font-code)" }}>{formatDuration(totalTime)}</p>;
     }
 });

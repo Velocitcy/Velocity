@@ -27,7 +27,8 @@ import { fetchUserProfile } from "@utils/discord";
 import { classes, pluralise } from "@utils/misc";
 import { ModalContent, ModalRoot, openModal } from "@utils/modal";
 import { User } from "@vencord/discord-types";
-import { Forms, showToast, useEffect, useMemo, UserProfileStore, useStateFromStores } from "@webpack/common";
+import { findComponentByCodeLazy } from "@webpack";
+import { Forms, React, showToast, UserProfileStore, useStateFromStores } from "@webpack/common";
 
 import Plugins from "~plugins";
 
@@ -35,6 +36,7 @@ import { GithubButton, WebsiteButton } from "./LinkIconButton";
 import { PluginCard } from "./PluginCard";
 
 const cl = classNameFactory("vc-author-modal-");
+const Spinner = findComponentByCodeLazy("wanderingCubes", "aria-label");
 
 export function openContributorModal(user: User) {
     openModal(modalProps =>
@@ -52,53 +54,91 @@ function ContributorModal({ user }: { user: User; }) {
     useSettings();
 
     const profile = useStateFromStores([UserProfileStore], () => UserProfileStore.getUserProfile(user.id));
+    const [fetched, setFetched] = React.useState(false);
+    const [fetchFailed, setFetchFailed] = React.useState(false);
 
-    useEffect(() => {
-        if (!profile && !user.bot && user.id)
-            fetchUserProfile(user.id);
-    }, [user.id, user.bot, profile]);
+    const isAnonymous = user.id === "0";
+
+    React.useEffect(() => {
+        if (isAnonymous) {
+            setFetched(true);
+            return;
+        }
+
+        if (!fetched && !user.bot && user.id) {
+            const timeout = setTimeout(() => {
+                if (!fetched && !profile) {
+                    setFetchFailed(true);
+                    setFetched(true);
+                }
+            }, 5000);
+
+            fetchUserProfile(user.id)
+                .finally(() => {
+                    clearTimeout(timeout);
+                    setFetched(true);
+                })
+                .catch(() => {
+                    setFetchFailed(true);
+                    setFetched(true);
+                });
+
+            return () => clearTimeout(timeout);
+        }
+    }, [fetched, user.id, user.bot, isAnonymous, profile]);
+
+    const ready = !!profile || fetched || isAnonymous;
 
     const githubName = profile?.connectedAccounts?.find(a => a.type === "github")?.name;
     const website = profile?.connectedAccounts?.find(a => a.type === "domain")?.name;
 
-    const plugins = useMemo(() => {
+    const plugins = React.useMemo(() => {
         const allPlugins = Object.values(Plugins);
-        const pluginsByAuthor = DevsById[user.id]
-            ? allPlugins.filter(p => p.authors.includes(DevsById[user.id]))
+        const dev = DevsById[user.id];
+        const list = dev
+            ? allPlugins.filter(p => p.authors.includes(dev))
             : allPlugins.filter(p => p.authors.some(a => a.name === user.username));
-
-        return pluginsByAuthor
-            .filter(p => !p.name.endsWith("API"))
+        return list.filter(p => !p.name.endsWith("API"))
             .sort((a, b) => Number(a.required ?? false) - Number(b.required ?? false));
     }, [user.id, user.username]);
+
+    if (!ready) {
+        return (
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "300px",
+                gap: "1rem"
+            }}>
+                <Spinner type="wanderingCubes" />
+            </div>
+        );
+    }
 
     const ContributedHyperLink = <Link href="https://Velocity.dev/source">contributed</Link>;
 
     return (
         <>
             <div className={cl("header")}>
-                <img
-                    className={cl("avatar")}
-                    src={user.getAvatarURL(void 0, 512, true)}
-                    alt=""
-                />
-                <Forms.FormTitle tag="h2" className={cl("name")}>{user.username}</Forms.FormTitle>
-
-                <div className={classes("vc-settings-modal-links", cl("links"))}>
-                    {website && (
-                        <WebsiteButton
-                            text={website}
-                            href={`https://${website}`}
-                        />
-                    )}
-                    {githubName && (
-                        <GithubButton
-                            text={githubName}
-                            href={`https://github.com/${githubName}`}
-                        />
-                    )}
-                </div>
+                <img className={cl("avatar")} src={user.getAvatarURL(void 0, 512, true)} alt="" />
+                <Forms.FormTitle tag="h2" className={cl("name")}>
+                    {isAnonymous ? "Unavailable" : user.username}
+                </Forms.FormTitle>
+                {!isAnonymous && (
+                    <div className={classes("vc-settings-modal-links", cl("links"))}>
+                        {website && <WebsiteButton text={website} href={`https://${website}`} />}
+                        {githubName && <GithubButton text={githubName} href={`https://github.com/${githubName}`} />}
+                    </div>
+                )}
             </div>
+
+            {fetchFailed && !isAnonymous && (
+                <Forms.FormText style={{ color: "var(--text-warning)", textAlign: "center", marginBottom: "1rem" }}>
+                    Failed to fetch user profile. This might be due to network issues.
+                </Forms.FormText>
+            )}
 
             {plugins.length ? (
                 <Forms.FormText>

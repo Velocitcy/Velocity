@@ -16,20 +16,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
-import definePlugin from "@utils/types";
+import definePlugin, { OptionType } from "@utils/types";
+
+const settings = definePluginSettings({
+    speed: {
+        type: OptionType.SLIDER,
+        description: "Cat speed",
+        default: 10,
+        markers: [5, 10, 15, 20, 25, 30, 50, 100],
+        stickToMarkers: false
+    }
+});
 
 export default definePlugin({
     name: "oneko",
-    description: "cat follow mouse (real)",
-    // Listing adryd here because this literally just evals her script
+    description: "cat follow mouse (real) Emoji(\"ninja\")",
     authors: [Devs.Ven, Devs.adryd],
+    settings,
 
     start() {
         fetch("https://raw.githubusercontent.com/adryd325/oneko.js/c4ee66353b11a44e4a5b7e914a81f8d33111555e/oneko.js")
             .then(x => x.text())
             .then(s => s.replace("./oneko.gif", "https://raw.githubusercontent.com/adryd325/oneko.js/14bab15a755d0e35cd4ae19c931d96d306f99f42/oneko.gif")
-                .replace("(isReducedMotion)", "(false)"))
+                .replace("(isReducedMotion)", "(false)")
+                .replace("const nekoSpeed = 10", `const nekoSpeed = ${settings.store.speed}`))
             .then(eval);
     },
 

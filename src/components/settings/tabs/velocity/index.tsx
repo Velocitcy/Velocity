@@ -125,14 +125,13 @@ function Switches() {
         );
     });
 }
-
 function VelocitySettings() {
     const needsVibrancySettings = IS_DISCORD_DESKTOP && IS_MAC;
 
     const user = UserStore?.getCurrentUser();
 
     return (
-        <SettingsTab title="Velocity Settings">
+        <SettingsTab title={"1EWnSO"}>
             {isDonor(user?.id) && (
                 <SpecialCard
                     title="Donations"

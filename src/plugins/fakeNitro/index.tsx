@@ -757,7 +757,8 @@ export default definePlugin({
 
         gif.finish();
 
-        const file = new File([gif.bytesView()], `${stickerId}.gif`, { type: "image/gif" });
+        const bytes = new Uint8Array(gif.bytesView());
+        const file = new File([bytes.buffer], `${stickerId}.gif`, { type: "image/gif" });
         UploadHandler.promptToUpload([file], ChannelStore.getChannel(channelId), DraftType.ChannelMessage);
     },
 

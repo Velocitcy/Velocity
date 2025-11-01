@@ -44,20 +44,26 @@ export type ButtonProps = ComponentPropsWithRef<"button"> & {
     variant?: ButtonVariant;
     size?: ButtonSize;
     icon?: ComponentType<any>;
+    loading?: boolean;
 };
+
 export function Button({
     variant = "primary",
     size = "medium",
     children,
     className,
     icon: Icon,
+    loading,
     ...restProps
 }: ButtonProps) {
+    const { ...buttonProps } = restProps;
+
     return (
         <button
             data-mana-component="button"
             className={classes(btnCls("base", variant, size), className)}
-            {...restProps}
+            {...buttonProps}
+            disabled={loading || restProps.disabled}
         >
             {Icon && (
                 <span
@@ -82,6 +88,7 @@ export function Button({
     );
 }
 
+
 // text button
 export type TextButtonVariant = "primary" | "secondary" | "danger" | "link";
 
@@ -102,11 +109,11 @@ export function TextButton({
     );
 }
 
-// #region Old compatibility
 export const ButtonCompat: DiscordButton = function ButtonCompat({
     look,
     color = "BRAND",
     size = "medium",
+    loading = false,
     icon,
     ...restProps
 }) {
@@ -120,6 +127,7 @@ export const ButtonCompat: DiscordButton = function ButtonCompat({
             variant={ButtonColorMapping[color]}
             size={size as ButtonSize}
             icon={icon}
+            loading={loading}
             {...(restProps as ButtonProps)}
         />
     );

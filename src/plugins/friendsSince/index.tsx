@@ -37,6 +37,7 @@ export default definePlugin({
         // DM User Sidebar
         {
             find: ".SIDEBAR}),nicknameIcons",
+            noWarn: true,
             replacement: {
                 match: /#{intl::USER_PROFILE_MEMBER_SINCE}\),.{0,100}userId:(\i\.id)}\)}\)/,
                 replace: "$&,$self.FriendsSinceComponent({userId:$1,isSidebar:true})"
@@ -45,6 +46,7 @@ export default definePlugin({
         // User Profile Modal
         {
             find: ".connections,userId:",
+            noWarn: true,
             replacement: {
                 match: /#{intl::USER_PROFILE_MEMBER_SINCE}\),.{0,100}userId:(\i\.id),.{0,100}}\)}\),/,
                 replace: "$&,$self.FriendsSinceComponent({userId:$1,isSidebar:false}),"
@@ -53,6 +55,7 @@ export default definePlugin({
         // User Profile Modal v2
         {
             find: ".MODAL_V2,onClose:",
+            noWarn: true,
             replacement: {
                 match: /#{intl::USER_PROFILE_MEMBER_SINCE}\),.{0,100}userId:(\i\.id),.{0,100}}\)}\),/,
                 replace: "$&,$self.FriendsSinceComponent({userId:$1,isSidebar:false}),"

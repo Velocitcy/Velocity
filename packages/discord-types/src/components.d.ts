@@ -25,6 +25,7 @@ export interface ButtonProps extends PropsWithChildren<Omit<HTMLProps<HTMLButton
     size?: string;
 
     className?: string;
+    loading?: boolean,
     icon?: any;
 }
 

@@ -85,7 +85,7 @@ export function nextNotice() {
     }
 }
 
-export function showNotice(notice: Notice) {
+export function showNotice(p0: string, p1: string, p2: () => null, notice: Notice) {
     const message = isPrimitiveReactNode(notice.message)
         ? notice.message
         : <ErrorBoundary fallback={() => "Error Showing Notice"}>{notice.message}</ErrorBoundary>;

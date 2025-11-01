@@ -26,6 +26,7 @@ export interface UserThemeHeader {
     name: string;
     author: string;
     description: string;
+    required: boolean | string;
     version?: string;
     license?: string;
     source?: string;
@@ -39,6 +40,7 @@ function makeHeader(fileName: string, opts: Partial<UserThemeHeader> = {}): User
         name: opts.name ?? fileName.replace(/\.css$/i, ""),
         author: opts.author ?? "Unknown Author",
         description: opts.description ?? "A Discord Theme.",
+        required: opts.required === "true" || opts.required === true,
         version: opts.version,
         license: opts.license,
         source: opts.source,

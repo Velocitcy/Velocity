@@ -34,7 +34,6 @@ import { Button, ChannelStore, Forms, GuildRoleStore, Menu, React, Text } from "
 
 import { openEmbedRawModal } from "../CopyEmbed/index";
 
-
 function sortObject<T extends object>(obj: T): T {
     return Object.fromEntries(Object.entries(obj).sort(([k1], [k2]) => k1.localeCompare(k2))) as T;
 }

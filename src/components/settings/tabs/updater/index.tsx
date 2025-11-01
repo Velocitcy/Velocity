@@ -25,24 +25,24 @@ import { handleSettingsTabError, SettingsTab, wrapTab } from "@components/settin
 import { ModalCloseButton, ModalContent, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { useAwaiter } from "@utils/react";
 import { getRepo, isNewer, UpdateLogger } from "@utils/updater";
+import { findComponentByCodeLazy } from "@webpack";
 import { Forms, React } from "@webpack/common";
 
 import gitHash from "~git-hash";
 
 import { CommonProps, HashLink, Newer, Updatable } from "./Components";
 
+const Spinner = findComponentByCodeLazy("wanderingCubes", "aria-label");
+
 function Updater() {
     const settings = useSettings(["autoUpdate", "autoUpdateNotification"]);
-
     const [repo, err, repoPending] = useAwaiter(getRepo, {
         fallbackValue: "Loading...",
         onError: e => UpdateLogger.error("Failed to retrieve repo", err)
     });
+    const [checkingUpdate, setCheckingUpdate] = React.useState(false);
 
-    const commonProps: CommonProps = {
-        repo,
-        repoPending
-    };
+    const commonProps: CommonProps = { repo, repoPending, checkingUpdate, setCheckingUpdate };
 
     return (
         <SettingsTab title="Velocity Updater">
@@ -65,18 +65,19 @@ function Updater() {
             <Forms.FormTitle tag="h5">Repo</Forms.FormTitle>
 
             <Forms.FormText>
-                {repoPending
-                    ? repo
-                    : err
-                        ? "Failed to retrieve - check console"
-                        : (
-                            <Link href={repo}>
-                                {repo.split("/").slice(-2).join("/")}
-                            </Link>
-                        )
-                }
-                {" "}
-                (<HashLink hash={gitHash} repo={repo} disabled={repoPending} />)
+                {repoPending ? (
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <Spinner type="wanderingCubes" />
+                        <span>Loading repository...</span>
+                    </div>
+                ) : err ? (
+                    "Failed to retrieve - check console"
+                ) : (
+                    <>
+                        <Link href={repo}>{repo.split("/").slice(-2).join("/")}</Link>{" "}
+                        (<HashLink hash={gitHash} repo={repo} disabled={repoPending} />)
+                    </>
+                )}
             </Forms.FormText>
 
             <Divider className={Margins.top8 + " " + Margins.bottom8} />
@@ -91,15 +92,12 @@ function Updater() {
     );
 }
 
-export default IS_UPDATER_DISABLED
-    ? null
-    : wrapTab(Updater, "Updater");
+export default IS_UPDATER_DISABLED ? null : wrapTab(Updater, "Updater");
 
 export const openUpdaterModal = IS_UPDATER_DISABLED
     ? null
     : function () {
         const UpdaterTab = wrapTab(Updater, "Updater");
-
         try {
             openModal(wrapTab((modalProps: ModalProps) => (
                 <ModalRoot {...modalProps} size={ModalSize.MEDIUM}>

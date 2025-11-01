@@ -21,16 +21,18 @@ import { Flex } from "@components/Flex";
 import { Link } from "@components/Link";
 import { Margins } from "@components/margins";
 import { classes } from "@utils/misc";
-import { relaunch } from "@utils/native";
-import { changes, checkForUpdates, update, updateError } from "@utils/updater";
-import { Alerts, Button, Card, Forms, React, Toasts, useState } from "@webpack/common";
+import { changes, checkForUpdates, updateError } from "@utils/updater";
+import { Button, Card, Forms, React, Toasts, useState } from "@webpack/common";
 
 import { runWithDispatch } from "./runWithDispatch";
 
 export interface CommonProps {
     repo: string;
     repoPending: boolean;
+    checkingUpdate?: boolean;
+    setCheckingUpdate?: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 
 export function HashLink({ repo, hash, disabled = false }: { repo: string, hash: string, disabled?: boolean; }) {
     return (
@@ -107,32 +109,35 @@ export function Updatable(props: CommonProps) {
                     <Button
                         size={Button.Sizes.SMALL}
                         disabled={isUpdating || isChecking}
-                        onClick={runWithDispatch(setIsUpdating, async () => {
-                            if (await update()) {
+                        loading={isChecking}
+                        onClick={runWithDispatch(setIsChecking, async () => {
+                            const outdated = await checkForUpdates();
+
+                            if (outdated) {
+                                setUpdates(changes);
+                            } else {
                                 setUpdates([]);
 
-                                await new Promise<void>(r => {
-                                    Alerts.show({
-                                        title: "Update Success!",
-                                        body: "Successfully updated. Restart now to apply the changes?",
-                                        confirmText: "Restart",
-                                        cancelText: "Not now!",
-                                        onConfirm() {
-                                            relaunch();
-                                            r();
-                                        },
-                                        onCancel: r
-                                    });
+                                Toasts.show({
+                                    message: "No updates found!",
+                                    id: Toasts.genId(),
+                                    type: Toasts.Type.MESSAGE,
+                                    options: {
+                                        position: Toasts.Position.BOTTOM
+                                    }
                                 });
                             }
                         })}
                     >
-                        Update Now
+                        Check for Updates
                     </Button>
+
                 )}
                 <Button
                     size={Button.Sizes.SMALL}
                     disabled={isUpdating || isChecking}
+                    loading={isChecking || isUpdating}
+
                     onClick={runWithDispatch(setIsChecking, async () => {
                         const outdated = await checkForUpdates();
 

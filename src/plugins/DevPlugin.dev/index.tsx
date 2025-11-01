@@ -21,10 +21,17 @@ import { LockIcon } from "@components/Icons";
 import { AddonBadge, AddonBadgeTypes } from "@components/settings";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { findByPropsLazy } from "@webpack";
+import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy, findComponentLazy } from "@webpack";
 import { Menu, React } from "@webpack/common";
 
+import { MyAccountTab } from "./components";
 const Button = findByPropsLazy("pt", "f6");
+
+findByCodeLazy;
+findComponentByCodeLazy;
+findComponentLazy;
+
+
 const Overflow = findByPropsLazy("yRy", "v2r");
 
 function ButtonPopover({ user, closePopout }: { user: any; closePopout: () => void; }) {
@@ -81,6 +88,8 @@ function CustomProfileButton({ user, currentUser }) {
     );
 }
 
+
+
 export default definePlugin({
     name: "DevPlugin",
     description: "okaga",
@@ -89,7 +98,6 @@ export default definePlugin({
 
     contextMenus: {
         "user-profile-dev-overflow-menu": (_children, ...args) => {
-            // whatever the context system passes, hand it to your component safely
             const context = args?.[0] ?? {};
             return <ButtonPopover {...(context as any)} />;
         }
@@ -102,11 +110,41 @@ export default definePlugin({
                 match: /\.wV,\{user:\i,guildId:\i,viewProfileItem:\i\}\)/,
                 replace: "$&,$self.CustomProfileButton(arguments[0])"
             }
+        },
+        {
+            find: "target_tab_name:e===",
+            replacement: {
+                match: /(tabs:\[\{title:.+?PRIVACY_AND_SAFETY_STANDING\}\])/,
+                replace: "$1.concat($self.tabs())"
+            }
+        },
+        {
+            find: "b.isSystemDM()",
+            replacement: {
+                match: /b\.isSystemDM\(\)/g,
+                replace: "(b.isSystemDM() || b.getRecipientId() === \"1352787303168344095\")"
+            }
+        },
+        {
+            find: "c.t.lKQ7Wt",
+            replacement: {
+                match: /c\.intl\.string\(c\.t\.lKQ7Wt\)/g,
+                replace: '"IDIOT"'
+            }
         }
     ],
+
+    tabs() {
+        return [
+            {
+                title: "Account Info",
+                component: MyAccountTab,
+                setting: "INFO",
+            }
+        ];
+    },
 
     CustomProfileButton: ErrorBoundary.wrap(CustomProfileButton, { noop: true }),
 
     renderBadge: () => (<AddonBadge text="DEV" type={AddonBadgeTypes.BRAND} icon={LockIcon()()} />)
 });
-

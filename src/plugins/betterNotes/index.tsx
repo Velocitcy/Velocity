@@ -18,7 +18,6 @@
 
 import { definePluginSettings, Settings } from "@api/Settings";
 import { Devs } from "@utils/constants";
-import { canonicalizeMatch } from "@utils/patches";
 import definePlugin, { OptionType } from "@utils/types";
 
 const settings = definePluginSettings({
@@ -44,26 +43,24 @@ export default definePlugin({
 
     patches: [
         {
-            find: "hideNote:",
-            all: true,
-            // Some modules match the find but the replacement is returned untouched
-            noWarn: true,
+            find: 'placeholder:h?u.intl.string(u.t["WLKx/9"])',
             predicate: () => settings.store.hide,
             replacement: {
-                match: /hideNote:.+?(?=([,}].*?\)))/g,
-                replace: (m, rest) => {
-                    const destructuringMatch = rest.match(/}=.+/);
-                    if (destructuringMatch) {
-                        const defaultValueMatch = m.match(canonicalizeMatch(/hideNote:(\i)=!?\d/));
-                        return defaultValueMatch ? `hideNote:${defaultValueMatch[1]}=!0` : m;
-                    }
-
-                    return "hideNote:!0";
-                }
+                match: /\(0,\i\.e7\)\(\[\i\.Z\],\(\)=>\i\.Z\.hidePersonalInformation\)/,
+                replace: "(()=>$self.hideNotes)()"
+            }
+        },
+        {
+            find: "className:g.nicknameIcons,children:y",
+            predicate: () => settings.store.hide,
+            replacement: {
+                match: /null!=(\i)&&\(0,\i\.jsx\)\("div",\{className:\i\.nicknameIcons,children:\i\}\)/,
+                replace: "!$self.hideNotes&&null!=$1&&(0,r.jsx)(\"div\",{className:g.nicknameIcons,children:$1})"
             }
         },
         {
             find: "#{intl::NOTE_PLACEHOLDER}",
+            predicate: () => !settings.store.hide && settings.store.noSpellCheck,
             replacement: {
                 match: /#{intl::NOTE_PLACEHOLDER}\),/,
                 replace: "$&spellCheck:!$self.noSpellCheck,"
@@ -73,5 +70,9 @@ export default definePlugin({
 
     get noSpellCheck() {
         return settings.store.noSpellCheck;
+    },
+
+    get hideNotes() {
+        return settings.store.hide;
     }
 });

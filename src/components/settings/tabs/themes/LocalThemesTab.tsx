@@ -29,7 +29,7 @@ import { UserThemeHeader } from "@main/themes";
 import { classes } from "@utils/misc";
 import { closeModal, ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { findLazy } from "@webpack";
-import { Button, Card, Forms, Select, showToast, TextInput, Toasts, Tooltip, useEffect, useRef, useState } from "@webpack/common";
+import { Alerts, Button, Card, Forms, Select, showToast, TextInput, Toasts, Tooltip, useEffect, useRef, useState } from "@webpack/common";
 import ClientThemePlugin from "plugins/clientTheme";
 import type { ComponentType, CSSProperties, Ref, SyntheticEvent } from "react";
 
@@ -171,10 +171,11 @@ function CreateThemeModal({ onSuccess, modalKey, transitionState, ...props }: {
                             finalFileName += ".css";
 
                         const existing = await VelocityNative.themes.getThemesList();
-                        if (existing.some(t => t.fileName === finalFileName)) {
-                            Velocity.Webpack.Common.Alerts.show({
+                        const conflictingTheme = existing.find(t => t.fileName.toLowerCase() === finalFileName.toLowerCase());
+                        if (conflictingTheme) {
+                            Alerts.show({
                                 title: "File Already Exists",
-                                body: `A theme named "${finalFileName}" already exists. Please choose a different name.`,
+                                body: `A theme named "${conflictingTheme.fileName}" already exists. Please choose a different name.`,
                                 confirmText: "OK",
                                 confirmColor: "vc-button-danger"
                             });
@@ -286,7 +287,7 @@ function EditThemeModal({ onSuccess, modalKey, transitionState, ...props }: {
                     <Forms.FormTitle tag="h5">Select Theme</Forms.FormTitle>
                     <Select
                         options={themes.map(theme => ({
-                            label: theme.name,
+                            label: theme.fileName,
                             value: theme.fileName
                         }))}
                         isSelected={v => v === selectedTheme}
@@ -297,6 +298,9 @@ function EditThemeModal({ onSuccess, modalKey, transitionState, ...props }: {
 
                 {selectedThemeData && (
                     <div style={{ marginBottom: "16px" }}>
+                        <Forms.FormText>
+                            <strong>Name:</strong> {selectedThemeData.name}
+                        </Forms.FormText>
                         <Forms.FormText>
                             <strong>Author:</strong> {selectedThemeData.author}
                         </Forms.FormText>
