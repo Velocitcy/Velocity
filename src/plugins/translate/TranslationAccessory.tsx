@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Message } from "@vencord/discord-types";
+import { Message } from "@velocity-types";
 import { Parser, useEffect, useState } from "@webpack/common";
 
 import { TranslateIcon } from "./TranslateIcon";

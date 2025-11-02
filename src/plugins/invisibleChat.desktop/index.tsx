@@ -23,7 +23,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { getStegCloak } from "@utils/dependencies";
 import definePlugin, { OptionType, ReporterTestable } from "@utils/types";
-import { Message } from "@vencord/discord-types";
+import { Message } from "@velocity-types";
 import { ChannelStore, Constants, RestAPI, Tooltip } from "@webpack/common";
 
 import { buildDecModal } from "./components/DecryptionModal";

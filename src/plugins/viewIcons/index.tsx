@@ -22,7 +22,7 @@ import { ImageIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { openImageModal } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
-import type { Channel, Guild, User } from "@vencord/discord-types";
+import type { Channel, Guild, User } from "@velocity-types";
 import { GuildMemberStore, IconUtils, Menu } from "@webpack/common";
 
 

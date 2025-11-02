@@ -21,7 +21,7 @@ import "./styles.css";
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { Message } from "@vencord/discord-types";
+import { Message } from "@velocity-types";
 import { ChannelStore, Menu } from "@webpack/common";
 
 import { settings } from "./settings";

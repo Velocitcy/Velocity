@@ -26,7 +26,7 @@ import { DevsById } from "@utils/constants";
 import { fetchUserProfile } from "@utils/discord";
 import { classes, pluralise } from "@utils/misc";
 import { ModalContent, ModalRoot, openModal } from "@utils/modal";
-import { User } from "@vencord/discord-types";
+import { User } from "@velocity-types";
 import { findComponentByCodeLazy } from "@webpack";
 import { Forms, React, showToast, UserProfileStore, useStateFromStores } from "@webpack/common";
 

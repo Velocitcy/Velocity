@@ -20,7 +20,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { HeadingTertiary } from "@components/Heading";
 import { getIntlMessage } from "@utils/discord";
 import { classes } from "@utils/misc";
-import type { Guild, GuildMember } from "@vencord/discord-types";
+import type { Guild, GuildMember } from "@velocity-types";
 import { filters, findBulk, proxyLazyWebpack } from "@webpack";
 import { PermissionsBits, Text, Tooltip, useMemo, UserStore } from "@webpack/common";
 

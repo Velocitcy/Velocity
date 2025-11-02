@@ -19,7 +19,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import type { Channel, Emoji } from "@vencord/discord-types";
+import type { Channel, Emoji } from "@velocity-types";
 
 const settings = definePluginSettings({
     shownEmojis: {

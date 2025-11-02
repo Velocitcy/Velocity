@@ -23,7 +23,6 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { CodeIcon, CopyIcon, LogIcon, NotesIcon } from "@components/Icons";
 import { Margins } from "@components/margins";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import { copyWithToast } from "@utils/misc";
 import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
@@ -249,33 +248,33 @@ const messageContextCallback: NavContextMenuPatchCallback = (children, props) =>
                     id="vc-copy-embed-data"
                     label="Copy Embed Data"
                     action={() => copyEmbedData(props.message)}
-                    icon={setIconClassName(CodeIcon, Iconclasses.discord)}
+                    icon={() => <CodeIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
                 />
                 <Menu.MenuItem
                     id="vc-copy-full-json"
                     label="Copy Full JSON"
                     action={() => copyFullMessageJSON(props.message)}
-                    icon={setIconClassName(LogIcon, Iconclasses.discord)}
+                    icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
                 />
                 <Menu.MenuSeparator />
                 <Menu.MenuItem
                     id="vc-copy-embed-description"
                     label="Copy Embed Description"
                     action={() => copyEmbedDescription(props.message)}
-                    icon={setIconClassName(NotesIcon, Iconclasses.discord)}
+                    icon={() => <NotesIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
                 />
                 <Menu.MenuItem
                     id="vc-copy-embed-builder"
                     label="Copy EmbedBuilder"
                     action={() => copyEmbedBuilder(props.message)}
-                    icon={setIconClassName(CopyIcon, Iconclasses.discord)}
+                    icon={() => <CopyIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
                 />
                 <Menu.MenuSeparator />
                 <Menu.MenuItem
                     id="vc-view-raw-embed"
                     label="View Raw Embed"
                     action={() => openEmbedRawModal(props.message)}
-                    icon={setIconClassName(LogIcon, Iconclasses.discord)}
+                    icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
                 />
             </Menu.MenuItem>
         );

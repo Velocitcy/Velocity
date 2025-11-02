@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Module, ModuleExports, WebpackRequire } from "@vencord/discord-types/webpack";
+import { Module, ModuleExports, WebpackRequire } from "@velocity-types/webpack";
 
 import { SYM_ORIGINAL_FACTORY, SYM_PATCHED_BY, SYM_PATCHED_SOURCE } from "./patchWebpack";
 

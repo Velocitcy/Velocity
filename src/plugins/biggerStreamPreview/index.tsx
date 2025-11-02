@@ -21,7 +21,7 @@ import { ScreenshareIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { openImageModal } from "@utils/discord";
 import definePlugin from "@utils/types";
-import { Channel, User } from "@vencord/discord-types";
+import { Channel, User } from "@velocity-types";
 import { Menu } from "@webpack/common";
 
 import { ApplicationStreamingStore, ApplicationStreamPreviewStore } from "./webpack/stores";
@@ -59,8 +59,8 @@ export const handleViewPreview = async ({ guildId, channelId, ownerId }: Applica
 
     openImageModal({
         url: previewUrl,
-        height: 720,
-        width: 1280
+        height: 1680,
+        width: 1680
     });
 };
 

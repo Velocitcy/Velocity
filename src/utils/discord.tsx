@@ -17,7 +17,7 @@
 */
 
 import { MessageObject } from "@api/MessageEvents";
-import { Channel, CloudUpload, Guild, GuildFeatures, Message, User } from "@vencord/discord-types";
+import { Channel, CloudUpload, Guild, GuildFeatures, Message, User } from "@velocity-types";
 import { ChannelActionCreators, ChannelStore, ComponentDispatch, Constants, FluxDispatcher, GuildStore, i18n, IconUtils, InviteActions, MessageActions, RestAPI, SelectedChannelStore, SelectedGuildStore, UserProfileActions, UserProfileStore, UserSettingsActionCreators, UserUtils } from "@webpack/common";
 import { Except } from "type-fest";
 

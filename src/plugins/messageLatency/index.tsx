@@ -21,7 +21,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { isNonNullish } from "@utils/guards";
 import definePlugin, { OptionType } from "@utils/types";
-import { Message } from "@vencord/discord-types";
+import { Message } from "@velocity-types";
 import { findComponentByCodeLazy } from "@webpack";
 import { AuthenticationStore, SnowflakeUtils, Tooltip } from "@webpack/common";
 

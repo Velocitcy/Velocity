@@ -111,7 +111,12 @@ export async function syncAndRunChecks() {
 
 export function notify(text: string, icon?: string, onClick?: () => void) {
     if (settings.store.notices)
-        Notices.showNotice(text, "OK", () => Notices.popNotice());
+        Notices.showNotice({
+            type: "GENERIC",
+            message: text,
+            buttonText: "OK",
+            onClick: () => Notices.popNotice()
+        });
 
     showNotification({
         title: "Relationship Notifier",
@@ -134,7 +139,8 @@ export async function syncGuilds() {
     guilds.clear();
 
     const me = UserStore.getCurrentUser().id;
-    for (const [id, { name, icon }] of Object.entries(GuildStore.getGuilds())) {
+    for (const [id, guild] of Object.entries(GuildStore.getGuilds() as Record<string, any>)) {
+        const { name, icon } = guild;
         if (GuildMemberStore.isMember(id, me))
             guilds.set(id, {
                 id,

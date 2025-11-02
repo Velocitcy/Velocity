@@ -19,7 +19,7 @@
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin from "@utils/types";
-import { Message } from "@vencord/discord-types";
+import { Message } from "@velocity-types";
 import { UserStore } from "@webpack/common";
 
 

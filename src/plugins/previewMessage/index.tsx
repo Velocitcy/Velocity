@@ -20,7 +20,7 @@ import { ChatBarButton, ChatBarButtonFactory } from "@api/ChatButtons";
 import { generateId, sendBotMessage } from "@api/Commands";
 import { Devs } from "@utils/constants";
 import definePlugin, { StartAt } from "@utils/types";
-import { CloudUpload, MessageAttachment } from "@vencord/discord-types";
+import { CloudUpload, MessageAttachment } from "@velocity-types";
 import { findByPropsLazy } from "@webpack";
 import { DraftStore, DraftType, SelectedChannelStore, UserStore, useStateFromStores } from "@webpack/common";
 

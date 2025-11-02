@@ -23,7 +23,7 @@ import { openUserProfile } from "@utils/discord";
 import { isNonNullish } from "@utils/guards";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { Channel, User } from "@vencord/discord-types";
+import { Channel, User } from "@velocity-types";
 import { AuthenticationStore, Avatar, GuildMemberStore, React, RelationshipStore, TypingStore, UserStore, useStateFromStores } from "@webpack/common";
 import { PropsWithChildren } from "react";
 

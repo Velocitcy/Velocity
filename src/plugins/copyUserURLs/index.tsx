@@ -21,7 +21,7 @@ import { LinkIcon } from "@components/Icons";
 import { copyToClipboard } from "@utils/clipboard";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import type { Channel, User } from "@vencord/discord-types";
+import type { Channel, User } from "@velocity-types";
 import { Menu } from "@webpack/common";
 
 interface UserContextProps {

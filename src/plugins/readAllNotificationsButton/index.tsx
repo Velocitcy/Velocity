@@ -23,7 +23,7 @@ import { TextButton } from "@components/Button";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { Channel } from "@vencord/discord-types";
+import { Channel } from "@velocity-types";
 import { findStoreLazy } from "@webpack";
 import { FluxDispatcher, GuildChannelStore, GuildStore, React, ReadStateStore } from "@webpack/common";
 

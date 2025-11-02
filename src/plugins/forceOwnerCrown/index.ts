@@ -18,7 +18,7 @@
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { Channel, User } from "@vencord/discord-types";
+import { Channel, User } from "@velocity-types";
 import { GuildStore } from "@webpack/common";
 
 export default definePlugin({

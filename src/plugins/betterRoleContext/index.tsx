@@ -132,7 +132,7 @@ export default definePlugin({
                                 width: 128
                             });
                         }}
-                        icon={ImageIcon()}
+                        icon={() => <ImageIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
                     />
 
                 );

@@ -22,7 +22,7 @@ import { Logger } from "@utils/Logger";
 import { interpolateIfDefined } from "@utils/misc";
 import { canonicalizeReplacement } from "@utils/patches";
 import { Patch, PatchReplacement } from "@utils/types";
-import { WebpackRequire } from "@vencord/discord-types/webpack";
+import { WebpackRequire } from "@velocity-types/webpack";
 
 import { traceFunctionWithResults } from "../debug/Tracer";
 import { AnyModuleFactory, AnyWebpackRequire, MaybePatchedModuleFactory, PatchedModuleFactory } from "./types";
@@ -145,7 +145,7 @@ define(Function.prototype, "m", {
 
                 if (wreq == null && this.c != null) {
                     logger.info("Main WebpackInstance found" + interpolateIfDefined` in ${fileName}` + ", initializing internal references to WebpackRequire");
-                    _initWebpack(this as WebpackRequire);
+                    _initWebpack(this as unknown as WebpackRequire);
                 }
 
                 patchThisInstance();
@@ -428,7 +428,7 @@ function runFactoryWithWrap(patchedFactory: PatchedModuleFactory, thisArg: unkno
                 );
 
                 // Could technically be wrong, but it's better than nothing
-                _initWebpack(require as WebpackRequire);
+                _initWebpack(require as unknown as WebpackRequire);
             } else if (IS_DEV) {
                 logger.error("WebpackRequire was not initialized, running modules without patches instead.");
                 return originalFactory.apply(thisArg, argArray);

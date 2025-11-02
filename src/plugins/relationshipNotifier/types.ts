@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel } from "@vencord/discord-types";
+import { Channel } from "@velocity-types";
 
 export interface ChannelDelete {
     type: "CHANNEL_DELETE";

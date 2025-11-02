@@ -19,7 +19,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { Channel, Message } from "@vencord/discord-types";
+import { Channel, Message } from "@velocity-types";
 import { findLazy } from "@webpack";
 import { ContextMenuApi, FluxDispatcher, Menu, MessageActions } from "@webpack/common";
 

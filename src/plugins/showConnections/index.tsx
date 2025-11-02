@@ -25,7 +25,7 @@ import { CopyIcon, LinkIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { copyWithToast } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
-import { ConnectedAccount, User } from "@vencord/discord-types";
+import { ConnectedAccount, User } from "@velocity-types";
 import { findByCodeLazy, findByPropsLazy } from "@webpack";
 import { Tooltip, UserProfileStore } from "@webpack/common";
 import OpenInAppPlugin from "plugins/openInApp";
@@ -133,7 +133,7 @@ function CompactConnectionComponent({ connection, theme }: { connection: Connect
                         target="_blank"
                         rel="noreferrer"
                         onClick={e => {
-                            if (Vencord.Plugins.isPluginEnabled("OpenInApp")) {
+                            if (Velocity.Plugins.isPluginEnabled("OpenInApp")) {
                                 // handleLink will .preventDefault() if applicable
                                 OpenInAppPlugin.handleLink(e.currentTarget, e);
                             }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type * as t from "@vencord/discord-types";
+import type * as t from "@velocity-types";
 import { filters, mapMangledModuleLazy, waitFor, wreq } from "@webpack";
 
 export const Menu = {} as t.Menu;

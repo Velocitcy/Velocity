@@ -19,7 +19,6 @@
 import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { CopyIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import { copyWithToast } from "@utils/misc";
 import definePlugin from "@utils/types";
 import { Menu } from "@webpack/common";
@@ -31,7 +30,7 @@ const UserInfoPatch: NavContextMenuPatchCallback = (children, { user }) => {
         <Menu.MenuItem
             id="vc-copy-user-data"
             label="Copy User Data"
-            icon={setIconClassName(CopyIcon, Iconclasses.discord)}
+            icon={() => <CopyIcon height="24" width="24" viewBox="0 0 24 24" className="icon_c1e9c4" />}
             action={() => {
                 const json = JSON.stringify(user, null, 2);
                 copyWithToast(json, "User data copied to clipboard!");

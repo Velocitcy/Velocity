@@ -20,7 +20,7 @@ import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, 
 import { Devs } from "@utils/constants";
 import { makeLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
-import { CommandArgument, CommandContext } from "@vencord/discord-types";
+import { CommandArgument, CommandContext } from "@velocity-types";
 import { findByPropsLazy } from "@webpack";
 import { DraftType, UploadHandler, UploadManager, UserUtils } from "@webpack/common";
 import { applyPalette, GIFEncoder, quantize } from "gifenc";

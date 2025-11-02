@@ -18,7 +18,7 @@
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { Emoji } from "@vencord/discord-types";
+import { Emoji } from "@velocity-types";
 import { EmojiStore } from "@webpack/common";
 
 interface EmojiAutocompleteState {

@@ -25,7 +25,7 @@ import { SafetyIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
-import type { Guild, GuildMember } from "@vencord/discord-types";
+import type { Guild, GuildMember } from "@velocity-types";
 import { findByPropsLazy } from "@webpack";
 import { Button, ChannelStore, Dialog, GuildMemberStore, GuildRoleStore, GuildStore, match, Menu, PermissionsBits, Popout, TooltipContainer, useRef, UserStore } from "@webpack/common";
 

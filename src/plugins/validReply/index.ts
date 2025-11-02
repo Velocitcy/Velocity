@@ -18,7 +18,7 @@
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { Channel, Message, User } from "@vencord/discord-types";
+import { Channel, Message, User } from "@velocity-types";
 import { findByCodeLazy } from "@webpack";
 import { FluxDispatcher, RestAPI } from "@webpack/common";
 

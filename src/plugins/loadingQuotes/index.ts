@@ -19,7 +19,7 @@
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin, { OptionType, StartAt } from "@utils/types";
 
 import quotes from "./quotes.json";
 
@@ -46,6 +46,7 @@ export default definePlugin({
     description: "Replace Discord’s loading quotes",
     authors: [Devs.Ven, Devs.KraXen72, Devs.UlyssesZhan],
     settings,
+    startAt: StartAt.WebpackReady,
 
     patches: [
         {

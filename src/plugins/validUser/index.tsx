@@ -22,7 +22,7 @@ import { isNonNullish } from "@utils/guards";
 import { sleep } from "@utils/misc";
 import { Queue } from "@utils/Queue";
 import definePlugin from "@utils/types";
-import { ProfileBadge } from "@vencord/discord-types";
+import { ProfileBadge } from "@velocity-types";
 import { Constants, FluxDispatcher, RestAPI, UserProfileStore, UserStore, useState } from "@webpack/common";
 import { type ComponentType, type ReactNode } from "react";
 

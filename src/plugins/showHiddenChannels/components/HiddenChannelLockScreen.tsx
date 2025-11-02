@@ -20,7 +20,7 @@ import { Settings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { classes } from "@utils/misc";
 import { formatDuration } from "@utils/text";
-import type { Channel } from "@vencord/discord-types";
+import type { Channel } from "@velocity-types";
 import { findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import { EmojiStore, FluxDispatcher, GuildMemberStore, GuildStore, Parser, PermissionsBits, PermissionStore, SnowflakeUtils, Text, Timestamp, Tooltip, useEffect, useState } from "@webpack/common";
 

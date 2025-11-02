@@ -30,7 +30,7 @@ import { Margins } from "@utils/margins";
 import { copyWithToast, shouldShowContributorBadge } from "@utils/misc";
 import { closeModal, ModalContent, ModalFooter, ModalHeader, ModalRoot, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
-import { User } from "@vencord/discord-types";
+import { User } from "@velocity-types";
 import { ContextMenuApi, Forms, Menu, Toasts, UserStore } from "@webpack/common";
 
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";

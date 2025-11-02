@@ -17,7 +17,7 @@
 */
 
 import { classNameFactory } from "@api/Styles";
-import { Guild, GuildMember, Role } from "@vencord/discord-types";
+import { Guild, GuildMember, Role } from "@velocity-types";
 import { findByPropsLazy } from "@webpack";
 import { GuildRoleStore } from "@webpack/common";
 

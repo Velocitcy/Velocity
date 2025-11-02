@@ -22,10 +22,9 @@ import { NavContextMenuPatchCallback } from "@api/ContextMenu";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { NotesIcon, OpenExternalIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import { classes } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { Guild, User } from "@vencord/discord-types";
+import { Guild, User } from "@velocity-types";
 import { findByPropsLazy } from "@webpack";
 import { Alerts, Clickable, Menu, Parser, TooltipContainer } from "@webpack/common";
 
@@ -44,7 +43,7 @@ const guildPopoutPatch: NavContextMenuPatchCallback = (children, { guild }: { gu
         <Menu.MenuItem
             label="View Reviews"
             id="vc-rdb-server-reviews"
-            icon={setIconClassName(OpenExternalIcon, Iconclasses.popover)}
+            icon={() => <OpenExternalIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
             action={() => openReviewsModal(guild.id, guild.name, ReviewType.Server)}
         />
     );
@@ -56,7 +55,7 @@ const userContextPatch: NavContextMenuPatchCallback = (children, { user }: { use
         <Menu.MenuItem
             label="View Reviews"
             id="vc-rdb-user-reviews"
-            icon={setIconClassName(OpenExternalIcon, Iconclasses.popover)}
+            icon={() => <OpenExternalIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
             action={() => openReviewsModal(user.id, user.username, ReviewType.User)}
         />
     );
@@ -122,7 +121,7 @@ export default definePlugin({
                     cancelText: "Appeal",
                     confirmText: "Ok",
                     onCancel: async () =>
-                        VencordNative.native.openExternal(
+                        VelocityNative.native.openExternal(
                             "https://reviewdb.mantikafasi.dev/api/redirect?"
                             + new URLSearchParams({
                                 token: Auth.token!,
@@ -154,7 +153,7 @@ export default definePlugin({
                     onClick={() => openReviewsModal(user.id, user.username, ReviewType.User)}
                     className={classes(BannerButtonClasses.bannerButton)}
                 >
-                    {NotesIcon({ height: 16, width: 16 })()}
+                    <NotesIcon width="16" height="16" viewBox="0 0 24 24" />
                 </Clickable>
             </TooltipContainer>
         );

@@ -22,7 +22,7 @@ import { InfoIcon, OwnerCrownIcon } from "@components/Icons";
 import { copyToClipboard } from "@utils/clipboard";
 import { getIntlMessage, getUniqueUsername } from "@utils/discord";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
-import { Guild, Role, UnicodeEmoji, User } from "@vencord/discord-types";
+import { Guild, Role, UnicodeEmoji, User } from "@velocity-types";
 import { findByCodeLazy } from "@webpack";
 import { ContextMenuApi, FluxDispatcher, GuildMemberStore, GuildRoleStore, i18n, Menu, PermissionsBits, ScrollerThin, Text, Tooltip, useEffect, useMemo, UserStore, useState, useStateFromStores } from "@webpack/common";
 
@@ -167,7 +167,8 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                                             : (
                                                                 <Flex style={{ gap: "0.2em", justifyItems: "center" }}>
                                                                     @owner
-                                                                    {OwnerCrownIcon({ height: 18, width: 18, "aria-hidden": true })()}
+                                                                    <OwnerCrownIcon width="24" height="24" viewBox="0 0 24 24" aria-hidden={true} />
+
                                                                 </Flex>
                                                             )
                                                 }
@@ -206,7 +207,7 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                             return typeof description === "function" ? i18n.intl.format(description, {}) : description;
                                         })()
                                     }>
-                                        {props => InfoIcon({ ...props, className: "vc-info-icon" })()}
+                                        {props => <InfoIcon {...props} className="vc-info-icon" />}
                                     </Tooltip>
                                 </div>
                             ))}
