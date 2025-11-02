@@ -19,8 +19,8 @@
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { MessageJSON } from "@vencord/discord-types";
-import { ChannelType } from "@vencord/discord-types/enums";
+import { MessageJSON } from "@velocity-types";
+import { ChannelType } from "@velocity-types/enums";
 import { ChannelStore, ReadStateStore, UserStore } from "@webpack/common";
 
 const settings = definePluginSettings({

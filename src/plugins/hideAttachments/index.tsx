@@ -26,7 +26,7 @@ import { ImageInvisible, ImageVisible } from "@components/Icons";
 import { Devs } from "@utils/constants";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType } from "@utils/types";
-import { Channel, Message } from "@vencord/discord-types";
+import { Channel, Message } from "@velocity-types";
 import { ChannelStore, Menu } from "@webpack/common";
 
 const KEY = "HideAttachments_HiddenIds";
@@ -99,7 +99,7 @@ export default definePlugin({
         replacement: {
             match: /(?<=\i=)this\.render(?:Attachments|Embeds|StickersAccessories)\((\i)\)/g,
             replace: "$self.shouldHide($1?.id)?null:$&"
-        }
+        },
     }],
 
     contextMenus: {
@@ -151,3 +151,5 @@ export default definePlugin({
         updateMessage(channelId, messageId);
     }
 });
+
+

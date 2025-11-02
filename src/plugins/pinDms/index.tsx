@@ -22,10 +22,9 @@ import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { DeleteIcon, PencilIcon } from "@components/Icons";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import { classes } from "@utils/misc";
 import definePlugin, { OptionType, StartAt } from "@utils/types";
-import { Channel } from "@vencord/discord-types";
+import { Channel } from "@velocity-types";
 import { findByPropsLazy, findStoreLazy } from "@webpack";
 import { Clickable, ContextMenuApi, FluxDispatcher, Menu, React } from "@webpack/common";
 
@@ -80,7 +79,7 @@ export const settings = definePluginSettings({
 export default definePlugin({
     name: "PinDMs",
     description: "Allows you to pin private channels to the top of your DM list. To pin/unpin or re-order pins, right click DMs",
-    authors: [Devs.Ven, Devs.Aria],
+    authors: [Devs.Ven, Devs.Aria, Devs.Velocity],
     settings,
     contextMenus,
 
@@ -286,7 +285,7 @@ export default definePlugin({
                             <Menu.MenuItem
                                 id="vc-pindms-edit-category"
                                 label="Edit Category"
-                                icon={setIconClassName(PencilIcon, Iconclasses.discord)}
+                                icon={() => (<PencilIcon width="24" height="24" fill="none" viewBox="0 0 24 24" className="icon_f84418 " />)}
                                 action={() => openCategoryModal(category.id, null)}
                             />
 
@@ -319,7 +318,7 @@ export default definePlugin({
                                 id="vc-pindms-delete-category"
                                 color="danger"
                                 label="Delete Category"
-                                icon={setIconClassName(DeleteIcon, Iconclasses.discord)}
+                                icon={() => (<DeleteIcon width="24" height="24" fill="none" viewBox="0 0 24 24" className="icon_f84418 " />)}
                                 action={() => removeCategory(category.id)}
                             />
 

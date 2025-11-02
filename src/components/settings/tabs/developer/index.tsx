@@ -58,4 +58,4 @@ function DevelopersTab() {
     );
 }
 
-export default wrapTab(DevelopersTab, "Developer Visuals");
+export default IS_DEV ? wrapTab(DevelopersTab, "Developer Visuals") : null;

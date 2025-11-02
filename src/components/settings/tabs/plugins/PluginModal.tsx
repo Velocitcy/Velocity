@@ -32,7 +32,7 @@ import { proxyLazy } from "@utils/lazy";
 import { classes, isObjectEmpty } from "@utils/misc";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { OptionType, Plugin } from "@utils/types";
-import { User } from "@vencord/discord-types";
+import { User } from "@velocity-types";
 import { findByPropsLazy } from "@webpack";
 import { Clickable, ContextMenuApi, FluxDispatcher, Forms, Menu, React, Text, Tooltip, useEffect, UserStore, UserSummaryItem, UserUtils, useState } from "@webpack/common";
 import { Constructor } from "type-fest";

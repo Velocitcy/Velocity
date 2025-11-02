@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import "./styles.css";
+
 import ErrorBoundary from "@components/ErrorBoundary";
 import { CogWheel, LockIcon } from "@components/Icons";
 import { AddonBadge, AddonBadgeTypes } from "@components/settings";
@@ -27,11 +29,12 @@ import { Menu, React } from "@webpack/common";
 import { MyAccountTab } from "./components";
 const Button = findByPropsLazy("pt", "f6", "O1", "Q1");
 
+
 findByCodeLazy;
 findComponentByCodeLazy;
 findComponentLazy;
 
-
+const modalModule = findByPropsLazy("Cg", "Y0", "YA", "fM", "hz", "mz", "ol", "xB");
 const Overflow = findByPropsLazy("yRy", "v2r");
 
 function ButtonPopover({ user, closePopout }: { user: any; closePopout: () => void; }) {
@@ -53,6 +56,7 @@ function ButtonPopover({ user, closePopout }: { user: any; closePopout: () => vo
                 <Menu.MenuItem
                     id="dev-menu-2"
                     label="Another Option"
+                    color="premium-gradient"
                     action={() => {
                         console.log("Clicked Another Option");
                         closePopout();
@@ -133,7 +137,23 @@ export default definePlugin({
                 match: /c\.intl\.string\(c\.t\.lKQ7Wt\)/g,
                 replace: '"IDIOT"'
             }
+        },
+
+        {
+            find: "r.colorSuccess",
+            replacement: {
+                match: /success:\s*r\.colorSuccess\s*\}/,
+                replace: "success: r.colorSuccess, positive: r.colorPositive}"
+            }
+        },
+        {
+            find: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",',
+            replacement: {
+                match: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",',
+                replace: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",colorPositive:"colorPositive_c1e9c4 colorDefault_c1e9c4",'
+            }
         }
+
     ],
 
     tabs() {

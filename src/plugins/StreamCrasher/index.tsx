@@ -51,6 +51,11 @@ const settings = definePluginSettings({
         type: OptionType.BOOLEAN,
         description: "Show dropdown chevron (options menu)",
         default: true
+    },
+    keybindEnabled: {
+        type: OptionType.BOOLEAN,
+        description: "Having the ability to toggle the crasher with a keybind",
+        default: false
     }
 });
 
@@ -65,7 +70,7 @@ async function getSourceId() {
     }
 
     const sources = await DiscordNative.desktopCapture.getDesktopCaptureSources({
-        types: ["screen", "window"]
+        types: ["screen"]
     });
     return sources[0]?.id ?? "default";
 }
@@ -85,12 +90,26 @@ function updateStream() {
             FluxDispatcher.dispatch({
                 type: "STREAM_START",
                 streamType: "call",
+                guildId: null,
                 channelId,
-                sourceId,
+                appContext: "APP",
+                sourceId: sourceId,
+                sourceName: settings.store.isEnabled ? "$1}),$self,tGs47 void" : "Screen 1", // scary message
+                sourceIcon: "",
+                sound: true,
+                previewDisabled: false,
+                goLiveModalDurationMs: 2000 + Math.random() * 300,
+                analyticsLocations: [ // other options, i'm not willing to risk tracing.
+                    "channel call",
+                    "voice control tray",
+                    "go live modal v2"
+                ],
+                quality: {
+                    resolution: 1080,
+                    frameRate: 60
+                }
             });
         } catch (err) {
-            // forget about all those 583425 tries bruh
-            // DO NOT DELETE.
         }
     })();
 }
@@ -190,10 +209,16 @@ function CrashButton(props?: { showChevron?: boolean; }) {
 
     const showChevron = showChevronSetting;
 
-    const isStreaming = useStateFromStores([StreamStore], () => {
-        const id = UserStore.getCurrentUser()?.id;
-        return StreamStore.getActiveStreamForUser(id) != null;
-    });
+    const id = UserStore.getCurrentUser()?.id;
+    const isStreaming = useStateFromStores([StreamStore], () => StreamStore.getActiveStreamForUser(id) != null);
+
+    // FIXED: auto crash if starting stream
+    React.useEffect(() => {
+        if (isStreaming && settings.store.isEnabled) {
+            updateStream();
+        }
+    }, [isStreaming]);
+
 
     React.useEffect(() => {
         (async () => {
@@ -203,15 +228,6 @@ function CrashButton(props?: { showChevron?: boolean; }) {
             setScreens(sources);
         })();
     }, []);
-
-    React.useEffect(() => {
-        if (!isStreaming) return;
-
-        (async () => {
-            await new Promise(r => setTimeout(r, 500));
-            updateStream();
-        })();
-    }, [isStreaming]);
 
     if (!isStreaming) return null;
 
@@ -273,6 +289,8 @@ function CrashButton(props?: { showChevron?: boolean; }) {
     );
 }
 
+
+
 export default definePlugin({
     name: "StreamCrasher",
     description: "Crashes your stream in Discord calls when you're streaming.",
@@ -283,7 +301,23 @@ export default definePlugin({
         "manage-streams": StreamCrasherPatch
     },
 
+
+    event(e) {
+        if (!settings.store.keybindEnabled) return;
+        if (e.code === "F7" && e.type === "keydown" && !e.repeat) {
+            settings.store.isEnabled = !settings.store.isEnabled;
+        }
+    },
+
+    start() {
+        window.addEventListener("keydown", this.event);
+    },
+    stop() {
+        window.removeEventListener("keydown", this.event);
+    },
+
     patches: [
+        // whoever touches those buttons will be fucking BOMBED.
         {
             find: "#{intl::ACCOUNT_SPEAKING_WHILE_MUTED}",
             replacement: {
@@ -307,29 +341,11 @@ export default definePlugin({
                 replace: "className:$1.actions,children:[$self.CrashButton({ showChevron: $self.settings.store.showChevron }),"
             },
             predicate: () => settings.store.buttonLocation === "stream"
-        },
-
-        // Shut the fuk up discord.
-        {
-            find: "this.conn.setDesktopSourceWithOptions({",
-            replacement: {
-                match: /this\.conn\.setDesktopSourceWithOptions\(\{/,
-                replace: "0/* StreamPatch: silenced setDesktopSourceWithOptions */&&this.conn.setDesktopSourceWithOptions({"
-            }
-        },
-
-        {
-            find: "t.send(void 0===n?null:n)",
-            replacement: {
-                match: /t\.send\(void 0===n\?null:n\)/,
-                replace: "this.url.includes('/api/v9/streams')&&this.url.includes('preview')||t.send(void 0===n?null:n)"
-            }
         }
     ],
 
     updateStream,
     renderBadge: () => <AddonBadge text="BETA" type={AddonBadgeTypes.PRIMARY} icon={<WarningIcon width="16" height="16" viewBox="0 0 24 24" className="vc-icon" />} />,
-
 
     CrashButton: ErrorBoundary.wrap(CrashButton, { noop: true })
 });

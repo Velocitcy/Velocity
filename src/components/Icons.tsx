@@ -237,10 +237,12 @@ export const DeleteIcon = (props: IconProps) => (
     <Icon {...props}>
         <path
             fill="currentColor"
-            d="M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"
+            d="M14.25 1c.41 0 .75.34.75.75V3h5.25c.41 0 .75.34.75.75v.5c0 .41-.34.75-.75.75H3.75A.75.75 0 0 1 3 4.25v-.5c0-.41.34-.75.75-.75H9V1.75c0-.41.34-.75.75-.75h4.5Z"
         />
         <path
             fill="currentColor"
+            fillRule="evenodd"
+            clipRule="evenodd"
             d="M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"
         />
     </Icon>

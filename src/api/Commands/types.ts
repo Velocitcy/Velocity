@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Command } from "@vencord/discord-types";
-export { ApplicationCommandInputType, ApplicationCommandOptionType, ApplicationCommandType } from "@vencord/discord-types/enums";
+import { Command } from "@velocity-types";
+export { ApplicationCommandInputType, ApplicationCommandOptionType, ApplicationCommandType } from "@velocity-types/enums";
 
 export interface VelocityCommand extends Command {
     isVelocityCommand?: boolean;

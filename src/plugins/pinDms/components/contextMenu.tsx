@@ -38,7 +38,7 @@ function createPinMenuItem(channelId: string) {
                     <Menu.MenuItem
                         id="vc-add-category"
                         label="Add Category"
-                        icon={PlusIcon()}
+                        icon={() => (<PlusIcon width="24" height="24" fill="none" viewBox="0 0 24 24" className="icon_f84418 " />)}
                         color="brand"
                         action={() => openCategoryModal(null, channelId)}
                     />
@@ -59,7 +59,7 @@ function createPinMenuItem(channelId: string) {
                     <Menu.MenuItem
                         id="unpin-dm"
                         label="Unpin DM"
-                        icon={DeleteIcon()}
+                        icon={() => (<DeleteIcon width="24" height="24" fill="none" viewBox="0 0 24 24" className="icon_f84418 " />)}
                         color="danger"
                         action={() => removeChannelFromCategory(channelId)}
                     />

@@ -28,7 +28,7 @@ import { getCurrentGuild, getIntlMessage } from "@utils/discord";
 import { copyWithToast } from "@utils/misc";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
-import { Message } from "@vencord/discord-types";
+import { Message } from "@velocity-types";
 import { Button, ChannelStore, Forms, GuildRoleStore, Menu, React, Text } from "@webpack/common";
 
 import { openEmbedRawModal } from "../CopyEmbed/index";

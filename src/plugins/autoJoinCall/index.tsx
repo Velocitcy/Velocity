@@ -21,7 +21,6 @@ import { definePluginSettings } from "@api/Settings";
 import { CogWheel } from "@components/Icons";
 import { openPluginModal } from "@components/settings/tabs/plugins/PluginModal";
 import { Devs } from "@utils/constants";
-import { Iconclasses, setIconClassName } from "@utils/icon";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 import { FluxDispatcher, Menu, React } from "@webpack/common";
@@ -97,9 +96,20 @@ async function startStream(channelId: string) {
     FluxDispatcher.dispatch({
         type: "STREAM_START",
         streamType: "call",
+        guildId: null,
         channelId: channelId,
+        appContext: "APP",
         sourceId: sourceId,
-        sound: settings.store.streamSound
+        sourceName: "Screen 1",
+        sourceIcon: "",
+        sound: settings.store.streamSound,
+        previewDisabled: false,
+        goLiveModalDurationMs: 2000 + Math.random() * 300,
+        analyticsLocations: [
+            "channel call",
+            "voice control tray",
+            "go live modal v2"
+        ]
     });
 }
 
@@ -144,7 +154,7 @@ const streamContextMenuPatch: NavContextMenuPatchCallback = children => {
         <Menu.MenuItem
             id="vc-autojoin-settings"
             label="Auto Join Settings"
-            icon={setIconClassName(CogWheel, Iconclasses.discord)}
+            icon={() => (<CogWheel width="24" height="24" fill="none" viewBox="0 0 24 24" className="icon_f84418 " />)}
             action={() => openPluginModal(Velocity.Plugins.plugins.AutoJoinCall)}
         />
     );

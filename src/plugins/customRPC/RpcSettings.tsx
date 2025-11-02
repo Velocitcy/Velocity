@@ -23,7 +23,7 @@ import { Divider } from "@components/Divider";
 import { Heading } from "@components/Heading";
 import { resolveError } from "@components/settings/tabs/plugins/components/Common";
 import { debounce } from "@shared/debounce";
-import { ActivityType } from "@vencord/discord-types/enums";
+import { ActivityType } from "@velocity-types/enums";
 import { Select, Text, TextInput, useState } from "@webpack/common";
 
 import { setRpc, settings, TimestampMode } from ".";

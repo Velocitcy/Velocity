@@ -23,7 +23,7 @@ import { FormSwitchCompat } from "@components/FormSwitch";
 import { Heading } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
 import { LazyComponent } from "@utils/lazyReact";
-import * as t from "@vencord/discord-types";
+import * as t from "@velocity-types";
 import { filters, mapMangledModuleLazy, waitFor } from "@webpack";
 
 import { waitForComponent } from "./internal";

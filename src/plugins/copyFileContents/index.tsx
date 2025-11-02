@@ -63,7 +63,7 @@ export default definePlugin({
                             }
                         }}
                     >
-                        {recentlyCopied ? <CheckMarkIcon /> : bytesLeft > 0 ? <NoEntrySignIcon color="var(--channel-icon)" /> : <CopyIcon />}
+                        {recentlyCopied ? <CheckMarkIcon /> : bytesLeft > 0 ? <NoEntrySignIcon width="24" height="24" viewBox="0 0 24 24" color="var(--channel-icon)" /> : <CopyIcon width="24" height="24" viewBox="0 0 24 24" />}
                     </div>
                 )}
             </Tooltip>

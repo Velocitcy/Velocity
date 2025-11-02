@@ -36,8 +36,12 @@ const makeEmptyUserColorRule = (): UserColorRule => ({
 
 const makeEmptyUserColorArray = () => [makeEmptyUserColorRule()];
 
-function calculateNameColorForUser(id?: string) {
-    const { userColorRules } = settings.store;
+function calculateNameColorForUser(id?: string, user?: any) {
+    const { userColorRules, ignoreUsersWithEffects } = settings.store;
+
+    if (ignoreUsersWithEffects && user?.displayNameStyles?.effectId) {
+        return null;
+    }
 
     const customColor = userColorRules.find(rule => rule.userId === id && rule.userId !== "");
     if (customColor) {
@@ -62,6 +66,12 @@ const settings = definePluginSettings({
     },
     applyColorOnlyInDms: {
         description: "Apply colors only in direct messages; do not apply colors in servers.",
+        restartNeeded: false,
+        type: OptionType.BOOLEAN,
+        default: false
+    },
+    ignoreUsersWithEffects: {
+        description: "Don't apply custom colors to users with display name effects",
         restartNeeded: false,
         type: OptionType.BOOLEAN,
         default: false
@@ -200,7 +210,7 @@ export default definePlugin({
     calculateNameColorForMessageContext(context: any) {
         const userId: string | undefined = context?.message?.author?.id;
         const colorString = context?.author?.colorString;
-        const color = calculateNameColorForUser(userId);
+        const color = calculateNameColorForUser(userId, context?.message?.author);
 
         if (context?.message?.channel_id === "1337" && userId === "313337")
             return colorString;
@@ -218,7 +228,7 @@ export default definePlugin({
         try {
             const id = context?.user?.id;
             const colorString = context?.colorString;
-            const color = calculateNameColorForUser(id);
+            const color = calculateNameColorForUser(id, context?.user);
 
             if (settings.store.applyColorOnlyInDms && !context?.channel?.isPrivate()) {
                 return colorString;

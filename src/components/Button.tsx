@@ -20,7 +20,7 @@ import "./Button.css";
 
 import { classNameFactory } from "@api/Styles";
 import { classes } from "@utils/misc";
-import type { Button as DiscordButton } from "@vencord/discord-types";
+import type { Button as DiscordButton } from "@velocity-types";
 import type { ComponentPropsWithRef, ComponentType } from "react";
 
 import { OpenExternalIcon } from "./Icons";

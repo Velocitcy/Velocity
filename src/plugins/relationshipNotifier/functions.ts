@@ -17,7 +17,7 @@
 */
 
 import { getUniqueUsername, openUserProfile } from "@utils/discord";
-import { ChannelType } from "@vencord/discord-types/enums";
+import { ChannelType } from "@velocity-types/enums";
 import { UserUtils } from "@webpack/common";
 
 import settings from "./settings";

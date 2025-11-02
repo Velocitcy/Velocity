@@ -17,10 +17,10 @@
 */
 
 import { classNameFactory } from "@api/Styles";
-import { Divider } from "@components/Divider";
-import { ModalContent, ModalFooter, ModalHeader, ModalProps, ModalRoot, openModalLazy } from "@utils/modal";
+import { ManaModalContent, ManaModalDivider, ManaModalFooter, ManaModalHeader, ManaModalRoot } from "@utils/manaModal";
+import { ModalProps, openModalLazy } from "@utils/modal";
 import { extractAndLoadChunksLazy, findComponentByCodeLazy } from "@webpack";
-import { Button, ColorPicker, Forms, Text, TextInput, Toasts, useMemo, useState } from "@webpack/common";
+import { ColorPicker, Forms, TextInput, Toasts, useMemo, useState } from "@webpack/common";
 
 import { DEFAULT_COLOR, SWATCHES } from "../constants";
 import { categoryLen, createCategory, getCategory } from "../data";
@@ -31,8 +31,8 @@ interface ColorPickerWithSwatchesProps {
     value: number;
     disabled?: boolean;
     onChange(value: number | null): void;
-    renderDefaultButton?: () => React.ReactNode;
-    renderCustomButton?: () => React.ReactNode;
+    renderDefaultButton?: (props: any) => React.ReactNode;
+    renderCustomButton?: (props: any) => React.ReactNode;
 }
 
 const ColorPickerWithSwatches = findComponentByCodeLazy<ColorPickerWithSwatchesProps>('id:"color-picker"');
@@ -86,14 +86,14 @@ export function NewCategoryModal({ categoryId, modalProps, initialChannelId }: P
     };
 
     return (
-        <ModalRoot {...modalProps}>
-            <ModalHeader>
-                <Text variant="heading-lg/semibold" style={{ flexGrow: 1 }}>{categoryId ? "Edit" : "New"} Category</Text>
-            </ModalHeader>
+        <ManaModalRoot {...modalProps} size="md" paddingSize="sm">
+            <ManaModalHeader
+                title={`${categoryId ? "Edit" : "New"} Category`}
+            />
+            <ManaModalDivider />
 
-            {/* form is here so when you press enter while in the text input it submits */}
             <form onSubmit={onSave}>
-                <ModalContent className={cl("content")}>
+                <ManaModalContent className={cl("content")}>
                     <section>
                         <Forms.FormTitle>Name</Forms.FormTitle>
                         <TextInput
@@ -101,32 +101,46 @@ export function NewCategoryModal({ categoryId, modalProps, initialChannelId }: P
                             onChange={e => setName(e)}
                         />
                     </section>
-                    <Divider />
-                    <section>
+                    <section style={{ paddingTop: "5px" }}>
                         <Forms.FormTitle>Color</Forms.FormTitle>
-                        <ColorPickerWithSwatches
-                            key={category.id}
-                            defaultColor={DEFAULT_COLOR}
-                            colors={SWATCHES}
-                            onChange={c => setColor(c!)}
-                            value={color}
-                            renderDefaultButton={() => null}
-                            renderCustomButton={() => (
-                                <ColorPicker
-                                    color={color}
-                                    onChange={c => setColor(c!)}
-                                    key={category.id}
-                                    showEyeDropper={false}
-                                />
-                            )}
-                        />
+                        <div style={{ overflowX: "hidden" }}>
+                            <ColorPickerWithSwatches
+                                key={category.id}
+                                defaultColor={DEFAULT_COLOR}
+                                colors={SWATCHES}
+                                onChange={c => setColor(c!)}
+                                value={color}
+                                renderDefaultButton={() => (
+                                    <ColorPicker
+                                        color={color}
+                                        onChange={c => setColor(c!)}
+                                        key={category.id}
+                                        showEyeDropper={true}
+                                    />
+                                )}
+                                renderCustomButton={() => null}
+                            />
+                        </div>
                     </section>
-                </ModalContent>
-                <ModalFooter>
-                    <Button type="submit" onClick={onSave} disabled={!name}>{categoryId ? "Save" : "Create"}</Button>
-                </ModalFooter>
+                </ManaModalContent>
+                <ManaModalDivider />
+                <ManaModalFooter
+                    actions={[
+                        {
+                            text: "Cancel",
+                            variant: "secondary",
+                            onClick: modalProps.onClose
+                        },
+                        {
+                            text: categoryId ? "Save Catergory" : "Create Catergory",
+                            variant: "primary",
+                            onClick: onSave,
+                            disabled: !name
+                        }
+                    ]}
+                />
             </form>
-        </ModalRoot>
+        </ManaModalRoot>
     );
 }
 
@@ -135,4 +149,3 @@ export const openCategoryModal = (categoryId: string | null, channelId: string |
         await requireSettingsMenu();
         return modalProps => <NewCategoryModal categoryId={categoryId} modalProps={modalProps} initialChannelId={channelId} />;
     });
-

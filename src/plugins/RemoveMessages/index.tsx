@@ -110,7 +110,7 @@ function RemoveTFSettings({ rulesArray }: RemoveTFProps) {
                                                 color: "var(--status-danger)"
                                             }}
                                         >
-                                            {DeleteIcon()()}
+                                            <DeleteIcon width="24" height="24" fill="none" viewBox="0 0 24 24" className="vc-icon" />
                                         </Button>
                                     )}
                                 </Flex>

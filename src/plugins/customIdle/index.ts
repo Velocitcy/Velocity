@@ -78,12 +78,17 @@ export default definePlugin({
             Notices.noticesQueue.some(([, noticeMessage]) => noticeMessage === backOnlineMessage)
         ) return;
 
-        Notices.showNotice(backOnlineMessage, "Exit idle", () => {
-            Notices.popNotice();
-            FluxDispatcher.dispatch({
-                type: "IDLE",
-                idle: false
-            });
+        Notices.showNotice({
+            type: "GENERIC",
+            message: backOnlineMessage,
+            buttonText: "Exit idle",
+            onClick: () => {
+                Notices.popNotice();
+                FluxDispatcher.dispatch({
+                    type: "IDLE",
+                    idle: false
+                });
+            }
         });
     },
 

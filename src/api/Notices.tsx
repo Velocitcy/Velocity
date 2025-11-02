@@ -85,10 +85,14 @@ export function nextNotice() {
     }
 }
 
-export function showNotice(p0: string, p1: string, p2: () => null, notice: Notice) {
+export function showNotice(notice: Notice) {
     const message = isPrimitiveReactNode(notice.message)
         ? notice.message
-        : <ErrorBoundary fallback={() => "Error Showing Notice"}>{notice.message}</ErrorBoundary>;
+        : (
+            <ErrorBoundary fallback={() => "Error Showing Notice"}>
+                {notice.message}
+            </ErrorBoundary>
+        );
 
     noticesQueue.push([notice.type ?? "GENERIC", message, notice.buttonText, notice.onClick]);
     if (!currentNotice) nextNotice();

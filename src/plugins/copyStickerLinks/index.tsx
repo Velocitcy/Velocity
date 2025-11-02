@@ -20,7 +20,7 @@ import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/Co
 import { Devs } from "@utils/constants";
 import { copyWithToast } from "@utils/misc";
 import definePlugin from "@utils/types";
-import { Message, Sticker } from "@vencord/discord-types";
+import { Message, Sticker } from "@velocity-types";
 import { Menu, React, StickersStore } from "@webpack/common";
 import ExpressionClonerPlugin from "plugins/expressionCloner";
 
@@ -50,7 +50,7 @@ function buildMenuItem(sticker: PartialSticker, addBottomSeparator: boolean) {
                     id="vc-open-sticker-link"
                     key="vc-open-sticker-link"
                     label="Open Link"
-                    action={() => VencordNative.native.openExternal(getUrl(sticker))}
+                    action={() => VelocityNative.native.openExternal(getUrl(sticker))}
                 />
             </Menu.MenuGroup>
             {addBottomSeparator && <Menu.MenuSeparator />}
@@ -79,7 +79,7 @@ const expressionPickerPatch: NavContextMenuPatchCallback = (children, props: { t
 
     const sticker = StickersStore.getStickerById(id);
     if (sticker) {
-        children.push(buildMenuItem(sticker, Vencord.Plugins.isPluginEnabled(ExpressionClonerPlugin.name)));
+        children.push(buildMenuItem(sticker, Velocity.Plugins.isPluginEnabled(ExpressionClonerPlugin.name)));
     }
 };
 

@@ -107,7 +107,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
             if (failures.length) {
                 logger.error(`Failed to start dependencies for ${plugin.name}: ${failures.join(", ")}`);
                 const msg = "Failed to start dependencies: " + failures.join(", ");
-                showNotice("GENERIC", msg, () => null, { message: msg, buttonText: "Close", onClick: () => null });
+                showNotice({ type: "GENERIC", message: msg, buttonText: "Close", onClick: () => null });
                 return;
             }
 
@@ -169,8 +169,9 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
                     style={plugin.unavailable ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
                 >
                     {plugin.options && !isObjectEmpty(plugin.options)
-                        ? <CogWheel className={cl("settings-button")} />
-                        : <InfoIcon className={cl("info-icon")} />}
+                        ? <CogWheel className={cl("settings-button")} viewBox="0 0 24 24" width="24" height="24" />
+                        : <InfoIcon className={cl("info-icon")} viewBox="0 0 24 24" width="24" height="24" />}
+
                 </button>
             } />
     );

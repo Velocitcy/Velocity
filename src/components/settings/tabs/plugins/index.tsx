@@ -505,7 +505,7 @@ function PluginSettings() {
             <div className={classes(Margins.bottom20, cl("filter-controls"))}>
                 <ErrorBoundary noop>
                     <SearchBar
-                        autoFocus
+                        autoFocus={true}
                         query={searchValue.value}
                         placeholder="Search for a plugin..."
                         onChange={onSearch}
