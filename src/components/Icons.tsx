@@ -221,7 +221,18 @@ export const Microphone = (props: IconProps) => (
 );
 
 export const CogWheel = (props: IconProps) => (
-    <Icon {...props}>
+    <Icon
+        {...props}
+        style={{
+            transformOrigin: "50% 50%",
+            transition: "transform 0.2s ease-in-out",
+            ...(props.style || {})
+        }}
+        onMouseEnter={e =>
+            (e.currentTarget.style.animation = "CogWheelFrame 2.1s cubic-bezier(0.30, 0.1, 0.15, 1) infinite")
+        }
+        onMouseLeave={e => (e.currentTarget.style.animation = "none")}
+    >
         <path
             fill="currentColor"
             fillRule="evenodd"
@@ -234,7 +245,18 @@ export const CogWheel = (props: IconProps) => (
 
 
 export const DeleteIcon = (props: IconProps) => (
-    <Icon {...props}>
+    <Icon
+        {...props}
+        style={{
+            transformOrigin: "50% 50%",
+            transition: "transform 0.2s ease-in-out",
+            ...(props.style || {})
+        }}
+        onMouseEnter={e =>
+            (e.currentTarget.style.animation = "DeleteFrame 1.9s ease-in-out infinite")
+        }
+        onMouseLeave={e => (e.currentTarget.style.animation = "none")}
+    >
         <path
             fill="currentColor"
             d="M14.25 1c.41 0 .75.34.75.75V3h5.25c.41 0 .75.34.75.75v.5c0 .41-.34.75-.75.75H3.75A.75.75 0 0 1 3 4.25v-.5c0-.41.34-.75.75-.75H9V1.75c0-.41.34-.75.75-.75h4.5Z"
@@ -247,6 +269,7 @@ export const DeleteIcon = (props: IconProps) => (
         />
     </Icon>
 );
+
 
 export const PlusIcon = (props: IconProps) => (
     <Icon {...props}>

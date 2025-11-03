@@ -26,7 +26,10 @@ import { Devs } from "@utils/constants";
 import { copyWithToast } from "@utils/misc";
 import { closeModal, ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
+import { findByPropsLazy } from "@webpack";
 import { Forms, Menu, React, Text, Toasts } from "@webpack/common";
+
+const iconClass = findByPropsLazy("icon", "iconContainer", "label");
 
 function parseDiscordColor(colorValue: any): number | null {
     if (typeof colorValue === "number") return colorValue;
@@ -248,33 +251,33 @@ const messageContextCallback: NavContextMenuPatchCallback = (children, props) =>
                     id="vc-copy-embed-data"
                     label="Copy Embed Data"
                     action={() => copyEmbedData(props.message)}
-                    icon={() => <CodeIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    icon={() => <CodeIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
                 <Menu.MenuItem
                     id="vc-copy-full-json"
                     label="Copy Full JSON"
                     action={() => copyFullMessageJSON(props.message)}
-                    icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
                 <Menu.MenuSeparator />
                 <Menu.MenuItem
                     id="vc-copy-embed-description"
                     label="Copy Embed Description"
                     action={() => copyEmbedDescription(props.message)}
-                    icon={() => <NotesIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    icon={() => <NotesIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
                 <Menu.MenuItem
                     id="vc-copy-embed-builder"
                     label="Copy EmbedBuilder"
                     action={() => copyEmbedBuilder(props.message)}
-                    icon={() => <CopyIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    icon={() => <CopyIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
                 <Menu.MenuSeparator />
                 <Menu.MenuItem
                     id="vc-view-raw-embed"
                     label="View Raw Embed"
                     action={() => openEmbedRawModal(props.message)}
-                    icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
             </Menu.MenuItem>
         );

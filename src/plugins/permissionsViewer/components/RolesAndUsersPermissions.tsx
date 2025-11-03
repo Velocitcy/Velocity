@@ -121,58 +121,75 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                         tabIndex={0}
                                     >
                                         <div
-                                            className={cl("modal-list-item", { "modal-list-item-active": selectedItemIndex === index })}
-                                            onContextMenu={e => {
-                                                if (permission.type === PermissionType.Role)
-                                                    ContextMenuApi.openContextMenu(e, () => (
-                                                        <RoleContextMenu
-                                                            guild={guild}
-                                                            roleId={permission.id!}
-                                                            onClose={modalProps.onClose}
-                                                        />
-                                                    ));
-                                                else if (permission.type === PermissionType.User) {
-                                                    ContextMenuApi.openContextMenu(e, () => (
-                                                        <UserContextMenu
-                                                            userId={permission.id!}
-                                                        />
-                                                    ));
-                                                }
-                                            }}
+                                            key={index}
+                                            className={cl("modal-list-item-btn")}
+                                            onClick={() => selectItem(index)}
+                                            role="button"
+                                            tabIndex={0}
                                         >
-                                            {(permission.type === PermissionType.Role || permission.type === PermissionType.Owner) && (
-                                                <span
-                                                    className={cl("modal-role-circle")}
-                                                    style={{ backgroundColor: role?.colorString ?? "var(--primary-300)" }}
-                                                />
-                                            )}
-                                            {permission.type === PermissionType.Role && roleIconSrc != null && (
-                                                <img
-                                                    className={cl("modal-role-image")}
-                                                    src={roleIconSrc}
-                                                />
-                                            )}
-                                            {permission.type === PermissionType.User && user != null && (
-                                                <img
-                                                    className={cl("modal-user-img")}
-                                                    src={user.getAvatarURL(void 0, void 0, false)}
-                                                />
-                                            )}
-                                            <Text variant="text-md/normal" className={cl("modal-list-item-text")}>
-                                                {
-                                                    permission.type === PermissionType.Role
-                                                        ? role?.name ?? "Unknown Role"
-                                                        : permission.type === PermissionType.User
-                                                            ? (user != null && getUniqueUsername(user)) ?? "Unknown User"
-                                                            : (
-                                                                <Flex style={{ gap: "0.2em", justifyItems: "center" }}>
-                                                                    @owner
-                                                                    <OwnerCrownIcon width="24" height="24" viewBox="0 0 24 24" aria-hidden={true} />
-
-                                                                </Flex>
-                                                            )
-                                                }
-                                            </Text>
+                                            <Tooltip text={permission.type === PermissionType.Owner ? "Server Owner" : undefined} position="bottom">
+                                                {props => (
+                                                    <div
+                                                        {...props}
+                                                        className={cl("modal-list-item", { "modal-list-item-active": selectedItemIndex === index })}
+                                                        onContextMenu={e => {
+                                                            if (permission.type === PermissionType.Role)
+                                                                ContextMenuApi.openContextMenu(e, () => (
+                                                                    <RoleContextMenu
+                                                                        guild={guild}
+                                                                        roleId={permission.id!}
+                                                                        onClose={modalProps.onClose}
+                                                                    />
+                                                                ));
+                                                            else if (permission.type === PermissionType.User) {
+                                                                ContextMenuApi.openContextMenu(e, () => (
+                                                                    <UserContextMenu
+                                                                        userId={permission.id!}
+                                                                    />
+                                                                ));
+                                                            }
+                                                        }}
+                                                    >
+                                                        {(permission.type === PermissionType.Role || permission.type === PermissionType.Owner) && (
+                                                            <span
+                                                                className={cl("modal-role-circle")}
+                                                                style={{ backgroundColor: role?.colorString ?? "var(--primary-300)" }}
+                                                            />
+                                                        )}
+                                                        {permission.type === PermissionType.Role && roleIconSrc != null && (
+                                                            <img
+                                                                className={cl("modal-role-image")}
+                                                                src={roleIconSrc}
+                                                            />
+                                                        )}
+                                                        {permission.type === PermissionType.User && user != null && (
+                                                            <img
+                                                                className={cl("modal-user-img")}
+                                                                src={user.getAvatarURL(void 0, void 0, false)}
+                                                            />
+                                                        )}
+                                                        <Text variant="text-md/normal" className={cl("modal-list-item-text")}>
+                                                            {
+                                                                permission.type === PermissionType.Role
+                                                                    ? role?.name ?? "Unknown Role"
+                                                                    : permission.type === PermissionType.User
+                                                                        ? (user != null && getUniqueUsername(user)) ?? "Unknown User"
+                                                                        : (
+                                                                            <Flex style={{ gap: "0.2em", alignItems: "center" }}>
+                                                                                @owner
+                                                                                <OwnerCrownIcon
+                                                                                    width="20"
+                                                                                    height="20"
+                                                                                    viewBox="0 0 16 14"
+                                                                                    aria-hidden={true}
+                                                                                />
+                                                                            </Flex>
+                                                                        )
+                                                            }
+                                                        </Text>
+                                                    </div>
+                                                )}
+                                            </Tooltip>
                                         </div>
                                     </div>
                                 );
@@ -207,7 +224,7 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                             return typeof description === "function" ? i18n.intl.format(description, {}) : description;
                                         })()
                                     }>
-                                        {props => <InfoIcon {...props} className="vc-info-icon" />}
+                                        {props => <InfoIcon viewBox="0 0 24 24" height="24" width="24" {...props} className="vc-info-icon" />}
                                     </Tooltip>
                                 </div>
                             ))}

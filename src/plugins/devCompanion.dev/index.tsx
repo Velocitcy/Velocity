@@ -218,6 +218,19 @@ function initWs(isManual = false) {
                         case "ComponentByCode":
                             results = findAll(filters.componentByCode(...parsedArgs));
                             break;
+                        case "ByExport":
+                            results = findAll(m => m?.[parsedArgs[0]] !== undefined);
+                            break;
+                        case "ByExports":
+                            results = findAll(m => parsedArgs.every(prop => m?.[prop] !== undefined));
+                            break;
+                        case "Component":
+                            results = findAll(parsedArgs[0]);
+                            break;
+                        case "ExportedComponent":
+                            const mods = findAll(filters.byProps(...parsedArgs));
+                            results = mods.map(m => m[parsedArgs[0]]).filter(Boolean);
+                            break;
                         default:
                             return reply("Unknown Find Type " + type);
                     }

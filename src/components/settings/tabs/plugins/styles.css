@@ -86,3 +86,7 @@
     flex-direction: column;
     gap: 1.25em;
 }
+
+.vc-reload-notice {
+    margin-top: 15px;
+}

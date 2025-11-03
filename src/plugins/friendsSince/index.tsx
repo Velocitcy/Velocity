@@ -55,6 +55,7 @@ export default definePlugin({
         // User Profile Modal v2
         {
             find: ".MODAL_V2,onClose:",
+            lazy: true,
             noWarn: true,
             replacement: {
                 match: /#{intl::USER_PROFILE_MEMBER_SINCE}\),.{0,100}userId:(\i\.id),.{0,100}}\)}\),/,

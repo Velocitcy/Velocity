@@ -29,9 +29,13 @@ import { copyWithToast } from "@utils/misc";
 import { closeModal, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { Message } from "@velocity-types";
+import { findByPropsLazy } from "@webpack";
 import { Button, ChannelStore, Forms, GuildRoleStore, Menu, React, Text } from "@webpack/common";
 
 import { openEmbedRawModal } from "../CopyEmbed/index";
+
+const iconClass = findByPropsLazy("icon", "iconContainer", "label");
+const popoverClass = findByPropsLazy("icon", "hoverBarButton");
 
 function sortObject<T extends object>(obj: T): T {
     return Object.fromEntries(Object.entries(obj).sort(([k1], [k2]) => k1.localeCompare(k2))) as T;
@@ -156,7 +160,7 @@ const messageContextCallback: NavContextMenuPatchCallback = (children, props) =>
             id="vc-view-message-raw"
             label="View Raw"
             action={() => openViewRawModalMessage(props.message)}
-            icon={() => <LogIcon height="24" width="24" viewBox="0 0 24 24" className="icon_c1e9c4" />}
+            icon={() => <LogIcon height="24" width="24" viewBox="0 0 24 24" className={iconClass.icon} />}
         />
     );
 };
@@ -187,7 +191,7 @@ function MakeContextCallback(name: "Guild" | "Role" | "User" | "Channel"): NavCo
                         openViewRawModal(JSON.stringify(value, null, 4), name);
                     }
                 }}
-                icon={() => <LogIcon height="24" width="24" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                icon={() => <LogIcon height="24" width="24" viewBox="0 0 24 24" className={iconClass.icon} />}
             />
         );
     };
@@ -231,7 +235,7 @@ export default definePlugin({
 
         return {
             label: "View Raw",
-            icon: () => <LogIcon height="24" width="24" viewBox="0 0 24 24" className="icon_f84418" />,
+            icon: () => <LogIcon height="24" width="24" viewBox="0 0 24 24" className={popoverClass.icon} />,
             message: msg,
             channel,
             onClick: () => openViewRawModalMessage(msg)

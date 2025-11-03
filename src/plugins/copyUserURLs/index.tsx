@@ -23,6 +23,9 @@ import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import type { Channel, User } from "@velocity-types";
 import { Menu } from "@webpack/common";
+import { findByPropsLazy } from "webpack";
+
+const iconClass = findByPropsLazy("icon", "iconContainer", "label");
 
 interface UserContextProps {
     channel: Channel;
@@ -38,7 +41,7 @@ const UserContextMenuPatch: NavContextMenuPatchCallback = (children, { user }: U
             id="vc-copy-user-url"
             label="Copy User URL"
             action={() => copyToClipboard(`<https://discord.com/users/${user.id}>`)}
-            icon={LinkIcon}
+            icon={() => <LinkIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
         />
     );
 };

@@ -23,8 +23,10 @@ import { Devs } from "@utils/constants";
 import { openImageModal } from "@utils/discord";
 import definePlugin, { OptionType } from "@utils/types";
 import type { Channel, Guild, User } from "@velocity-types";
+import { findByPropsLazy } from "@webpack";
 import { GuildMemberStore, IconUtils, Menu } from "@webpack/common";
 
+const iconClass = findByPropsLazy("icon", "iconContainer", "label");
 
 interface UserContextProps {
     channel: Channel;
@@ -104,7 +106,7 @@ const UserContext: NavContextMenuPatchCallback = (children, { user, guildId }: U
                 id="view-avatar"
                 label="View Avatar"
                 action={() => openAvatar(IconUtils.getUserAvatarURL(user, true))}
-                icon={ImageIcon}
+                icon={() => <ImageIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
             />
             {memberAvatar && (
                 <Menu.MenuItem
@@ -116,7 +118,7 @@ const UserContext: NavContextMenuPatchCallback = (children, { user, guildId }: U
                         guildId: guildId!,
                         canAnimate: true
                     }))}
-                    icon={ImageIcon}
+                    icon={() => <ImageIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
             )}
         </Menu.MenuGroup>
@@ -142,7 +144,7 @@ const GuildContext: NavContextMenuPatchCallback = (children, { guild }: GuildCon
                             canAnimate: true
                         })!)
                     }
-                    icon={ImageIcon}
+                    icon={() => <ImageIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
             ) : null}
             {banner ? (
@@ -152,7 +154,7 @@ const GuildContext: NavContextMenuPatchCallback = (children, { guild }: GuildCon
                     action={() =>
                         openBanner(IconUtils.getGuildBannerURL(guild, true)!)
                     }
-                    icon={ImageIcon}
+                    icon={() => <ImageIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
             ) : null}
         </Menu.MenuGroup>
@@ -170,7 +172,7 @@ const GroupDMContext: NavContextMenuPatchCallback = (children, { channel }: Grou
                 action={() =>
                     openAvatar(IconUtils.getChannelIconURL(channel)!)
                 }
-                icon={ImageIcon}
+                icon={() => <ImageIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
             />
         </Menu.MenuGroup>
     ));
