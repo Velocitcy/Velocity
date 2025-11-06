@@ -17,7 +17,7 @@
 */
 
 import { mergeDefaults } from "@utils/mergeDefaults";
-import { CommandArgument, Message } from "@vencord/discord-types";
+import { CommandArgument, Message } from "@velocity-types";
 import { findByCodeLazy } from "@webpack";
 import { MessageActions, SnowflakeUtils } from "@webpack/common";
 import type { PartialDeep } from "type-fest";

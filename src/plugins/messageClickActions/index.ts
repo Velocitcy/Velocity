@@ -117,6 +117,17 @@ export default definePlugin({
     onMessageClick(msg, channel, event) {
         const isMe = msg.author.id === UserStore.getCurrentUser().id;
 
+        // Handle ephemeral messages
+        if (msg.hasFlag && msg.hasFlag(MessageFlags.EPHEMERAL) && isPressedKey && settings.store.enableDeleteOnClick) {
+            FluxDispatcher.dispatch({
+                type: "MESSAGE_DELETE",
+                channelId: channel.id,
+                id: msg.id
+            });
+            event.preventDefault();
+            return;
+        }
+
         // Only handle normal click / double click
         if (!isPressedKey) {
             if (event.detail < settings.store.doubleClickAction) return;

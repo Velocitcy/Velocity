@@ -144,7 +144,7 @@ export function parseEditContent(content: string, message: Message) {
 export default definePlugin({
     name: "MessageLogger",
     description: "Temporarily logs deleted and edited messages.",
-    authors: [Devs.rushii, Devs.Ven, Devs.AutumnVN, Devs.Nickyux, Devs.Kyuuhachi],
+    authors: [Devs.rushii, Devs.Velocity, Devs.Ven, Devs.AutumnVN, Devs.Nickyux, Devs.Kyuuhachi],
     dependencies: ["MessageUpdaterAPI"],
 
     contextMenus: {
@@ -501,16 +501,23 @@ export default definePlugin({
         },
 
         {
-            // Message context base menu
             find: ".MESSAGE,commandTargetId:",
             replacement: [
                 {
-                    // Remove the first section if message is deleted
                     match: /children:(\[""===.+?\])/,
                     replace: "children:arguments[0].message.deleted?[]:$1"
                 }
             ]
         },
+        {
+            // by velocitcy - litle bit of improvement!
+            find: ".deleteMessage(t.id,e.id)",
+            replacement: {
+                match: /(\i)\.state===\i\.\i\.SENDING\|\|!(\i)/,
+                replace: "$1.state===$self.MessageFlags?.SENDING||!$2||$1.deleted"
+            }
+        },
+
         {
             // Message grouping
             find: "NON_COLLAPSIBLE.has(",

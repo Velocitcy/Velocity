@@ -18,7 +18,7 @@
 
 import { Logger } from "@utils/Logger";
 import { makeCodeblock } from "@utils/text";
-import { CommandArgument, CommandContext, CommandOption } from "@vencord/discord-types";
+import { CommandArgument, CommandContext, CommandOption } from "@velocity-types";
 
 import { sendBotMessage } from "./commandHelpers";
 import { ApplicationCommandInputType, ApplicationCommandOptionType, ApplicationCommandType, VelocityCommand } from "./types";

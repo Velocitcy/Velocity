@@ -18,7 +18,7 @@
 
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Logger } from "@utils/Logger";
-import { Channel, Message } from "@vencord/discord-types";
+import { Channel, Message } from "@velocity-types";
 import type { ComponentType, MouseEventHandler } from "react";
 
 const logger = new Logger("MessagePopover");
