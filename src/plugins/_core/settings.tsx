@@ -47,8 +47,8 @@ export default definePlugin({
                     }
                 },
                 {
-                    match: /copyValue:\i\.join\(" "\)/,
-                    replace: "$& + $self.getInfoString()"
+                    match: /(null!=\i&&(\i)\.push\(\i\),)/,
+                    replace: "$1$2.push(...$self.getInfoRows()),"
                 }
             ]
         },
