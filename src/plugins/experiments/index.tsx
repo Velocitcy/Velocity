@@ -79,6 +79,14 @@ export default definePlugin({
                 replace: "$self.WarningCard(),"
             }
         },
+        {
+            // Remove this because many people get confused on why they dont see that button.
+            find: "Warning: Server did not send any experiment config",
+            replacement: {
+                match: /children:\s*['"]Warning: Server did not send any experiment config\. You may need to check the "Send to Client" box in the admin UI\.['"]/g,
+                replace: "children:null"
+            }
+        },
         // Change top right toolbar button from the help one to the dev one
         {
             find: '?"BACK_FORWARD_NAVIGATION":',

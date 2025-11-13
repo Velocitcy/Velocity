@@ -76,6 +76,7 @@ if (!IS_VANILLA) {
                 // work around discord unloading when in background
                 options.webPreferences.backgroundThrottling = false;
 
+
                 if (settings.frameless) {
                     options.frame = false;
                 } else if (process.platform === "win32" && settings.winNativeTitleBar) {
@@ -90,6 +91,11 @@ if (!IS_VANILLA) {
                 if (settings.disableMinSize) {
                     options.minWidth = 0;
                     options.minHeight = 0;
+                }
+
+                if (settings.windowMoveable) {
+                    options.resizable = false;
+                    options.movable = false;
                 }
 
                 const needsVibrancy = process.platform === "darwin" && settings.macosVibrancyStyle;

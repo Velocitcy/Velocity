@@ -213,9 +213,6 @@ export function openEmbedRawModal(msg: any) {
     ));
 }
 
-
-
-
 function copyEmbedData(msg: any) {
     if (!msg?.embeds?.length) {
         Toasts.show({
@@ -262,6 +259,27 @@ function copyEmbedDescription(msg: any) {
     copyWithToast(desc, "Embed description copied!");
 }
 
+function copySpecificEmbedDescription(msg: any, index: number) {
+    if (!msg?.embeds?.[index]) {
+        Toasts.show({
+            message: `Embed ${index + 1} not found!`,
+            id: Toasts.genId(),
+            type: Toasts.Type.FAILURE
+        });
+        return;
+    }
+    const desc = msg.embeds[index].description || msg.embeds[index].rawDescription;
+    if (!desc) {
+        Toasts.show({
+            message: `No description in embed ${index + 1}!`,
+            id: Toasts.genId(),
+            type: Toasts.Type.FAILURE
+        });
+        return;
+    }
+    copyWithToast(desc, `Embed ${index + 1} description copied!`);
+}
+
 function copyEmbedBuilder(msg: any) {
     if (!msg?.embeds?.length) {
         Toasts.show({
@@ -301,12 +319,29 @@ const messageContextCallback: NavContextMenuPatchCallback = (children, props) =>
                     icon={() => <LogIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
                 />
                 <Menu.MenuSeparator />
-                <Menu.MenuItem
-                    id="vc-copy-embed-description"
-                    label="Copy Embed Description"
-                    action={() => copyEmbedDescription(props.message)}
-                    icon={() => <NotesIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
-                />
+                {props.message.embeds.length === 1 ? (
+                    <Menu.MenuItem
+                        id="vc-copy-embed-description"
+                        label="Copy Embed Description"
+                        action={() => copyEmbedDescription(props.message)}
+                        icon={() => <NotesIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
+                    />
+                ) : (
+                    <Menu.MenuItem
+                        id="vc-copy-embed-description"
+                        label="Copy Embed Description"
+                    >
+                        {props.message.embeds.map((embed: any, i: number) => (
+                            <Menu.MenuItem
+                                key={i}
+                                id={`vc-copy-embed-desc-${i}`}
+                                label={`Copy Embed ${i + 1} Description`}
+                                action={() => copySpecificEmbedDescription(props.message, i)}
+                                icon={() => <NotesIcon width="24" height="24" viewBox="0 0 24 24" className={iconClass.icon} />}
+                            />
+                        ))}
+                    </Menu.MenuItem>
+                )}
                 <Menu.MenuItem
                     id="vc-copy-embed-builder"
                     label="Copy EmbedBuilder"

@@ -1,0 +1,5 @@
+/* buttons to be animated */
+#user-context-vc-ml-clear-channel:hover svg {
+    animation: DeleteFrame 1.9s ease-in-out infinite;
+    transform-origin: 50% 50%;
+}

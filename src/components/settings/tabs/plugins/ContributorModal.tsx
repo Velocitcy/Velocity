@@ -157,7 +157,7 @@ function ContributorModal({ user }: { user: User; }) {
                         <PluginCard
                             key={p.name}
                             plugin={p}
-                            disabled={p.required ?? false}
+                            disabled={p.required || (p.unavailable ?? false)}
                             onRestartNeeded={() => showToast("Restart to apply changes!")}
                         />
                     )}

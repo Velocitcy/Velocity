@@ -18,15 +18,16 @@
 
 import "./styles.css";
 
+import { CodeBlock } from "@components/CodeBlock";
 import ErrorBoundary from "@components/ErrorBoundary";
-import { CogWheel, LockIcon } from "@components/Icons";
+import * as Icons from "@components/Icons";
 import { AddonBadge, AddonBadgeTypes } from "@components/settings";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
 import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy, findComponentLazy } from "@webpack";
 import { Menu, React } from "@webpack/common";
 
-import { MyAccountTab } from "./components";
+import { MyAccountTab } from "./components/MyAccountTab";
 const Button = findByPropsLazy("pt", "f6", "O1", "Q1");
 
 
@@ -50,16 +51,6 @@ function ButtonPopover({ user, closePopout }: { user: any; closePopout: () => vo
                     label="Custom Action"
                     action={() => {
                         console.log("Clicked Custom Action for", user.username);
-                        closePopout();
-                    }}
-                />
-                <Menu.MenuItem
-                    id="dev-menu-2"
-                    label="Another Option"
-                    color="premium-gradient"
-                    action={() => {
-                        console.log("Clicked Another Option");
-                        closePopout();
                     }}
                 />
             </Menu.MenuGroup>
@@ -85,7 +76,7 @@ function CustomProfileButton({ user, currentUser }) {
                     buttonRef={buttonRef}
                     variant="primary"
                     text="Velocity"
-                    icon={() => <CogWheel width="16" height="16" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    icon={() => <Icons.CogWheel width="16" height="16" viewBox="0 0 24 24" className="icon_a22cb0" />}
                     onClick={props.onClick}
                 />
             )}
@@ -94,6 +85,13 @@ function CustomProfileButton({ user, currentUser }) {
 }
 
 
+const MySettingsPanel: React.FC<any> = props => {
+    console.log("ALL PROPS:", props);
+
+    return (
+        <CodeBlock content={JSON.stringify(props, null, 2)} lang="json" />
+    );
+};
 
 export default definePlugin({
     name: "DevPlugin",
@@ -152,9 +150,26 @@ export default definePlugin({
                 match: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",',
                 replace: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",colorPositive:"colorPositive_c1e9c4 colorDefault_c1e9c4",'
             }
+        },
+        {
+            find: ".SEARCH_NO_RESULTS&&0===",
+            replacement: {
+                match: /(?<=section:(.{0,50})\.DIVIDER\}\))([,;])(?=.{0,200}(\i)\.push.{0,100}label:(\i)\.header)/,
+                replace: (_, sectionTypes, commaOrSemi, elements, element) => `${commaOrSemi}(${element}.settings?.[0]==="LOGOUT"&&${elements}.push({section:"admin-backend",label:"Admin Backend",variant:"destructive",onClick:()=>VelocityNative.native.openExternal("https://discord.com/97f1fd6264d08959","_blank"),icon:$self.getIcon('DevOptionsIcon')}))${commaOrSemi}`
+            }
         }
 
+
     ],
+
+    Panel: MySettingsPanel,
+
+
+    getIcon(name = "LockIcon") {
+        const IconComponent = Icons[name] || Icons.LockIcon;
+        return <IconComponent viewBox="0 0 24 24" width="16" height="16" />;
+    },
+
 
     tabs() {
         return [
@@ -168,5 +183,5 @@ export default definePlugin({
 
     CustomProfileButton: ErrorBoundary.wrap(CustomProfileButton, { noop: true }),
 
-    renderBadge: () => (<AddonBadge text="DEV" type={AddonBadgeTypes.BRAND} icon={<LockIcon width="24" height="24" fill="none" viewBox="0 0 24 24" className="vc-icon" />} />)
+    renderBadge: () => (<AddonBadge text="DEV" type={AddonBadgeTypes.BRAND} icon={<Icons.CogWheel width="24" height="24" fill="none" viewBox="0 0 24 24" className="vc-icon" />} />)
 });

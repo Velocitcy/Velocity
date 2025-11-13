@@ -32,6 +32,7 @@ export interface Settings {
     autoUpdate: boolean;
     autoUpdateNotification: boolean,
     useQuickCss: boolean;
+    windowMoveable: boolean;
     eagerPatches: boolean;
     enabledThemes: string[];
     enableReactDevtools: boolean;
@@ -86,6 +87,7 @@ const DefaultSettings: Settings = {
     enabledThemes: [],
     enableReactDevtools: false,
     frameless: false,
+    windowMoveable: true,
     transparent: false,
     winCtrlQ: false,
     macosVibrancyStyle: undefined,

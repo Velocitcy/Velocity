@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Divider } from "@components/Divider";
 import { Flex } from "@components/Flex";
 import { FormSwitch } from "@components/FormSwitch";
 import { Margins } from "@components/margins";
@@ -29,6 +30,7 @@ export function RuleSettingsModal({ rule, onSave, onClose, transitionState }: { 
     const [caseSensitive, setCaseSensitive] = useState(rule.caseSensitive ?? false);
     const [matchWholeWord, setMatchWholeWord] = useState(rule.matchWholeWord ?? false);
     const [ruleCooldown, setRuleCooldown] = useState<number>(rule.ruleCooldown ?? 0);
+    const [responseCooldown, setResponseCooldown] = useState<number>(rule.responseCooldown ?? 0);
 
     return (
         <ManaModalRoot transitionState={transitionState} onClose={onClose}>
@@ -48,8 +50,8 @@ export function RuleSettingsModal({ rule, onSave, onClose, transitionState }: { 
                         value={matchWholeWord}
                         onChange={setMatchWholeWord}
                     />
-                    <Forms.FormTitle>Message Cooldown</Forms.FormTitle>
-                    <Forms.FormText>Only trigger after an amount of seconds</Forms.FormText>
+                    <Forms.FormTitle>Trigger Cooldown</Forms.FormTitle>
+                    <Forms.FormText>Wait this many seconds before the rule can trigger again</Forms.FormText>
                     <TextInput
                         type="number"
                         value={ruleCooldown}
@@ -57,7 +59,16 @@ export function RuleSettingsModal({ rule, onSave, onClose, transitionState }: { 
                         placeholder="0"
                         className={Margins.bottom16}
                     />
-
+                    <Divider />
+                    <Forms.FormTitle>Response Cooldown</Forms.FormTitle>
+                    <Forms.FormText>Wait this many seconds before another response can happen</Forms.FormText>
+                    <TextInput
+                        type="number"
+                        value={responseCooldown}
+                        onChange={v => setResponseCooldown(Math.max(0, Number(v)))}
+                        placeholder="0"
+                        className={Margins.bottom16}
+                    />
                 </Flex>
             </ModalContent>
             <ManaModalDivider />
@@ -76,7 +87,8 @@ export function RuleSettingsModal({ rule, onSave, onClose, transitionState }: { 
                                 ...rule,
                                 caseSensitive,
                                 matchWholeWord,
-                                ruleCooldown: Math.max(0, ruleCooldown)
+                                ruleCooldown: Math.max(0, ruleCooldown),
+                                responseCooldown: Math.max(0, responseCooldown)
                             });
                             onClose();
                         }

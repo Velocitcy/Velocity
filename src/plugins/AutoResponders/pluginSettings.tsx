@@ -33,6 +33,7 @@ export type Rule = Record<"trigger" | "response" | "onlyIfIncludes", string> & {
     caseSensitive?: boolean;
     matchWholeWord?: boolean;
     ruleCooldown?: number;
+    responseCooldown?: number;
 };
 
 interface AutoResponderProps {
@@ -256,7 +257,7 @@ function AutoResponderTesting() {
         const globalCooldownMs = settings.store.cooldown * 1000;
 
         if (now - lastTestTime < globalCooldownMs) {
-            setTestResult(`[Cooldown active - ${Math.ceil((globalCooldownMs - (now - lastTestTime)) / 1000)}s remaining]`);
+            setTestResult(`[Global cooldown active - ${Math.ceil((globalCooldownMs - (now - lastTestTime)) / 1000)}s remaining]`);
             return;
         }
 
@@ -282,12 +283,20 @@ function AutoResponderTesting() {
 
             if (matches) {
                 const ruleCooldownMs = (rule.ruleCooldown || 0) * 1000;
+                const responseCooldownMs = (rule.responseCooldown || 0) * 1000;
+
+                // If still under responseCooldown, skip
+                if (now - lastTestTime < responseCooldownMs) {
+                    setTestResult(`[Response cooldown active - ${Math.ceil((responseCooldownMs - (now - lastTestTime)) / 1000)}s remaining]`);
+                    return;
+                }
+
                 if (ruleCooldownMs > 0) {
+                    setTestResult(`[Waiting ${rule.ruleCooldown}s before responding...]`);
                     setTimeout(() => {
                         setTestResult(rule.response.replaceAll("\\n", "\n"));
                         setLastTestTime(Date.now());
                     }, ruleCooldownMs);
-                    setTestResult(`[Waiting ${rule.ruleCooldown}s before responding...]`);
                 } else {
                     setTestResult(rule.response.replaceAll("\\n", "\n"));
                     setLastTestTime(now);
@@ -304,12 +313,19 @@ function AutoResponderTesting() {
                 const regex = stringToRegex(rule.trigger);
                 if (regex.test(content)) {
                     const ruleCooldownMs = (rule.ruleCooldown || 0) * 1000;
+                    const responseCooldownMs = (rule.responseCooldown || 0) * 1000;
+
+                    if (now - lastTestTime < responseCooldownMs) {
+                        setTestResult(`[Response cooldown active - ${Math.ceil((responseCooldownMs - (now - lastTestTime)) / 1000)}s remaining]`);
+                        return;
+                    }
+
                     if (ruleCooldownMs > 0) {
+                        setTestResult(`[Waiting ${rule.ruleCooldown}s before responding...]`);
                         setTimeout(() => {
                             setTestResult(rule.response.replaceAll("\\n", "\n"));
                             setLastTestTime(Date.now());
                         }, ruleCooldownMs);
-                        setTestResult(`[Waiting ${rule.ruleCooldown}s before responding...]`);
                     } else {
                         setTestResult(rule.response.replaceAll("\\n", "\n"));
                         setLastTestTime(now);
@@ -342,7 +358,6 @@ function AutoResponderTesting() {
         </>
     );
 }
-
 
 export const settings = definePluginSettings({
     responder: {

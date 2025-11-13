@@ -155,7 +155,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
             isNew={isNew}
             enabled={isEnabled()}
             setEnabled={toggleEnabled}
-            disabled={disabled}
+            disabled={disabled || plugin.unavailable}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             badge={plugin.renderBadge?.()}

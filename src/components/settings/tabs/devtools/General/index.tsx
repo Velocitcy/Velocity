@@ -16,16 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import "./styles.css";
+import { Flex } from "@components/Flex";
+import { classes } from "@utils/misc";
+import { Card, FormNotice } from "@webpack/common";
 
-export * from "./BaseTab";
-export { default as DeveloperTab } from "./devtools";
-export { default as PatchHelperTab } from "./helpers";
-export { default as PluginsTab } from "./plugins";
-export { openContributorModal } from "./plugins/ContributorModal";
-export { openPluginModal } from "./plugins/PluginModal";
-export { default as BackupAndRestoreTab } from "./sync/BackupAndRestoreTab";
-export { default as CloudTab } from "./sync/CloudTab";
-export { default as ThemesTab } from "./themes";
-export { openUpdaterModal, default as UpdaterTab } from "./updater";
-export { default as VelocityTab } from "./velocity";
+export function GeneralTab() {
+    return (
+        <>
+            <Card className={classes("vc-card", "vc-warning-card")}>
+                <Flex flexDirection="column">
+                    <strong>Warning</strong>
+                    <span>
+                        DevTools are test components from Discord. Some of them may not work or crash your client.
+                    </span>
+                </Flex>
+            </Card>
+
+            <FormNotice messageType="info" textColor="text-feedback-info">
+                Only use this page if you know what you're doing.
+            </FormNotice>
+        </>
+    );
+}

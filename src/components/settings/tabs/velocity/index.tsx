@@ -51,7 +51,7 @@ const isDonor = (userId: string) => !!(
 );
 
 function Switches() {
-    const settings = useSettings(["useQuickCss", "enableReactDevtools", "frameless", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
+    const settings = useSettings(["useQuickCss", "enableReactDevtools", "frameless", "windowMoveable", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
 
     const Switches = [
         {
@@ -81,6 +81,12 @@ function Switches() {
         IS_DISCORD_DESKTOP && {
             key: "disableMinSize",
             title: "Disable minimum window size",
+            restartRequired: true
+        },
+        !IS_WEB && {
+            key: "windowMoveable",
+            title: "Disable moveable window",
+            description: "Makes discord window frame be inmoveable or resizeable",
             restartRequired: true
         },
         !IS_WEB && IS_WINDOWS && {

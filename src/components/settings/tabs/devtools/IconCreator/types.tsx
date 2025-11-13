@@ -16,4 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export { MyAccountTab } from "./MyAccountTab";
+export type SvgElement = {
+    type: "path" | "circle" | "polygon";
+    d?: string;
+    cx?: string;
+    cy?: string;
+    r?: string;
+    points?: string;
+    fill: string;
+    fillRule?: "evenodd" | "nonzero";
+    clipRule?: "evenodd" | "nonzero";
+};

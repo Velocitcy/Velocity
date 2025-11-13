@@ -90,17 +90,26 @@ const messageContextMenuPatch: NavContextMenuPatchCallback = (
 export default definePlugin({
     name: "HideMedia",
     description: "Hide attachments and embeds for individual messages via hover button",
-    authors: [Devs.Ven],
+    authors: [Devs.Ven, Devs.Velocity],
     dependencies: ["MessageUpdaterAPI"],
     settings,
 
-    patches: [{
-        find: "this.renderAttachments(",
-        replacement: {
-            match: /(?<=\i=)this\.render(?:Attachments|Embeds|StickersAccessories)\((\i)\)/g,
-            replace: "$self.shouldHide($1?.id)?null:$&"
+    patches: [
+        {
+            find: "this.renderAttachments(",
+            replacement: {
+                match: /(?<=\i=)this\.render(?:Attachments|Embeds|StickersAccessories)\((\i)\)/g,
+                replace: "$self.shouldHide($1?.id)?null:$&"
+            }
         },
-    }],
+        {
+            find: '"aria-labelledby":ee,"aria-describedby":et',
+            replacement: {
+                match: /childrenAccessories:e\.hideAccessories\?void 0:\(0,(\i)\.Q\)\(e,(\i)\)/,
+                replace: "childrenAccessories:e.hideAccessories?void 0:$self.shouldHide(e?.message?.id)?(0,r.jsx)(\"span\",{className:\"vc-hideAttachments-accessory\",children:\"Media Hidden\"}):(0,$1.Q)(e,$2)"
+            }
+        }
+    ],
 
     contextMenus: {
         "message": messageContextMenuPatch

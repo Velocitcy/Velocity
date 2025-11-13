@@ -17,7 +17,7 @@
 */
 
 import { Settings } from "@api/Settings";
-import { CogWheel } from "@components/Icons";
+import { AccessibilityIcon, AppearanceIcon, BookmarkIcon, CogWheel, CreateCategoryIcon, DevOptionsIcon, GithubIcon, OpenExternalIcon } from "@components/Icons";
 import { BackupAndRestoreTab, CloudTab, DeveloperTab, PatchHelperTab, PluginsTab, ThemesTab, UpdaterTab, VelocityTab } from "@components/settings/tabs";
 import { Devs } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
@@ -25,11 +25,6 @@ import definePlugin, { OptionType } from "@utils/types";
 import { React } from "@webpack/common";
 
 import gitHash from "~git-hash";
-
-enum SectionVarient {
-    DESTRUCTIVE = "destructive",
-    PRIMARY = "primary"
-}
 
 type SectionType = "HEADER" | "DIVIDER" | "CUSTOM";
 type SectionTypes = Record<SectionType, SectionType>;
@@ -77,7 +72,15 @@ export default definePlugin({
                 match: /(?<=function\((\i),(\i),\i\)\{)(?=let \i=Object.values\(\i\.\i\).+?(\(0,\i\.openUserSettings\))\()/,
                 replace: (_, settingsPanel, section, openUserSettings) => `${openUserSettings}(${settingsPanel},{section:${section}});return;`
             }
+        },
+        {
+            find: "{node:a,directory:s}=(0,f.Z)",
+            replacement: {
+                match: /(\{node:.{1,10},directory:.{1,10}\}=\(0,\i\.Z\)\(.+?\);)/,
+                replace: "$1$self.injectVelocityRedesignSettings(a);"
+            }
         }
+
     ],
 
     customSections: [] as ((SectionTypes: SectionTypes) => any)[],
@@ -92,50 +95,57 @@ export default definePlugin({
                 section: "settings/tabs",
                 label: "Velocity",
                 element: VelocityTab,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <CogWheel height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-settings"
             },
             {
                 section: "VelocityPlugins",
                 label: "Plugins",
                 element: PluginsTab,
-                icon: <CogWheel viewBox="0 0 24 24" height="20" width="20" />,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <BookmarkIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-plugins"
             },
             {
                 section: "VelocityThemes",
                 label: "Themes",
                 element: ThemesTab,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <AppearanceIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-themes"
             },
             !IS_UPDATER_DISABLED && {
                 section: "VelocityUpdater",
                 label: "Updater",
                 element: UpdaterTab,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <GithubIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-updater",
             },
             {
                 section: "VelocityCloud",
                 label: "Cloud",
                 element: CloudTab,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <OpenExternalIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-cloud"
             },
             {
                 section: "settings/tabsSync",
                 label: "Backup & Restore",
                 element: BackupAndRestoreTab,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <CreateCategoryIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-backup-restore"
             },
             IS_DEV && {
                 section: "VelocityDeveloper",
                 label: "Developer Tools",
                 element: DeveloperTab,
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <DevOptionsIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
                 className: "vc-developer"
             },
             IS_DEV && {
-                section: "VelocityPatchHelper",
-                label: "Patch Helper",
+                section: "VelocitHelpers",
+                label: "Helpers",
                 element: PatchHelperTab,
-                className: "vc-patch-helper"
+                icon: Velocity.Plugins.plugins.BetterSettings?.settings?.store?.settingsIcons && Velocity.Plugins.isPluginEnabled("BetterSettings") ? <AccessibilityIcon height="18" width="18" viewBox="0 0 24 24" /> : null,
+                className: "vc-helpers"
             },
             ...this.customSections.map(func => func(SectionTypes)),
             {
@@ -144,6 +154,41 @@ export default definePlugin({
         ];
 
         return categories.filter(Boolean);
+    },
+
+    // fking failure bruh
+    injectVelocityRedesignSettings(root: any) {
+        const NodeTypes = {
+            SECTION: "SECTION",
+            SIDEBAR_ITEM: "SIDEBAR_ITEM",
+            PANEL: "PANEL"
+        };
+
+        const velocitySection = {
+            key: "VelocitySection",
+            type: NodeTypes.SECTION,
+            useLabel: () => "Velocity",
+            layout: [
+                {
+                    key: "velocity_settings_sidebar_item",
+                    type: NodeTypes.SIDEBAR_ITEM,
+                    useTitle: () => "Velocity",
+                    icon: () => <CogWheel className="icon_caf372" width="18" height="18" fill="none" viewBox="0 0 24 24" />,
+                    layout: [
+                        {
+                            key: "VelocityPanel",
+                            type: "CUSTOM",
+                            useTitle: "Velocity",
+                            buildLayout: () => [],
+                            render: () => <VelocityTab />,
+                            layout: []
+                        }
+                    ]
+                }
+            ]
+        };
+
+        root.layout.unshift(velocitySection);
     },
 
     isRightSpot({ header, settings }: { header?: string; settings?: string[]; }) {
@@ -223,6 +268,7 @@ export default definePlugin({
     get electronVersion() {
         return VelocityNative.native.getVersions().electron || window.legcord?.electron || null;
     },
+
 
     get chromiumVersion() {
         try {

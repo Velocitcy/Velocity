@@ -17,12 +17,14 @@
 */
 
 import "./messageLogger.css";
+import "./ContextStyle.css";
 
 import { findGroupChildrenByChildId, NavContextMenuPatchCallback } from "@api/ContextMenu";
 import { updateMessage } from "@api/MessageUpdater";
 import { Settings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { DeleteIcon, MinusIcon } from "@components/Icons";
 import { Devs, SUPPORT_CATEGORY_ID, VENBOT_USER_ID } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
@@ -43,6 +45,7 @@ interface MLMessage extends Message {
 }
 
 const styles = findByPropsLazy("edited", "communicationDisabled", "isSystemMessage");
+const contextMenuClass = findByPropsLazy("icon", "iconContainer", "label");
 
 function addDeleteStyle() {
     if (Settings.plugins.MessageLogger.deleteStyle === "text") {
@@ -84,6 +87,8 @@ const patchMessageContextMenu: NavContextMenuPatchCallback = (children, props) =
             key={REMOVE_HISTORY_ID}
             label="Remove Message History"
             color="danger"
+            icon={() => <MinusIcon height="24" width="24" viewBox="0 0 24 24" className={contextMenuClass.icon} />}
+            iconLeft={() => <MinusIcon height="24" width="24" viewBox="0 0 24 24" className={contextMenuClass.icon} />}
             action={() => {
                 if (deleted) {
                     FluxDispatcher.dispatch({
@@ -106,28 +111,35 @@ const patchChannelContextMenu: NavContextMenuPatchCallback = (children, { channe
 
     const group = findGroupChildrenByChildId("mark-channel-read", children) ?? children;
     group.push(
-        <Menu.MenuItem
-            id="vc-ml-clear-channel"
-            label="Clear Message Log"
-            color="danger"
-            action={() => {
-                messages.forEach(msg => {
-                    if (msg.deleted)
-                        FluxDispatcher.dispatch({
-                            type: "MESSAGE_DELETE",
-                            channelId: channel.id,
-                            id: msg.id,
-                            mlDeleted: true
-                        });
-                    else
-                        updateMessage(channel.id, msg.id, {
-                            editHistory: []
-                        });
-                });
-            }}
-        />
+        <>
+            <Menu.MenuSeparator />
+            <Menu.MenuItem
+                id="vc-ml-clear-channel"
+                label="Clear Message Log"
+                icon={() => (
+                    <DeleteIcon className={contextMenuClass.icon} height="24" width="24" viewBox="0 0 24 24" />
+                )}
+                color="danger"
+                action={() => {
+                    messages.forEach(msg => {
+                        if (msg.deleted)
+                            FluxDispatcher.dispatch({
+                                type: "MESSAGE_DELETE",
+                                channelId: channel.id,
+                                id: msg.id,
+                                mlDeleted: true
+                            });
+                        else
+                            updateMessage(channel.id, msg.id, {
+                                editHistory: []
+                            });
+                    });
+                }}
+            />
+        </>
     );
 };
+
 
 export function parseEditContent(content: string, message: Message) {
     return Parser.parse(content, true, {

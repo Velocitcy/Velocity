@@ -19,6 +19,8 @@
 import type * as t from "@velocity-types";
 import { _resolveReady, filters, findByCodeLazy, findByPropsLazy, findLazy, mapMangledModuleLazy, waitFor } from "@webpack";
 
+import { waitForComponent } from "./internal";
+
 export let FluxDispatcher: t.FluxDispatcher;
 waitFor(["dispatch", "subscribe"], m => {
     FluxDispatcher = m;
@@ -66,21 +68,8 @@ waitFor("parseTopic", m => Parser = m);
 export let Alerts: t.Alerts;
 waitFor(["show", "close"], m => Alerts = m);
 
-const ToastType = {
-    MESSAGE: "message",
-    SUCCESS: "success",
-    FAILURE: "failure",
-    CUSTOM: "custom",
-    CLIP: "clip",
-    LINK: "link",
-    FORWARD: "forward",
-    BOOKMARK: "bookmark",
-    CLOCK: "clock"
-};
-const ToastPosition = {
-    TOP: 0,
-    BOTTOM: 1
-};
+export const ToastType = waitForComponent("ToastType", filters.byProps("CLOCK"));
+const ToastPosition = { TOP: 0, BOTTOM: 1 };
 
 export interface ToastData {
     message: string,

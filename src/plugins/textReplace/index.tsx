@@ -59,8 +59,11 @@ const settings = definePluginSettings({
                     />
                     <TextReplaceTesting />
                 </>
+
             );
         }
+
+
     },
     stringRules: {
         type: OptionType.CUSTOM,

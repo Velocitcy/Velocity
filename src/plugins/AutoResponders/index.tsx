@@ -49,8 +49,10 @@ function checkRules(content: string, messageId: string, channelId: string): { re
     if (processedMessages.has(messageId)) return null;
 
     const now = Date.now();
-    const cooldownMs = settings.store.cooldown * 1000;
-    if (now - lastResponseTime < cooldownMs) return null;
+
+    // Global plugin cooldown
+    const globalCooldownMs = settings.store.cooldown * 1000;
+    if (now - lastResponseTime < globalCooldownMs) return null;
 
     for (const rule of settings.store.stringRules) {
         if (!rule.trigger || !rule.response) continue;
@@ -59,19 +61,24 @@ function checkRules(content: string, messageId: string, channelId: string): { re
         const ruleKey = `string:${rule.trigger}`;
         const ruleLastTime = ruleLastResponseTimes.get(ruleKey) || 0;
 
-        if (now - ruleLastTime < 5000) continue;
+        // Respect both cooldowns: ruleCooldown (delay before responding) and responseCooldown (wait before next response)
+        const responseCooldownMs = (rule.responseCooldown || 0) * 1000;
+        if (now - ruleLastTime < responseCooldownMs) continue;
 
         let checkContent = content;
         let checkTrigger = rule.trigger;
 
         if (!rule.caseSensitive) {
-            checkContent = content.toLowerCase();
-            checkTrigger = rule.trigger.toLowerCase();
+            checkContent = checkContent.toLowerCase();
+            checkTrigger = checkTrigger.toLowerCase();
         }
 
         let matches = false;
         if (rule.matchWholeWord) {
-            const regex = new RegExp(`\\b${checkTrigger.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, rule.caseSensitive ? "" : "i");
+            const regex = new RegExp(
+                `\\b${checkTrigger.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+                rule.caseSensitive ? "" : "i"
+            );
             matches = regex.test(content);
         } else {
             matches = checkContent.includes(checkTrigger);
@@ -82,6 +89,7 @@ function checkRules(content: string, messageId: string, channelId: string): { re
             lastResponseTime = now;
             ruleLastResponseTimes.set(ruleKey, now);
             setTimeout(() => processedMessages.delete(messageId), 5000);
+
             return {
                 response: rule.response.replaceAll("\\n", "\n"),
                 delay: (rule.ruleCooldown || 0) * 1000
@@ -96,7 +104,8 @@ function checkRules(content: string, messageId: string, channelId: string): { re
         const ruleKey = `regex:${rule.trigger}`;
         const ruleLastTime = ruleLastResponseTimes.get(ruleKey) || 0;
 
-        if (now - ruleLastTime < 5000) continue;
+        const responseCooldownMs = (rule.responseCooldown || 0) * 1000;
+        if (now - ruleLastTime < responseCooldownMs) continue;
 
         try {
             const regex = stringToRegex(rule.trigger);
@@ -105,6 +114,7 @@ function checkRules(content: string, messageId: string, channelId: string): { re
                 lastResponseTime = now;
                 ruleLastResponseTimes.set(ruleKey, now);
                 setTimeout(() => processedMessages.delete(messageId), 5000);
+
                 return {
                     response: rule.response.replaceAll("\\n", "\n"),
                     delay: (rule.ruleCooldown || 0) * 1000
@@ -117,6 +127,7 @@ function checkRules(content: string, messageId: string, channelId: string): { re
 
     return null;
 }
+
 
 export default definePlugin({
     name: "AutoResponder",

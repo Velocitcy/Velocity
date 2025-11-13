@@ -26,6 +26,14 @@ export let useMemo: typeof React.useMemo;
 export let useRef: typeof React.useRef;
 export let useReducer: typeof React.useReducer;
 export let useCallback: typeof React.useCallback;
+export let useContext: typeof React.useContext;
+export let useImperativeHandle: typeof React.useImperativeHandle;
+export let useDebugValue: typeof React.useDebugValue;
+export let useDeferredValue: typeof React.useDeferredValue;
+export let useId: typeof React.useId;
+export let useInsertionEffect: typeof React.useInsertionEffect;
+export let useSyncExternalStore: typeof React.useSyncExternalStore;
+export let useTransition: typeof React.useTransition;
 
 export const ReactDOM: typeof import("react-dom") = findByPropsLazy("createPortal");
 // 299 is an error code used in createRoot and createPortal
@@ -33,5 +41,6 @@ export const createRoot: typeof import("react-dom/client").createRoot = findByCo
 
 waitFor("useState", m => {
     React = m;
-    ({ useEffect, useState, useLayoutEffect, useMemo, useRef, useReducer, useCallback } = React);
+    ({ useEffect, useState, useLayoutEffect, useMemo, useRef, useReducer, useCallback, useContext, useImperativeHandle, useDebugValue, useDeferredValue, useId, useInsertionEffect, useSyncExternalStore, useTransition } = React);
 });
+

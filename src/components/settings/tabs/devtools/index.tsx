@@ -24,12 +24,14 @@ import { TabBar, useState } from "@webpack/common";
 
 import { ComponentsTab } from "./Components";
 import { GeneralTab } from "./General";
+import IconCreator from "./IconCreator";
 import { IconsTab } from "./IconsPreview";
 
 const enum DevTab {
     GENERAL,
     COMPONENTS,
-    ICONS
+    ICONS,
+    CREATOR
 }
 
 function DevelopersTab() {
@@ -53,12 +55,17 @@ function DevelopersTab() {
                 <TabBar.Item id={DevTab.ICONS} className="vc-settings-tab-bar-item">
                     Icons Preview
                 </TabBar.Item>
+                <TabBar.Item id={DevTab.CREATOR} className="vc-settings-tab-bar-item">
+                    Icon Creator
+                </TabBar.Item>
             </TabBar>
 
 
             {currentTab === DevTab.GENERAL && <GeneralTab />}
             {currentTab === DevTab.COMPONENTS && <ComponentsTab />}
             {currentTab === DevTab.ICONS && <IconsTab />}
+            {currentTab === DevTab.CREATOR && <IconCreator />}
+
 
         </SettingsTab>
     );
