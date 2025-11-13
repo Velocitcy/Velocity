@@ -27,8 +27,8 @@ import { FluxDispatcher, Menu, React } from "@webpack/common";
 
 const VoiceActions = findByPropsLazy("selectVoiceChannel", "disconnect");
 const ChannelStore = findByPropsLazy("getChannel", "getDMFromUserId");
-const VoiceStateStore = findByPropsLazy("getVoiceStatesForChannel");
-const MediaEngineStore = findByPropsLazy("isSelfMute", "setLocalMute");
+const VoiceStateStore = findByPropsLazy("getVoiceStatesForChannel", "getVoiceStateForUser");
+const MediaEngineStore = findByPropsLazy("isSelfMute", "isSelfDeaf");
 const ToggleMute = findByPropsLazy("toggleSelfMute");
 const ToggleDeafen = findByPropsLazy("toggleSelfDeaf");
 
