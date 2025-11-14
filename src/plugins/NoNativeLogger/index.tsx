@@ -27,17 +27,17 @@ export default definePlugin({
 
     patches: [
         {
-            find: "enableNativeLogger",
+            find: 'console.info("AnalyticsUtils.track(...):"',
             replacement: {
-                match: /console\[(.)\]\("%c\[".concat\((.),"\]"\),(.),(.),\.\.\.(.)\)/,
+                match: /(.\.default\.isLoggingAnalyticsEvents)&&console\.info\("AnalyticsUtils\.track\(\.\.\.\):",(.),(.)\)/,
                 replace: "void 0"
             }
         },
         {
-            find: "isLoggingAnalyticsEvents",
+            find: '"file-only"',
             replacement: {
-                match: /(.\.default\.isLoggingAnalyticsEvents)&&console\.info\("AnalyticsUtils\.track\(\.\.\.\):",(.),(.)\)/,
-                replace: "void 0"
+                match: /function\s+u\([^)]*\)\s*\{[^}]*console\[t\][^}]*\}/,
+                replace: "function u(e,t,n){ return }"
             }
         }
     ],
