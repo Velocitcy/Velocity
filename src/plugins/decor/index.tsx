@@ -60,6 +60,7 @@ export default definePlugin({
         // Decoration modal module
         {
             find: ".decorationGridItem,",
+            lazy: true,
             replacement: [
                 {
                     match: /(?<==)\i=>{var{children.{20,200}decorationGridItem/,
@@ -82,8 +83,8 @@ export default definePlugin({
             replacement: [
                 // Add Decor avatar decoration hook to avatar decoration hook
                 {
-                    match: /(?<=TryItOut:\i,guildId:\i}\),)(?<=user:(\i).+?)/,
-                    replace: "vcDecorAvatarDecoration=$self.useUserDecorAvatarDecoration($1),"
+                    match: /(isAvatarDecorationAnimating:\s*\i,)/,
+                    replace: "$1 vcDecorAvatarDecoration:$self.useUserDecorAvatarDecoration(t),"
                 },
                 // Use added hook
                 {
