@@ -17,7 +17,7 @@
 */
 
 export const REACT_GLOBAL = "Velocity.Webpack.Common.React";
-export const VENBOT_USER_ID = "1017176847865352332";
+export const VEBOT_USER_ID = "1390865740512366723";
 
 export const VELOCITY_GUILD_ID = "1384314700908462212";
 export const DONOR_ROLE_ID = "1428703911740444766";
