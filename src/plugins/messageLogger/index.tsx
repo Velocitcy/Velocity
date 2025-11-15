@@ -25,7 +25,7 @@ import { Settings } from "@api/Settings";
 import { disableStyle, enableStyle } from "@api/Styles";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { DeleteIcon, MinusIcon } from "@components/Icons";
-import { Devs, SUPPORT_CATEGORY_ID, VENBOT_USER_ID } from "@utils/constants";
+import { Devs, SUPPORT_CATEGORY_ID, VEBOT_USER_ID } from "@utils/constants";
 import { getIntlMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { classes } from "@utils/misc";
@@ -308,8 +308,8 @@ export default definePlugin({
                 ignoreChannels.includes(ChannelStore.getChannel(message.channel_id)?.parent_id) ||
                 (isEdit ? !logEdits : !logDeletes) ||
                 ignoreGuilds.includes(ChannelStore.getChannel(message.channel_id)?.guild_id) ||
-                // Ignore Venbot in the support channels
-                (message.author?.id === VENBOT_USER_ID && ChannelStore.getChannel(message.channel_id)?.parent_id === SUPPORT_CATEGORY_ID);
+                // Ignore Vebot in the support channels
+                (message.author?.id === VEBOT_USER_ID && ChannelStore.getChannel(message.channel_id)?.parent_id === SUPPORT_CATEGORY_ID);
         } catch (e) {
             return false;
         }

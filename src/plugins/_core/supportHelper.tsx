@@ -22,7 +22,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { Link } from "@components/Link";
 import { openUpdaterModal } from "@components/settings/tabs/updater";
-import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, KNOWN_ISSUES_CHANNEL_ID, REGULAR_ROLE_ID, SUPPORT_CATEGORY_ID, SUPPORT_CHANNEL_ID, VELOCITY_GUILD_ID, VENBOT_USER_ID } from "@utils/constants";
+import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, KNOWN_ISSUES_CHANNEL_ID, REGULAR_ROLE_ID, SUPPORT_CATEGORY_ID, SUPPORT_CHANNEL_ID, VEBOT_USER_ID, VELOCITY_GUILD_ID } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { Margins } from "@utils/margins";
@@ -240,7 +240,7 @@ export default definePlugin({
             !IS_UPDATER_DISABLED
             && (
                 (props.channel.id === KNOWN_ISSUES_CHANNEL_ID) ||
-                (props.channel.parent_id === SUPPORT_CATEGORY_ID && props.message.author.id === VENBOT_USER_ID)
+                (props.channel.parent_id === SUPPORT_CATEGORY_ID && props.message.author.id === VEBOT_USER_ID)
             )
             && props.message.content?.includes("update");
 
@@ -286,7 +286,7 @@ export default definePlugin({
                 );
             }
 
-            if (props.message.author.id === VENBOT_USER_ID) {
+            if (props.message.author.id === VEBOT_USER_ID) {
                 const match = CodeBlockRe.exec(props.message.content || props.message.embeds[0]?.rawDescription || "");
                 if (match) {
                     buttons.push(
