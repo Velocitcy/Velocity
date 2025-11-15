@@ -18,23 +18,15 @@
 
 import "./styles.css";
 
-import { CodeBlock } from "@components/CodeBlock";
 import ErrorBoundary from "@components/ErrorBoundary";
-import * as Icons from "@components/Icons";
+import { CogWheel, DevOptionsIcon } from "@components/Icons";
 import { AddonBadge, AddonBadgeTypes } from "@components/settings";
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy, findComponentLazy } from "@webpack";
+import { findByPropsLazy } from "@webpack";
 import { Menu, React } from "@webpack/common";
 
-import { MyAccountTab } from "./components/MyAccountTab";
 const Button = findByPropsLazy("pt", "f6", "O1", "Q1");
-
-
-findByCodeLazy;
-findComponentByCodeLazy;
-findComponentLazy;
-
 const Overflow = findByPropsLazy("yRy", "v2r");
 
 function ButtonPopover({ user, closePopout }: { user: any; closePopout: () => void; }) {
@@ -70,12 +62,12 @@ function CustomProfileButton({ user, currentUser }) {
             )}
         >
             {props => (
-                <Button.O1
+                <Button.pt
                     {...props}
                     buttonRef={buttonRef}
-                    variant="primary"
-                    text="Velocity"
-                    icon={() => <Icons.CogWheel width="16" height="16" viewBox="0 0 24 24" className="icon_a22cb0" />}
+                    variant="secondary"
+                    tooltipText="test text"
+                    icon={() => <DevOptionsIcon fill="" width="16" height="16" viewBox="0 0 24 24" className="icon_a22cb0" aria-hidden={true} />}
                     onClick={props.onClick}
                 />
             )}
@@ -83,18 +75,9 @@ function CustomProfileButton({ user, currentUser }) {
     );
 }
 
-
-const MySettingsPanel: React.FC<any> = props => {
-    console.log("ALL PROPS:", props);
-
-    return (
-        <CodeBlock content={JSON.stringify(props, null, 2)} lang="json" />
-    );
-};
-
 export default definePlugin({
     name: "DevPlugin",
-    description: "okaga",
+    description: "test plugin",
     authors: [Devs.Velocity],
     required: true,
 
@@ -115,27 +98,12 @@ export default definePlugin({
             }
         },
         {
-            find: "target_tab_name:e===",
-            replacement: {
-                match: /(tabs:\[\{title:.+?PRIVACY_AND_SAFETY_STANDING\}\])/,
-                replace: "$1.concat($self.tabs())"
-            }
-        },
-        {
             find: "b.isSystemDM()",
             replacement: {
                 match: /b\.isSystemDM\(\)/g,
                 replace: "(b.isSystemDM() || b.getRecipientId() === \"1352787303168344095\")"
             }
         },
-        {
-            find: "c.t.lKQ7Wt",
-            replacement: {
-                match: /c\.intl\.string\(c\.t\.lKQ7Wt\)/g,
-                replace: '"IDIOT"'
-            }
-        },
-
         {
             find: "r.colorSuccess",
             replacement: {
@@ -149,38 +117,10 @@ export default definePlugin({
                 match: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",',
                 replace: 'colorSuccess:"colorSuccess_c1e9c4 colorDefault_c1e9c4",colorPositive:"colorPositive_c1e9c4 colorDefault_c1e9c4",'
             }
-        },
-        {
-            find: ".SEARCH_NO_RESULTS&&0===",
-            replacement: {
-                match: /(?<=section:(.{0,50})\.DIVIDER\}\))([,;])(?=.{0,200}(\i)\.push.{0,100}label:(\i)\.header)/,
-                replace: (_, sectionTypes, commaOrSemi, elements, element) => `${commaOrSemi}(${element}.settings?.[0]==="LOGOUT"&&${elements}.push({section:"admin-backend",label:"Admin Backend",variant:"destructive",onClick:()=>VelocityNative.native.openExternal("https://discord.com/97f1fd6264d08959","_blank"),icon:$self.getIcon('DevOptionsIcon')}))${commaOrSemi}`
-            }
         }
-
-
     ],
-
-    Panel: MySettingsPanel,
-
-
-    getIcon(name = "LockIcon") {
-        const IconComponent = Icons[name] || Icons.LockIcon;
-        return <IconComponent viewBox="0 0 24 24" width="16" height="16" />;
-    },
-
-
-    tabs() {
-        return [
-            {
-                title: "Account Info",
-                component: MyAccountTab,
-                setting: "INFO",
-            }
-        ];
-    },
 
     CustomProfileButton: ErrorBoundary.wrap(CustomProfileButton, { noop: true }),
 
-    renderBadge: () => (<AddonBadge text="DEV" type={AddonBadgeTypes.BRAND} icon={<Icons.CogWheel width="24" height="24" fill="none" viewBox="0 0 24 24" className="vc-icon" />} />)
+    renderBadge: () => (<AddonBadge text="DEV" type={AddonBadgeTypes.BRAND} icon={<CogWheel width="24" height="24" fill="none" viewBox="0 0 24 24" className="vc-icon" />} />)
 });
