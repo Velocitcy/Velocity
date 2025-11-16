@@ -178,9 +178,9 @@ function RolesAndUsersPermissionsComponent({ permissions, guild, modalProps, hea
                                                                             <Flex style={{ gap: "0.2em", alignItems: "center" }}>
                                                                                 @owner
                                                                                 <OwnerCrownIcon
-                                                                                    width="20"
-                                                                                    height="20"
-                                                                                    viewBox="0 0 16 14"
+                                                                                    width="16"
+                                                                                    height="16"
+                                                                                    viewBox="0 0 24 24"
                                                                                     aria-hidden={true}
                                                                                 />
                                                                             </Flex>
