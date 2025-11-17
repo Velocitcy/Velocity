@@ -1,5 +1,5 @@
 name: Bug/Crash Report
-description: Create a bug or crash report for Vencord. ALWAYS FIRST USE OUR SUPPORT CHANNEL! ONLY USE THIS FORM IF YOU ARE A CONTRIBUTOR OR WERE TOLD TO DO SO IN THE SUPPORT CHANNEL.
+description: Create a bug or crash report for Velocity. ALWAYS FIRST USE OUR SUPPORT CHANNEL! ONLY USE THIS FORM IF YOU ARE A CONTRIBUTOR OR WERE TOLD TO DO SO IN THE SUPPORT CHANNEL.
 labels: [bug]
 title: "[Bug] <title>"
 
@@ -7,7 +7,7 @@ body:
     - type: markdown
       attributes:
           value: |
-              ![Are you a developer? No? This form is not for you!](https://github.com/ROBOXNOTHACKER/Velocity/blob/main/.github/ISSUE_TEMPLATE/developer-banner.png?raw=true)
+              ![Are you a developer? No? This form is not for you!](https://github.com/Velocitcy/Velocity/blob/main/.github/ISSUE_TEMPLATE/developer-banner.png?raw=true)
     - type: textarea
       id: bug-description
       attributes:
