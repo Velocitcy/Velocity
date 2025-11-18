@@ -18,12 +18,15 @@
 
 import { Devs } from "@utils/constants";
 import definePlugin from "@utils/types";
-import { findStoreLazy } from "@webpack";
+import { findByCodeLazy, findStoreLazy } from "@webpack";
+import { FluxDispatcher } from "@webpack/common";
 
 import type { HeartbeatData, Quest, TaskType } from "./types";
 import { isValidQuest, TASK_HANDLERS } from "./utils";
 
 const QuestsStore = findStoreLazy("QuestsStore");
+const RunningGameStore = findStoreLazy("RunningGameStore");
+const api = findByCodeLazy('t.Request("GET",e)');
 
 export default definePlugin({
     name: "SpoofQuest",
@@ -33,10 +36,13 @@ export default definePlugin({
     onBeat: null as ((data: HeartbeatData) => void) | null,
     interval: null as number | null,
     unsubscribe: null as (() => void) | null,
+    fakeGame: null as any,
+    origGetRunningGames: null as any,
+    origGetGameForPID: null as any,
+    currentQuestId: null as string | null,
 
     patches: [
         {
-            // Makes WATCH_VIDEO quests be on 16 times speed
             find: "poster:null==ns",
             lazy: true,
             replacement: {
@@ -51,18 +57,56 @@ export default definePlugin({
     },
 
     stop() {
+        this.cleanup();
+    },
+
+    cleanup() {
         this.onBeat = null;
-        if (this.interval !== null) clearInterval(this.interval);
-        if (this.unsubscribe !== null) this.unsubscribe();
-        this.interval = this.unsubscribe = null;
+        this.currentQuestId = null;
+        if (this.interval !== null) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+        if (this.unsubscribe !== null) {
+            this.unsubscribe();
+            this.unsubscribe = null;
+        }
+        if (this.fakeGame && this.origGetRunningGames) {
+            RunningGameStore.getRunningGames = this.origGetRunningGames;
+            RunningGameStore.getGameForPID = this.origGetGameForPID;
+            FluxDispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: [this.fakeGame], added: [], games: [] });
+            this.fakeGame = null;
+            this.origGetRunningGames = null;
+            this.origGetGameForPID = null;
+        }
     },
 
     flux: {
-        QUESTS_FETCH_CURRENT_QUESTS_SUCCESS: ((function (this: any, _event: any) {
-            this.tryRun();
+        QUESTS_SEND_HEARTBEAT_SUCCESS: ((function (this: any, e: any) {
+            this.onBeat?.(e);
         }) as any),
-        QUESTS_SEND_HEARTBEAT_SUCCESS: ((function (this: any, _event: any, data: HeartbeatData) {
-            if (this.onBeat && data?.userStatus) this.onBeat(data);
+        QUESTS_ENROLL_SUCCESS: ((function (this: any, e: any) {
+            this.cleanup();
+            if (e.quest) {
+                const cfg = e.quest.config.taskConfig ?? e.quest.config.taskConfigV2;
+                const task = Object.keys(cfg.tasks).find(t => cfg.tasks[t]) as TaskType;
+
+                const platformMap: Record<TaskType, number> = {
+                    WATCH_VIDEO: 1,
+                    WATCH_VIDEO_ON_MOBILE: 2,
+                    PLAY_ON_DESKTOP: 0,
+                    STREAM_ON_DESKTOP: 0,
+                    PLAY_ACTIVITY: 0
+                };
+
+                if (task && platformMap[task] !== undefined) {
+                    api.post(`/quests/${e.quest.id}/select-platform`, { body: { platform: platformMap[task] } });
+                }
+            }
+            setTimeout(() => this.tryRun(), 100);
+        }) as any),
+        QUESTS_FETCH_CURRENT_QUESTS_SUCCESS: ((function (this: any) {
+            this.tryRun();
         }) as any)
     },
 
@@ -71,7 +115,9 @@ export default definePlugin({
         if (!quests?.size) return;
 
         const quest = [...quests.values()].find(isValidQuest) as Quest | undefined;
-        if (!quest) return;
+        if (!quest || quest.id === this.currentQuestId) return;
+
+        this.currentQuestId = quest.id;
 
         const cfg = quest.config.taskConfig ?? quest.config.taskConfigV2;
         const task = Object.keys(cfg.tasks).find(t => cfg.tasks[t]) as TaskType;

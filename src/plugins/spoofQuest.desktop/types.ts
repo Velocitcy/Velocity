@@ -30,6 +30,9 @@ export interface Quest {
         taskConfig?: any;
         taskConfigV2?: any;
         configVersion?: number;
+        messages?: {
+            questName?: string;
+        };
     };
 }
 

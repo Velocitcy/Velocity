@@ -98,13 +98,6 @@ export default definePlugin({
             }
         },
         {
-            find: "b.isSystemDM()",
-            replacement: {
-                match: /b\.isSystemDM\(\)/g,
-                replace: "(b.isSystemDM() || b.getRecipientId() === \"1352787303168344095\")"
-            }
-        },
-        {
             find: "r.colorSuccess",
             replacement: {
                 match: /success:\s*r\.colorSuccess\s*\}/,

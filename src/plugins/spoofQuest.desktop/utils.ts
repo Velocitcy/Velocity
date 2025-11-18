@@ -17,7 +17,7 @@
 */
 
 import { findByCodeLazy, findStoreLazy } from "@webpack";
-import { ChannelStore, GuildChannelStore } from "@webpack/common";
+import { ChannelStore, FluxDispatcher, GuildChannelStore } from "@webpack/common";
 
 import type { HeartbeatData, Quest, TaskType } from "./types";
 
@@ -38,13 +38,23 @@ export function handleVideo(quest: Quest, target: number, progress: number, plug
 
     const tick = async () => {
         if (done) return;
-        const allowed = Math.floor((Date.now() - enrolled) / 1000) + 10;
-        if (allowed >= current + 7) {
-            current += 7;
-            await api.post(`/quests/${questId}/video-progress`, { timestamp: Math.min(target, current) });
-        }
-        if (current >= target) {
-            await api.post(`/quests/${questId}/video-progress`, { timestamp: target });
+        try {
+            const allowed = Math.floor((Date.now() - enrolled) / 1000) + 10;
+            const diff = allowed - current;
+            const timestamp = current + 7;
+
+            if (diff >= 7) {
+                const res = await api.post(`/quests/${questId}/video-progress`, { body: { timestamp: Math.min(target, timestamp + Math.random()) } });
+                done = res.body?.completed_at != null;
+                current = Math.min(target, timestamp);
+            }
+
+            if (timestamp >= target && !done) {
+                await api.post(`/quests/${questId}/video-progress`, { body: { timestamp: target } });
+                done = true;
+            }
+        } catch (error) {
+            console.error("Video progress error:", error);
             done = true;
         }
     };
@@ -60,24 +70,45 @@ export function handleVideo(quest: Quest, target: number, progress: number, plug
 }
 
 export function handleDesktopTask(quest: Quest, target: number, progress: number, plugin: any, isStream: boolean) {
-    if (typeof DiscordNative === "undefined") return;
 
     const appId = quest.config.application.id;
     const appName = quest.config.application.name;
 
-    let restore: () => void;
-
     if (isStream) {
         const orig = ApplicationStreamingStore.getStreamerActiveStreamMetadata;
-        ApplicationStreamingStore.getStreamerActiveStreamMetadata = () => ({ id: appId, pid: 9999, sourceName: null });
-        restore = () => { ApplicationStreamingStore.getStreamerActiveStreamMetadata = orig; };
+        const pid = Math.floor(Math.random() * 30000) + 1000;
+        ApplicationStreamingStore.getStreamerActiveStreamMetadata = () => ({
+            id: appId,
+            pid,
+            sourceName: null
+        });
+
+        plugin.onBeat = (data: HeartbeatData) => {
+            const val = Math.floor(
+                quest.config.configVersion === 1
+                    ? data.userStatus.streamProgressSeconds ?? 0
+                    : data.userStatus.progress.STREAM_ON_DESKTOP?.value ?? 0
+            );
+            console.log(`Quest progress: ${val}/${target}`);
+            if (val >= target) {
+                console.log("Quest completed!");
+                ApplicationStreamingStore.getStreamerActiveStreamMetadata = orig;
+                plugin.onBeat = null;
+            }
+        };
+
+        console.log(`Spoofed stream to ${appName}. Stream any window in VC for ${Math.ceil((target - progress) / 60)} more minutes.`);
+        console.log("Remember: you need at least 1 other person in the VC!");
     } else {
-        const pid = Math.floor(Math.random() * 30000) + 2000;
+        const pid = Math.floor(Math.random() * 30000) + 1000;
+        const exeName = `${appName}.exe`;
+
         const fake = {
-            cmdLine: "C:/FakeGame/Game.exe",
-            exeName: "Game.exe",
-            exePath: "C:/FakeGame/Game.exe",
+            cmdLine: `C:\\Program Files\\${appName}\\${exeName}`,
+            exeName,
+            exePath: `c:/program files/${appName.toLowerCase()}/${exeName}`,
             hidden: false,
+            isLauncher: false,
             id: appId,
             name: appName,
             pid,
@@ -85,49 +116,53 @@ export function handleDesktopTask(quest: Quest, target: number, progress: number
             processName: appName,
             start: Date.now()
         };
-        const origGames = RunningGameStore.getRunningGames;
-        const origPID = RunningGameStore.getGameForPID;
-        RunningGameStore.getRunningGames = () => [fake];
-        RunningGameStore.getGameForPID = (p: number) => p === pid ? fake : null;
-        restore = () => {
-            RunningGameStore.getRunningGames = origGames;
-            RunningGameStore.getGameForPID = origPID;
-        };
-    }
 
-    plugin.onBeat = (data: HeartbeatData) => {
-        const key = isStream ? "STREAM_ON_DESKTOP" : "PLAY_ON_DESKTOP";
-        const val = Math.floor(
-            quest.config.configVersion === 1
-                ? data.userStatus.streamProgressSeconds ?? 0
-                : data.userStatus.progress[key]?.value ?? 0
-        );
-        if (val >= target) {
-            restore();
-            plugin.onBeat = null;
-        }
-    };
+        const realGames = RunningGameStore.getRunningGames();
+        const fakeGames = [fake];
+        plugin.origGetRunningGames = RunningGameStore.getRunningGames;
+        plugin.origGetGameForPID = RunningGameStore.getGameForPID;
+        plugin.fakeGame = fake;
+
+        RunningGameStore.getRunningGames = () => fakeGames;
+        RunningGameStore.getGameForPID = (p: number) => fakeGames.find((x: any) => x.pid === p) ?? null;
+
+        FluxDispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: realGames, added: [fake], games: fakeGames });
+
+        plugin.onBeat = (data: HeartbeatData) => {
+            const val = Math.floor(
+                quest.config.configVersion === 1
+                    ? data.userStatus.streamProgressSeconds ?? 0
+                    : data.userStatus.progress.PLAY_ON_DESKTOP?.value ?? 0
+            );
+            console.log(`Quest progress: ${val}/${target}`);
+            if (val >= target) {
+                console.log("Quest completed!");
+                RunningGameStore.getRunningGames = plugin.origGetRunningGames;
+                RunningGameStore.getGameForPID = plugin.origGetGameForPID;
+                FluxDispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: [fake], added: [], games: [] });
+                plugin.onBeat = null;
+            }
+        };
+
+        console.log(`Spoofed game to ${appName}. Wait for ${Math.ceil((target - progress) / 60)} more minutes.`);
+    }
 }
 
 export function handleActivityTask(quest: Quest, target: number, progress: number, plugin: any) {
-    const dm = ChannelStore.getSortedPrivateChannels()?.[0]?.id;
-    let channelId = dm ?? null;
+    let channelId = ChannelStore.getSortedPrivateChannels()?.[0]?.id;
 
     if (!channelId) {
         const guilds = GuildChannelStore.getAllGuilds();
-        for (const guild of Object.values(guilds)) {
-            const { channels } = (guild as any);
-            if (channels) {
-                const vc = Object.values(channels).find((c: any) => c.type === 2);
-                if (vc) {
-                    channelId = (vc as any).id;
-                    break;
-                }
-            }
+        const guildWithVoice = Object.values(guilds).find((x: any) => x != null && x.VOCAL?.length > 0);
+        if (guildWithVoice) {
+            channelId = (guildWithVoice as any).VOCAL[0].channel.id;
         }
     }
 
-    if (!channelId) return;
+    if (!channelId) {
+        console.log("No voice channel found for activity quest!");
+        return;
+    }
 
     const streamKey = `call:${channelId}:1`;
     const questId = quest.id;
@@ -140,10 +175,13 @@ export function handleActivityTask(quest: Quest, target: number, progress: numbe
     };
 
     (async () => {
+        console.log("Completing quest", quest.config.messages?.questName);
         while (running) {
             const prog = await sendBeat();
+            console.log(`Quest progress: ${prog}/${target}`);
             if (prog >= target) {
                 await sendBeat(true);
+                console.log("Quest completed!");
                 running = false;
                 break;
             }
@@ -154,7 +192,7 @@ export function handleActivityTask(quest: Quest, target: number, progress: numbe
     plugin.unsubscribe = () => { running = false; };
 }
 
-export const TASK_HANDLERS: Record<TaskType, (quest: Quest, target: number, progress: number, plugin: any) => void> = {
+export const TASK_HANDLERS: Record<TaskType, (quest: Quest, target: number, progress: number, plugin: any) => void | Promise<void>> = {
     WATCH_VIDEO: handleVideo,
     WATCH_VIDEO_ON_MOBILE: handleVideo,
     PLAY_ON_DESKTOP: (quest, target, progress, plugin) => handleDesktopTask(quest, target, progress, plugin, false),
