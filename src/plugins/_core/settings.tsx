@@ -72,15 +72,7 @@ export default definePlugin({
                 match: /(?<=function\((\i),(\i),\i\)\{)(?=let \i=Object.values\(\i\.\i\).+?(\(0,\i\.openUserSettings\))\()/,
                 replace: (_, settingsPanel, section, openUserSettings) => `${openUserSettings}(${settingsPanel},{section:${section}});return;`
             }
-        },
-        {
-            find: "{node:a,directory:s}=(0,f.Z)",
-            replacement: {
-                match: /(\{node:.{1,10},directory:.{1,10}\}=\(0,\i\.Z\)\(.+?\);)/,
-                replace: "$1$self.injectVelocityRedesignSettings(a);"
-            }
         }
-
     ],
 
     customSections: [] as ((SectionTypes: SectionTypes) => any)[],
