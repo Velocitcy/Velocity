@@ -136,6 +136,12 @@ export default definePlugin({
                     replace: "$1,icon:$self.getIcon('FamilyIcon')}"
                 },
 
+                // Third-Party Access - experiment: 2024-11_third_party_access_settings_redesign
+                {
+                    match: /(\[.{1,10}\.THIRD_PARTY_ACCESS\]:\{[\s\S]*?element:\s*eb\.Z[\s\S]*?)\}/,
+                    replace: "$1,icon:$self.getIcon('DiscoverIcon')}"
+                },
+
                 // Authorized Apps
                 {
                     match: /(\[.{1,10}\.AUTHORIZED_APPS\]:\{[\s\S]*?url:\s*.{1,20}\.SETTINGS\("authorized-apps"\)[\s\S]*?)\}/,
@@ -246,7 +252,7 @@ export default definePlugin({
 
                 // Advanced
                 {
-                    match: /(\[.{1,10}\.SETTINGS_ADVANCED\]:\{[\s\S]*?element:\s*.{1,10}\.ZP[\s\S]*?)\}/,
+                    match: /(\[.{1,10}\.SETTINGS_ADVANCED\]:\{[\s\S]*?newIndicator:\(0,r\.jsx\)\(eW,\{\}\)[\s\S]*?)\}/,
                     replace: "$1,icon:$self.getIcon('MoreIcon')}"
                 },
 
