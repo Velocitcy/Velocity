@@ -23,8 +23,7 @@ import { Heading } from "@components/Heading";
 import { Link } from "@components/Link";
 import { Margins } from "@components/margins";
 import { Paragraph } from "@components/Paragraph";
-import { handleSettingsTabError, SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
-import { ModalCloseButton, ModalContent, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
+import { SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
 import { useAwaiter } from "@utils/react";
 import { getRepo, isNewer, UpdateLogger } from "@utils/updater";
 import { findComponentByCodeLazy } from "@webpack";
@@ -92,26 +91,3 @@ function Updater() {
 }
 
 export default IS_UPDATER_DISABLED ? null : wrapTab(Updater, "Updater");
-
-export const openUpdaterModal = IS_UPDATER_DISABLED
-    ? null
-    : function () {
-        const UpdaterTab = wrapTab(Updater, "Updater");
-        try {
-            openModal(
-                wrapTab((modalProps: ModalProps) => (
-                    <ModalRoot {...modalProps} size={ModalSize.MEDIUM}>
-                        <ModalContent className="vc-updater-modal">
-                            <ModalCloseButton
-                                onClick={modalProps.onClose}
-                                className="vc-updater-modal-close-button"
-                            />
-                            <UpdaterTab />
-                        </ModalContent>
-                    </ModalRoot>
-                ), "UpdaterModal")
-            );
-        } catch {
-            handleSettingsTabError();
-        }
-    };
