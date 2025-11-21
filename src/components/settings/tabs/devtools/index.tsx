@@ -23,22 +23,20 @@ import { SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
 import { TabBar, useState } from "@webpack/common";
 
 import { ComponentsTab } from "./Components";
-import { GeneralTab } from "./General";
 import IconCreator from "./IconCreator";
 import { IconsTab } from "./IconsPreview";
 
 const enum DevTab {
-    GENERAL,
     COMPONENTS,
     ICONS,
     CREATOR
 }
 
 function DevelopersTab() {
-    const [currentTab, setCurrentTab] = useState(DevTab.GENERAL);
+    const [currentTab, setCurrentTab] = useState(DevTab.COMPONENTS);
 
     return (
-        <SettingsTab title="Developer Visuals" icon={LockIcon({ viewBox: "0 0 24 24", height: 24, width: 24 })}>
+        <SettingsTab title="Developer Visuals" icon={LockIcon({ viewBox: "0 0 24 24", height: 20, width: 20 })}>
             <TabBar
                 type="top"
                 look="brand"
@@ -46,9 +44,6 @@ function DevelopersTab() {
                 selectedItem={currentTab}
                 onItemSelect={setCurrentTab}
             >
-                <TabBar.Item id={DevTab.GENERAL} className="vc-settings-tab-bar-item">
-                    General
-                </TabBar.Item>
                 <TabBar.Item id={DevTab.COMPONENTS} className="vc-settings-tab-bar-item">
                     Components
                 </TabBar.Item>
@@ -61,11 +56,9 @@ function DevelopersTab() {
             </TabBar>
 
 
-            {currentTab === DevTab.GENERAL && <GeneralTab />}
             {currentTab === DevTab.COMPONENTS && <ComponentsTab />}
             {currentTab === DevTab.ICONS && <IconsTab />}
             {currentTab === DevTab.CREATOR && <IconCreator />}
-
 
         </SettingsTab>
     );
