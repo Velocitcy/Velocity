@@ -19,10 +19,10 @@
 import { BaseText } from "@components/BaseText";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { handleComponentFailed } from "@components/handleComponentFailed";
-import { Margins } from "@components/margins";
+import { Margins } from "@utils/margins";
+import { ModalCloseButton, ModalContent, ModalProps, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import { onlyOnce } from "@utils/onlyOnce";
 import { findComponentByCodeLazy } from "@webpack";
-import { React } from "@webpack/common";
 import type { ComponentType, PropsWithChildren, ReactNode } from "react";
 
 const Spinner = findComponentByCodeLazy("wanderingCubes", "aria-label");
@@ -63,4 +63,19 @@ export function wrapTab(component: ComponentType<any>, tab: string) {
         message: `Failed to render the ${tab} tab. If this issue persists, try using the installer to reinstall!`,
         onError: handleSettingsTabError,
     });
+}
+
+export function openSettingsTabModal(Tab: ComponentType<any>, Size?: ModalSize) {
+    try {
+        openModal(wrapTab((modalProps: ModalProps) => (
+            <ModalRoot {...modalProps} size={Size || ModalSize.MEDIUM}>
+                <ModalContent className="vc-settings-modal">
+                    <ModalCloseButton onClick={modalProps.onClose} className="vc-settings-modal-close" />
+                    <Tab />
+                </ModalContent>
+            </ModalRoot>
+        ), Tab.displayName || "Settings Tab"));
+    } catch {
+        handleSettingsTabError();
+    }
 }
