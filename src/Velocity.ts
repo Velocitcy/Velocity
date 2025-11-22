@@ -33,7 +33,7 @@ import "./utils/quickCss";
 import "./webpack/patchWebpack";
 
 import { addVelocityUiStyles } from "@components/css";
-import { openUpdaterModal } from "@components/settings/tabs/updater";
+import { openSettingsTabModal, UpdaterTab } from "@components/settings";
 import { IS_WINDOWS } from "@utils/constants";
 import { createAndAppendStyle } from "@utils/css";
 import { StartAt } from "@utils/types";
@@ -125,7 +125,7 @@ async function runUpdateCheck() {
         notify({
             title: "A Velocity update is available!",
             body: "Click here to view the update",
-            onClick: openUpdaterModal!
+            onClick: () => openSettingsTabModal(UpdaterTab!)
         });
     } catch (err) {
         UpdateLogger.error("Failed to check for updates", err);
