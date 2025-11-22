@@ -41,12 +41,17 @@ const ContributorBadge: ProfileBadge = {
 let DonorBadges = {} as Record<string, Array<Record<"tooltip" | "badge", string>>>;
 
 async function loadBadges(noCache = false) {
-    const init = {} as RequestInit;
-    if (noCache)
-        init.cache = "no-cache";
+    const init: RequestInit = {};
+    if (noCache) init.cache = "no-cache";
 
-    DonorBadges = await fetch("https://raw.githubusercontent.com/Velocitcy/Data/refs/heads/main/src/badges.json", init)
-        .then(r => r.json());
+    const url = "https://gist.githubusercontent.com/Velocitcs/dd868eb8c97024ffbdb12ddd144061af/raw/badges.json";
+
+    try {
+        const res = await fetch(url, init);
+        const text = await res.text();
+        const json = JSON.parse(text);
+        DonorBadges = json;
+    } catch (err) { }
 }
 
 let intervalId: any;
