@@ -40,6 +40,7 @@ const settings = definePluginSettings({
     voiceSetting: {
         type: OptionType.RADIO,
         description: "Audio state on join",
+        restartNeeded: true,
         options: [
             { label: "None", value: "none", default: true },
             { label: "Auto Mute", value: "mute" },
@@ -148,13 +149,32 @@ export default definePlugin({
     authors: [Devs.Velocity],
     settings,
 
+    patches: [
+        {
+            find: "t8({mute:!1",
+            replacement: {
+                match: /\(a\.mute\|\|a\.deaf\)\s*&&/g,
+                replace: "false&&",
+            },
+            predicate: () => settings.store.voiceSetting === "mute"
+
+        },
+        {
+            find: "t8({deaf:!1",
+            replacement: {
+                match: /\(a\.mute\|\|a\.deaf\)\s*&&/g,
+                replace: "false&&",
+            },
+            predicate: () => settings.store.voiceSetting === "deafen"
+        }
+    ],
+
     contextMenus: {
         "more-settings-context": streamContextMenuPatch,
         "manage-streams": streamEnablingPatch(settings)
     },
 
     flux: {
-        // this will trigger whenever a call gets created by someone
         CALL_CREATE(data: { channelId: string; }) {
             const channelIds = getChannelIds();
             if (channelIds.length === 0) return;
@@ -162,8 +182,20 @@ export default definePlugin({
             if (channelIds.includes(data.channelId)) {
                 setTimeout(() => joinCall(data.channelId), 100);
             }
+        },
+
+        CALL_UPDATE(data: { channelId: string; ringing?: string[]; }) {
+            const channelIds = getChannelIds();
+            if (channelIds.length === 0) return;
+
+            const isRinging = Array.isArray(data.ringing) && data.ringing.length > 0;
+
+            if (isRinging && channelIds.includes(data.channelId)) {
+                setTimeout(() => joinCall(data.channelId), 100);
+            }
         }
     },
+
 
 
     start() {
