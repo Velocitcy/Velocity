@@ -49,6 +49,10 @@ export default definePlugin({
                 {
                     match: /(null!=\i&&(\i)\.push\(\i\),)/,
                     replace: "$1$2.push(...$self.getInfoRows()),"
+                },
+                {
+                    match: /(null!=A&&\(0,r\.jsx\)\(l\.Text,\{tag:"span",variant:"text-xxs\/normal",color:"text-muted",children:\(0,r\.jsxs\)\("span",\{className:h\.versionHash,children:\["Build Override: ",A\.id\]\}\)\}\))/,
+                    replace: "$1,$self.getInfoRows().map((text,i)=>(0,r.jsx)(l.Text,{key:'vc'+i,tag:'span',variant:'text-xxs/normal',color:'text-muted',children:text}))"
                 }
             ]
         },
@@ -71,6 +75,13 @@ export default definePlugin({
                 // Skip the check Discord performs to make sure the section being selected in the user settings context menu is valid
                 match: /(?<=function\((\i),(\i),\i\)\{)(?=let \i=Object.values\(\i\.\i\).+?(\(0,\i\.openUserSettings\))\()/,
                 replace: (_, settingsPanel, section, openUserSettings) => `${openUserSettings}(${settingsPanel},{section:${section}});return;`
+            }
+        },
+        {
+            find: ".buildLayout().map",
+            replacement: {
+                match: /(\i)\.buildLayout\(\)(?=\.map)/,
+                replace: "$self.buildLayout($1)"
             }
         }
     ],
@@ -147,6 +158,69 @@ export default definePlugin({
         ];
 
         return categories.filter(Boolean);
+    },
+
+    buildLayout(originalLayoutBuilder: any) {
+        const layout = originalLayoutBuilder.buildLayout();
+        if (originalLayoutBuilder.key !== "$Root") return layout;
+
+        const { settingsLocation } = Settings.plugins.Settings;
+        const velocityCategories = this.makeSettingsCategories({
+            HEADER: "HEADER",
+            DIVIDER: "DIVIDER",
+            CUSTOM: "CUSTOM"
+        }).filter(cat => cat.section !== "HEADER" && cat.section !== "DIVIDER");
+
+        const velocitySection = {
+            key: "velocity_section",
+            type: 1,
+            useLabel: () => "Velocity Settings",
+            buildLayout: () => velocityCategories.map(category => ({
+                key: category.section,
+                legacySearchKey: category.label?.toUpperCase(),
+                type: 2,
+                useTitle: () => category.label,
+                icon: () => category.icon || null,
+                buildLayout: () => [
+                    {
+                        key: `${category.section}_panel`,
+                        type: 3,
+                        useTitle: () => null,
+                        buildLayout: () => [{
+                            key: `${category.section}_pane`,
+                            type: 4,
+                            buildLayout: () => [],
+                            render: () => React.createElement(category.element),
+                            useTitle: () => category.label
+                        }]
+                    }
+                ]
+            }))
+        };
+
+        const sectionMap = {
+            top: "profile_section",
+            aboveNitro: "billing_section",
+            belowNitro: "billing_section",
+            aboveActivity: "activity_section",
+            belowActivity: "activity_section",
+            aboveAppearance: "app_section",
+            belowAppearance: "app_section",
+            aboveAccessibility: "app_section",
+            belowAccessibility: "app_section"
+        };
+
+        const targetSection = sectionMap[settingsLocation];
+        let insertIndex = targetSection ? layout.findIndex(s => s.key === targetSection) : -1;
+
+        if (insertIndex === -1) insertIndex = 2;
+        if (settingsLocation?.startsWith("below")) insertIndex++;
+        if (settingsLocation === "top") insertIndex = 0;
+        if (settingsLocation === "bottom") insertIndex = layout.length;
+
+        layout.splice(insertIndex, 0, velocitySection);
+
+        return layout;
     },
 
     isRightSpot({ header, settings }: { header?: string; settings?: string[]; }) {
