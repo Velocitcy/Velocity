@@ -21,7 +21,7 @@ import { getUserSettingLazy } from "@api/UserSettings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Flex } from "@components/Flex";
 import { Link } from "@components/Link";
-import { openUpdaterModal } from "@components/settings/tabs/updater";
+import { openSettingsTabModal, UpdaterTab } from "@components/settings";
 import { CONTRIB_ROLE_ID, Devs, DONOR_ROLE_ID, KNOWN_ISSUES_CHANNEL_ID, REGULAR_ROLE_ID, SUPPORT_CATEGORY_ID, SUPPORT_CHANNEL_ID, VEBOT_USER_ID, VELOCITY_GUILD_ID } from "@utils/constants";
 import { sendMessage } from "@utils/discord";
 import { Logger } from "@utils/Logger";
@@ -186,7 +186,7 @@ export default definePlugin({
                                 Please first update before asking for support!
                             </Forms.FormText>
                         </div>,
-                        onCancel: () => openUpdaterModal!(),
+                        onCancel: () => openSettingsTabModal(UpdaterTab!),
                         cancelText: "View Updates",
                         confirmText: "Update & Restart Now",
                         onConfirm: forceUpdate,
